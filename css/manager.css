@@ -1,6 +1,7 @@
 body{
   background-image: url("../image/index1.jpg");
   	background-color:  linear-gradient(to left, white 0%, darkgreen 200%);
+    overflow-x: hidden;
 
 }
 #map{
@@ -17,19 +18,19 @@ span.link{
     font-weight: bold;
 }
 
-div.nav{
-  background-color: antiquewhite;
-  height:500px;
+.stay{
+  position: fixed;
+  height:550px;
   width:325px;
   margin-left: 42px; 
-  margin-top: 20px;
-    opacity: .4;
+  margin-top: 500px;
+    float:left;
     border-radius: 16px;
-    border: 2px solid yellow;
+    
 }
 div.float{
   position:relative; 
-  top:-530px;
+  top:-510px;
 }
 .signOut{
 	margin-left:1300px;
@@ -59,7 +60,7 @@ div.n{
   text-align: center;
   height:25px;
   width: 280px;
-  margin-left: 49px;
+  margin-left: 3px;
     border-radius: 4px;
     border:2px solid rgba(1,3,0,.4);
     padding: 14px;
@@ -76,13 +77,14 @@ div.n:hover{
     cursor: pointer;
     transform: scale(1.2);
     transition:800ms ;
+    border-radius: 120px;
 }
 
 div.onPage{
     text-align: center;
     height:25px;
     width: 280px;
-    margin-left: 49px;
+    margin-left: 3px;
     border-radius: 4px;
     background-color: skyblue;
     border: 3px solid white;
@@ -91,10 +93,11 @@ div.onPage{
 }
 
 form {
+
 	position: relative;
   left:50px;
-  top:270px;
-  width: 800px;
+  top:345px;
+  width: 600px;
   height: 1050px;
   margin-top: -280px;
   margin-right: auto;

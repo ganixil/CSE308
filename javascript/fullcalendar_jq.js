@@ -1,10 +1,10 @@
 $(document).ready(function() {
 		var script = document.createElement('script');
-		script.scr = "../jquery/jquery-1.10.2.js";
+		script.scr = "../jquery/jquery.js";
 		document.getElementsByTagName('head')[0].appendChild(script); 
 
 		var script2 = document.createElement('script');
-		script2.src = "../jquery/jquery-ui.custom.min.js";
+		script2.src = "../jquery/jquery-ui.min.js";
 		document.getElementsByTagName('head')[0].appendChild(script2);
 
 	    var date = new Date();
