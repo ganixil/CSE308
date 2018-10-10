@@ -2,10 +2,48 @@
 <html>
 	<head>
 		<link rel="stylesheet" type="text/css" href="../../css/manager.css">
+		
+		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBu-916DdpKAjTmJNIgngS6HL_kDIKU0aU&callback=myMap"></script>
+		<script type="text/javascript" src="../../javascript/manager_js/create_campaign.js"></script>
+		
 	</head>
-
+    
 	<body>
-		<div class="container" style="background-color: white;opacity: .7"> <span class="title"> View Canvas Assignment </span> </div>
+		<div class="container"> 
+			<div style="width: 1500px;background-color:white;opacity: .7"><span class="title" > View Canvas Assignment </span> </div>
+			<div class="nav"></div>
+            <div class="float">
+                <div class="n" onclick="location.href='create_campaign.html'"><span class="link">Create Campaign<span></div>
+                <div class="n" onclick="location.href='edit_campaign.html'"><span class="link">Edit Campaign</span></div>
+                <div class="n" onclick="location.href='view_campaign.html'"><span class="link">View Campaign</span></div>
+                <div class="n" onclick="location.href='view_campaign_result.html'"><span class="link">View Campaign Result</span></div>
+                <div class="onPage" onclick="location.href='view_canvas_assignment.html'"><span class="link">View Canvas Assignment</span></div>
+                <div class="n" onclick="location.href='create_canvas_assignment.html'"><span class="link">Create Canvas Assignment</span></div>
+            </div>
+			<div class="signOut"><span class="outText">Sign Out</span> </div>
+		</div>
 
+
+		<div class="container"> 
+			<form id="createCampaign" style="overflow:auto">
+				<div class="box" style="top:160px;overflow: auto;"><span class="label" style="font-size: 24px;">View Canvas Assignment</span>
+					<div class="content" style="margin-left:10px;" >
+						<table  cellpadding="3" >
+							<tr>
+								<th style="width:200px;">Canvasser</th>
+								<th style="width:200px;">Campaign</th>
+								<th style="width:200px;">Location</th>
+								<th style="width:200px;">Time</th>
+							</tr>
+							<tr></tr>
+							
+						</table>
+					</div>
+				</div>
+
+			</form>
+		</div>
+		
+		
 	</body>
 </html>
