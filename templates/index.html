@@ -4,28 +4,28 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
-    <link rel="icon" href="static/image/logo.png">
+    <link rel="icon" href="../static/image/logo.png">
 
     <title>Super Canvasser Sign in</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="static/css/bs_css/bootstrap.min.css" rel="stylesheet">
+    <link href="../static/css/bs_css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this login page -->
-    <link href="static/css/signin.css" rel="stylesheet">
+    <link href="../static/css/signin.css" rel="stylesheet">
 
   </head>
 
   <body>
 
     <div class="container">
-      <img class="title-logo" src="static/image/title_logo.png"/>
-      <form class="form-signin">
+      <img class="title-logo" src="../static/image/title_logo.png"/>
+      <form class="form-signin" method="post">
         <h2 class="form-signin-heading">Please sign in</h2>
         <label for="inputEmail" class="sr-only">Email address</label>
-        <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+        <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
         <label for="inputPassword" class="sr-only">Password</label>
-        <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+        <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
         <div class="checkbox">
           <label>
             <input type="checkbox" value="remember-me"> Remember me
