@@ -1,67 +1,55 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<link rel="stylesheet" type="text/css" href="../../css/manager.css">
+		<link rel="stylesheet" type="text/css" href="../../static/css/manager.css">
 		
 		
 		
 	</head>
     
-	<body>
+	<body  >
 		<div class="container" > 
-			<div style="width: 1500px;background-color:white;opacity: .7"><span class="title" > Edit Campaign </span> </div>
-			<div class="nav">
-                
-			</div>
-            <div class="float">
-            	<div class="stay" style="position:fixed">
-	                <div class="n" onclick="location.href='create_campaign.html'"><span class="link">Create Campaign<span></div>
-	                <div class="onPage" onclick="location.href='edit_campaign.html'"><span class="link">Edit Campaign</span></div>
+			<div style="width: 1500px;background-color:white;opacity: .7"><span class="title" > Create Campaign </span> </div>
+			<div class="nav"> </div>
+            <div class="float" >
+            	<div class="stay" >
+	                <div class="onPage" onclick="location.href='create_campaign.html'"><span class="link">Create Campaign<span></div>
+	                <div class="n" onclick="location.href='edit_campaign.html'"><span class="link">Edit Campaign</span></div>
 	                <div class="n" onclick="location.href='view_campaign.html'"><span class="link">View Campaign</span></div>
 	                <div class="n" onclick="location.href='view_campaign_result.html'"><span class="link">View Campaign Result</span></div>
 	                <div class="n" onclick="location.href='view_canvas_assignment.html'"><span class="link">View Canvas Assignment</span></div>
 	                <div class="n" onclick="location.href='create_canvas_assignment.html'"><span class="link">Create Canvas Assignment</span></div>
 	            </div>
             </div>
-			<div class="signOut"><span class="outText">Sign Out</span> </div>
-		</div>
+            <div class="signOut"><span class="outText" onclick="" >Sign Out</span> </div>
 
-		<div class="container">
-			<form id="createCampaign">
-				<div class="box" style="height:120px; width:450px; top:160px;"><span class="label" style="font-size: 17px;">Select Campaign</span>
+		</div>
+			
+		<div class="container"  style="opacity: 1">
+			<form id="createCampaign"  >
+				<div class="box" style="height:130px; width:450px; top:160px;"><span class="label" style="font-size: 17px;">Campaign Info</span>
 					<div class="content" style="margin-left:10px;" >
 						<table  cellpadding="3">
 							<tr>
-								<td nowrap="" style="width:200px"> Select Campaign: </td>
-								<td><select name="campaign_name" value="">
-										<option value="none"></option>
-									</select>
-								</td>
+								<td nowrap="" style="width:200px"> Campaign Name: </td>
+								<td> <input type="text" name="campaign_name" value=""></td>
 							</tr>
 							<tr>
-								<td nowrap="" style="width:130px; " > New Campiagn Name:</td>
-								<td> <input type="text" name="new_campaign_name"></td>
+								<td nowrap="" style="width:200px"> Set Manager: </td>
+								<td> <input type="text" name="manager_name" value=""></td>
 							</tr>
-
 						</table>
 					</div>
 				</div>
-
-
-				<div class="box" style="height:120px; width:450px; top:160px;"><span class="label" style="font-size: 17px;">Manager and Canvasser</span>
+				
+				<div class="box" style="height:90px; width:450px; top:160px;"><span class="label" style="font-size: 17px;">Assign Canvasser</span>
 					<div class="content" style="margin-left:10px;" >
 						<table  cellpadding="3">
 							<tr>
-								<td nowrap="" style="width:200px"> Select Manager: </td>
-								<td><select name="manager_name" value="">
+								<td nowrap="" style="width:200px"> Set Canvasser: </td>
+								<td><select name="campaign_name" value="">
 										<option value="none"></option>
-									</select>
-								</td>
-							</tr>
-							<tr>
-								<td nowrap="" style="width:200px"> Select Canvasser: </td>
-								<td><select name="canvasser_name" value="">
-										<option value="none"></option>
+										
 									</select>
 								</td>
 							</tr>
@@ -70,7 +58,7 @@
 					</div>
 				</div>
 
- 				<div class="box" style="height:130px; width:450px; top:160px;"><span class="label" style="font-size: 17px;">Time</span>
+				<div class="box" style="height:130px; width:450px; top:160px;"><span class="label" style="font-size: 17px;">Time</span>
 					<div class="content" style="margin-left: 30px">
 						<table>
 							<tr>
@@ -86,7 +74,6 @@
 					</div>
 				</div>
 
-
 				<div class="box" style="height:400px; width:450px; top:160px;"><span class="label" style="font-size: 17px;">Location</span>
 					<div class="content" style="margin-left: -15px; margin-top: -10px">
 						<table>
@@ -101,14 +88,12 @@
                         </table>
 					</div>
 				</div>
-				<button class="submit"  onclick="" >Update Campaign</button>
+
+
+				<button class="submit"  onclick="" >Create Campaign</button>
 			</form>
-
-
-
 		</div>
-		
-		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBu-916DdpKAjTmJNIgngS6HL_kDIKU0aU&callback=myMap"></script>
-		<script type="text/javascript" src="../../javascript/manager_js/edit_campaign.js"></script>
 	</body>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBu-916DdpKAjTmJNIgngS6HL_kDIKU0aU&callback=myMap"></script>
+    <script type="text/javascript" src="../../static/javascript/manager_js/create_campaign.js"></script>
 </html>
