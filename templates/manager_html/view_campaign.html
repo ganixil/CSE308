@@ -37,6 +37,16 @@
 								
 							</tr>
 							<tr></tr>
+
+							{% for item in camp %}
+							<tr>
+								<th style="width:250px;">{{item.date}}</th>
+								<th style="width:250px;">{{item.canvasser}}</th>
+								<th style="width:250px;">{{item.location}}</th>
+								
+							</tr>
+							{% endfor %}
+
 							
 						</table>
 					</div>

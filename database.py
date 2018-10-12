@@ -92,9 +92,12 @@ class GlobalVariables(Base):
 class Campaign(Base):
 
     __tablename__ = 'campaign'
-    id = Column(Integer, primary_key=True)
-    manager = Column(String(20))
-    canvasser = Column(String(20))
+    id = Column(String(100), primary_key=True)
+    manager = Column(String(20), nullable=False)
+    canvasser = Column(String(20), nullable=False)
+    date = Column(String(20))
+    location = Column(String(20))        
+
     
     #id = campaign name
 
@@ -126,9 +129,10 @@ if __name__ == "__main__":
     p1 = generate_password_hash('password')
     can = Canvasser(1, 'user1@c.com', p1, 'Mark', 'canvasser')
     ad = Admin(2, 'user2@c.com', p1, 'John', 'admin')
+    campaign1 = Campaign("werh", "Kevin", "xin", "date", "time", "12 street")
     man = Manager(3, 'user3@c.com', p1, 'Phil', 'manager')
     glo = GlobalVariables(1, 1, 2)
-    campaign1 = Campaign(1, "Kevin", "xin", "date", "time", "12 street")
+    
     db_session.add(glo)
     db_session.add(can)
     db_session.add(ad)
