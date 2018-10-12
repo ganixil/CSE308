@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, Date, Table, ForeignKey
+from sqlalchemy import Column, Integer, String, Date, Table, ForeignKey, Float
 from sqlalchemy.orm import relationship
 from datetime import date
 import pymysql
@@ -75,6 +75,16 @@ class Manager(User):
     def __init__(self, id, email, password, name, accType):
         User.__init__(self, id, email, password, name, accType)
 
+class GlobalVariables(Base):
+    __tablename__ = 'globalVariables'
+    id = Column(Integer, primary_key=True)
+    workDayLength = Column(Float)
+    averageSpeed = Column(Float)
+    def __init__(self, id, workDayLength, averageSpeed):
+        self.id = id
+        self.workDayLength = workDayLength
+        self.averageSpeed = averageSpeed
+
 #class Availability(Base):
     #__tablename__ = 'availabilities'
     #id = Column(Integer, primary_key=True)
@@ -89,11 +99,15 @@ class Manager(User):
 #    __tablename__ = 'admins'
   #  id = Column
 
+
+#for populating the database for testing purposes
 if __name__ == "__main__":
     init_db()
     can = Canvasser(1, 'user1@c.com', 'password', 'Mark', 'canvasser')
     ad = Admin(2, 'user2@c.com', 'password', 'John', 'admin')
     man = Manager(3, 'user3@c.com', 'password', 'Phil', 'manager')
+    glo = GlobalVariables(1, 1, 2)
+    db_session.add(glo)
     db_session.add(can)
     db_session.add(ad)
     db_session.add(man)

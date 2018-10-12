@@ -35,7 +35,13 @@ def create_app(test_config=None):
     app.register_blueprint(auth.bp)
     import admin
     app.register_blueprint(admin.bp)
+    import manager
+    app.register_blueprint(manager.bp)
+    import canvasser
+    app.register_blueprint(canvasser.bp)
+    
     return app
+    
 
 if __name__ == "__main__":
     app = create_app()

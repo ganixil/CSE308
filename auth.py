@@ -4,7 +4,7 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
 from werkzeug.security import check_password_hash, generate_password_hash
-from database import db_session, User, init_db, Admin, Manager
+from database import db_session, User, init_db, Admin, Manager, Canvasser
 
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
@@ -23,18 +23,18 @@ def login():
             adminUser = Admin.query.filter(Admin.id == u.id).first()
             session.clear()
             session['adminUserId'] = adminUser.id
-            return redirect(url_for('admin.admpage'))
+            return redirect(url_for('admin.admPage'))
             
         elif(u.accType == 'manager'):
             managerUser = Manager.query.filter(Manager.id == u.id).first()
             session.clear()
             session['managerUserId'] = managerUser.id
-            #return redirect(url_for('toDo'))
+            return redirect(url_for('manager.manPage'))
         else:
             session.clear()
-            canvasserUser = Canavasser.query.filter(Canvasser.id == u.id).first()
+            canvasserUser = Canvasser.query.filter(Canvasser.id == u.id).first()
             session['canvasserUserId'] = canvasserUser.id
-            #return redirect(url_for('toDo'))
+            return redirect(url_for('canvasser.canPage'))
         error = None
         
 
