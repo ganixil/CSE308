@@ -62,10 +62,10 @@ div.n{
   width: 280px;
   margin-left: 3px;
     border-radius: 4px;
-    border:2px solid rgba(1,3,0,.4);
+    
     padding: 14px;
     margin-top:30px;
-    border: 3px solid rgb(86, 180, 239);
+    border: 2px solid rgb(86, 180, 239);
     box-shadow: 3px 3px 3px 3px rgba(0, 0, 0, 0.23);
      transition:500ms ;
      outline: none;
@@ -73,7 +73,8 @@ div.n{
 }
 div.n:hover{
   background-color: rgb(86, 180, 239);
-    border: 3px solid white;
+     border: 3px solid rgb(86, 180, 239);
+    box-shadow: 3px 3px 3px 3px rgba(0, 0, 0, 0.23);
     cursor: pointer;
     transform: scale(1.2);
     transition:800ms ;
@@ -98,7 +99,7 @@ form {
   left:50px;
   top:345px;
   width: 600px;
-  height: 1050px;
+  height: 1230px;
   margin-top: -280px;
   margin-right: auto;
   margin-left: auto;
@@ -157,18 +158,18 @@ select:hover, input:hover{
   margin-top: 30px;
   margin-right: auto;
   margin-left: auto;
-  border-radius: 10px;
-  border-color: #00ff00;
-  background-color: white;
-  border: 2px solid rgb(86, 180, 239);
-  box-shadow: 10px 16px 2px 3px rgba(0, 0, 0, 0.23);
-  opacity: .9;
+  border-radius: 3px;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+  border:.5px solid rgb(86, 180, 239);
+  padding: 10px 25px;
+  display: block;
+  margin-top: 60px;
   transition:1100ms ;
   outline: none;
 }
 .box:hover{
 	transition:500ms ;
-  border: 3px solid rgb(86, 180, 239);
+  border: 1px solid rgb(86, 180, 239);
   transform: scale(1.09);
   box-shadow: 3px 3px 3px 3px rgba(0, 0, 0, 0.23);
   opacity: 1;
@@ -178,12 +179,15 @@ select:hover, input:hover{
 }
 
 span.label{
-	position:relative;
-	top:1px;
-	height:5px;
-	border-radius:5px;
-	background:white;
-	
+  position: relative;
+  top: 1px;
+  margin-right: auto;
+  margin-left: auto;
+  border-radius: 3px;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+  border:.1px solid rgb(86, 180, 239);  
+  transition:1100ms ;
+  outline: none;
 }
 .submit{
 	position: relative;

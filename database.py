@@ -11,9 +11,7 @@ import pymysql
 #'mysql+pymysql://username:password@address:port/databaseName'
 #connect to the database with the database connection string
 engine = create_engine('mysql+pymysql://xiangyiliu:111308288@mysql3.cs.stonybrook.edu:3306/xiangyiliu', convert_unicode=True)
-db_session = scoped_session(sessionmaker(autocommit=False,
-                                         autoflush=False,
-                                         bind=engine))
+db_session = scoped_session(sessionmaker(autocommit=False, autoflush=False,bind=engine))
 
 #make the sqlalchemy object relation mapper base class
 Base = declarative_base()
@@ -91,6 +89,25 @@ class GlobalVariables(Base):
         self.workDayLength = workDayLength
         self.averageSpeed = averageSpeed
 
+class Campaign(Base):
+
+    __tablename__ = 'campaign'
+    id = Column(Integer, primary_key=True)
+    manager = Column(String(20))
+    canvasser = Column(String(20))
+    
+    #id = campaign name
+
+    def __init__(self, id, manager, canvasser, date, time, location):
+        self.id = id
+        self.manager = manager
+        self.canvasser = canvasser
+        self.date = date
+        self.time = time
+        self.location = location
+
+
+
 #to be implemented
 #class Availability(Base):
     #__tablename__ = 'availabilities'
@@ -111,8 +128,10 @@ if __name__ == "__main__":
     ad = Admin(2, 'user2@c.com', p1, 'John', 'admin')
     man = Manager(3, 'user3@c.com', p1, 'Phil', 'manager')
     glo = GlobalVariables(1, 1, 2)
+    campaign1 = Campaign(1, "Kevin", "xin", "date", "time", "12 street")
     db_session.add(glo)
     db_session.add(can)
     db_session.add(ad)
     db_session.add(man)
+    db_session.add(campaign1)
     db_session.commit()

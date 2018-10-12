@@ -42,4 +42,4 @@ def login():
             session['canvasserUserId'] = canvasserUser.id
             return redirect(url_for('canvasser.canPage'))
         
-    return render_template('index.html')
+    return render_template('index.html', u = u)
