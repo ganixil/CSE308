@@ -3,6 +3,7 @@ import os
 from flask import Flask, redirect, url_for
 from database import db_session, init_db
 
+#factory method to create the flask app
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
@@ -22,15 +23,19 @@ def create_app(test_config=None):
         os.makedirs(app.instance_path)
     except OSError:
         pass
+    
+    #register the database with the app
     @app.teardown_appcontext
     def shutdown_session(exception=None):
         db_session.remove()
+    #initalize the datebase
     init_db()
-    # a simple page that says hello
+    #redirect to the first page which is the login page
     @app.route('/')
     def start():
         return redirect(url_for('auth.login'))
 
+    #register the flask app's blueprints
     import auth
     app.register_blueprint(auth.bp)
     import admin
@@ -43,6 +48,7 @@ def create_app(test_config=None):
     return app
     
 
+#for testing purposes
 if __name__ == "__main__":
     app = create_app()
     app.run()

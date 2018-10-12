@@ -2,33 +2,39 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, Date, Table, ForeignKey, Float
+from werkzeug.security import check_password_hash, generate_password_hash
 from sqlalchemy.orm import relationship
 from datetime import date
 import pymysql
 
+#database connection string example
 #'mysql+pymysql://username:password@address:port/databaseName'
+#connect to the database with the database connection string
 engine = create_engine('mysql+pymysql://xiangyiliu:111308288@mysql3.cs.stonybrook.edu:3306/xiangyiliu', convert_unicode=True)
 db_session = scoped_session(sessionmaker(autocommit=False,
                                          autoflush=False,
                                          bind=engine))
 
+#make the sqlalchemy object relation mapper base class
 Base = declarative_base()
 Base.query = db_session.query_property()
 
+#function to initalize the database
 def init_db():
     Base.metadata.create_all(bind=engine)
 
+#database table models/object relational classes
 class User(Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
     email = Column(String(80), unique=True, nullable=False)
-    password = Column(String(50), nullable=False)
+    password = Column(String(255), nullable=False)
     name = Column(String(80))
     accType = Column(String(9))
 
     __mapper_args__ = {
         'polymorphic_identity':'user',
-        'polymorphic_on':accType
+        #'polymorphic_on':accType
     }
 
     def __init__(self, id, email, password, name, accType):
@@ -85,6 +91,7 @@ class GlobalVariables(Base):
         self.workDayLength = workDayLength
         self.averageSpeed = averageSpeed
 
+#to be implemented
 #class Availability(Base):
     #__tablename__ = 'availabilities'
     #id = Column(Integer, primary_key=True)
@@ -95,17 +102,14 @@ class GlobalVariables(Base):
         #self.date = date
         #self.canvasserId = canvasserId
 
-#class Admin(Base):
-#    __tablename__ = 'admins'
-  #  id = Column
-
 
 #for populating the database for testing purposes
 if __name__ == "__main__":
     init_db()
-    can = Canvasser(1, 'user1@c.com', 'password', 'Mark', 'canvasser')
-    ad = Admin(2, 'user2@c.com', 'password', 'John', 'admin')
-    man = Manager(3, 'user3@c.com', 'password', 'Phil', 'manager')
+    p1 = generate_password_hash('password')
+    can = Canvasser(1, 'user1@c.com', p1, 'Mark', 'canvasser')
+    ad = Admin(2, 'user2@c.com', p1, 'John', 'admin')
+    man = Manager(3, 'user3@c.com', p1, 'Phil', 'manager')
     glo = GlobalVariables(1, 1, 2)
     db_session.add(glo)
     db_session.add(can)
