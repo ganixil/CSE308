@@ -12,3 +12,7 @@ bp = Blueprint('admin', __name__, url_prefix='/admin')
 @bp.route('/admPage', methods=('GET', 'POST'))
 def admPage():
 	return render_template('admin_html/admin.html',session=db_session,User=User)
+
+
+
+	#HEELO
