@@ -1,5 +1,4 @@
 import os
-
 from flask import Flask, redirect, url_for
 from database import db_session, init_db
 

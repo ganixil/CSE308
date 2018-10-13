@@ -34,7 +34,7 @@ def login():
             managerUser = Manager.query.filter(Manager.id == u.id).first()
             session.clear()
             session['managerUserId'] = managerUser.id
-            return redirect(url_for('manager.manPage'))
+            return redirect(url_for('manager.viewCampaign'))
         #redirects to canvasser page
         else:
             session.clear()
@@ -42,4 +42,4 @@ def login():
             session['canvasserUserId'] = canvasserUser.id
             return redirect(url_for('canvasser.canPage'))
         
-    return render_template('index.html', u = u)
+    return render_template('index.html')
