@@ -7,11 +7,10 @@ bp = Blueprint('admin', __name__, url_prefix='/admin')
 
 
 #function to render the admin page and set the admin page url
-@bp.route('/adminPage', methods=('GET', 'POST'))
-def adminPage():
+@bp.route('/adminPage/<u_name>', methods=('GET', 'POST'))
+def adminPage(u_name):
 	usr_session = db_session.query(User).order_by(User.id)
 	gblvar_session = db_session.query(GlobalVariables).first()
-	print(gblvar_session)
-	return render_template('admin_html/admin.html',usr_session=usr_session, gblvar_session = gblvar_session)
+	return render_template('admin_html/admin.html',usr_session=usr_session, gblvar_session = gblvar_session,u_name=u_name)
 
 

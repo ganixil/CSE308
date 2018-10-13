@@ -28,7 +28,7 @@ def login():
             adminUser = Admin.query.filter(Admin.id == u.id).first()
             session.clear()
             session['adminUserId'] = adminUser.id
-            return redirect(url_for('admin.adminPage'))
+            return redirect(url_for('admin.adminPage',u_name=u.name))
         #redirects to manager page
         elif(u.accType == 'manager'):
             managerUser = Manager.query.filter(Manager.id == u.id).first()
