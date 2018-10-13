@@ -36,12 +36,13 @@ def create_app(test_config=None):
 
     #register the flask app's blueprints
     import auth
-    app.register_blueprint(auth.bp)
     import admin
-    app.register_blueprint(admin.bp)
     import manager
-    app.register_blueprint(manager.bp)
     import canvasser
+    
+    app.register_blueprint(auth.bp)
+    app.register_blueprint(admin.bp)
+    app.register_blueprint(manager.bp)
     app.register_blueprint(canvasser.bp)
     
     return app
