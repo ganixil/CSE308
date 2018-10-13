@@ -48,6 +48,7 @@ class User(Base):
 class Canvasser(User):
     __tablename__ = 'canvassers'
     id = Column(Integer, ForeignKey('users.id'), primary_key=True)
+
     #availability = relationship('Availability')
     __mapper_args__ = {
         'polymorphic_identity':'canvasser',
@@ -123,15 +124,17 @@ class Campaign(Base):
 #for populating the database for testing purposes
 if __name__ == "__main__":
     init_db()
-    p1 = generate_password_hash('password')
-    can = Canvasser(1, 'user1@c.com', p1, 'Mark', 'canvasser')
-    ad = Admin(2, 'user2@c.com', p1, 'John', 'admin')
-    man = Manager(3, 'user3@c.com', p1, 'Phil', 'manager')
-    glo = GlobalVariables(1, 1, 2)
-    campaign1 = Campaign(1, "Kevin", "xin", "date", "time", "12 street")
-    db_session.add(glo)
-    db_session.add(can)
-    db_session.add(ad)
-    db_session.add(man)
-    db_session.add(campaign1)
-    db_session.commit()
+    
+    #p1 = generate_password_hash('password')
+    #can = Canvasser(1, 'user1@c.com', p1, 'Mark', 'canvasser')
+    #ad = Admin(2, 'user2@c.com', p1, 'John', 'admin')
+    #man = Manager(3, 'user3@c.com', p1, 'Phil', 'manager')
+    #glo = GlobalVariables(1, 1, 2)
+    #campaign1 = Campaign(1, "Kevin", "xin", "date", "time", "12 street")
+    #db_session.add(glo)
+    #db_session.add(can)
+    #db_session.add(ad)
+    #db_session.add(man)
+    #db_session.add(campaign1)
+    #db_session.commit()
+    

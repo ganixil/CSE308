@@ -51,9 +51,6 @@
         amet, nunc. Nam a nibh. Donec suscipit eros. Nam mi. Proin viverra leo ut
         odio. Curabitur malesuada. Vestibulum a velit eu ante scelerisque vulputate.
         </p>
-        
-        <button class="btn btn-outline-success btn-lg" type="button" >Edit User</button>
-        <button class="btn btn-outline-success btn-lg" type="button" >Remove User</button>
     </div>
     <!-- User view-->
     <div id="tabs-v-2" class="tab-pane">
@@ -64,7 +61,7 @@
                     <th class="list-checkbox-column">
                         <input type="checkbox" name="rowtoggle" class="action-rowtoggle" title="Select all records" />
                     </th>
-                    <th class="col-md-1" style="width: 40px;">&nbsp;</th>
+                    <th class="col-md-1" style="width: 100px;">&nbsp;</th>
                     <th class="column-header col-first_name">
                             <a href="#" title="Sort by First Name">Name</a>
                     </th>
@@ -100,18 +97,11 @@
         </tr>
         {% endfor %}
                         
-                          
-                          
-  
-        <a class="icon" href="/sqla/simple/admin/user/edit/?url=%2Fsqla%2Fsimple%2Fadmin%2Fuser%2F&amp;id=1" title="Edit Record">
-        <span class="fa fa-pencil glyphicon glyphicon-pencil"></span>
-        </a>
-    </table>
 
-    </div>
+        </table>
+
+        </div>
     
     </div>
-    <button class="btn btn-outline-success btn-lg" type="button" id="btm-btn">Add User</button>
-    <button class="btn btn-outline-success btn-lg" type="button" id="btm-btn">Set Global Parameter</button>
   </body>
 </html>
