@@ -36,7 +36,7 @@ function addManagerToTable(){
 }
 
 function exists(text, arr ){
-	var string = "";
+	
 	for( var i = 0; i < arr.length; i++){
 		if(text == arr[i].innerHTML){
 			return true;
