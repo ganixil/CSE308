@@ -52,7 +52,43 @@
         amet, nunc. Nam a nibh. Donec suscipit eros. Nam mi. Proin viverra leo ut
         odio. Curabitur malesuada. Vestibulum a velit eu ante scelerisque vulputate.
         </p>
+
+
+        <div>
+            <h3>
+                <p style="text-align: center;">Current Global Variables: </br></p>
+                Average Work Day Length: {{gblvar_session.workDayLength}} Days</br>
+                Average Canvasser Movement Speed: {{gblvar_session.averageSpeed}} Miles/Hour</br>
+            </h3>
+        </div>
+
+        <!-- form to change the global variables-->
+        <form id="global">
+        <div class="form-group">
+            <label for="avgworkday">New Average Work Day Length: </label>
+            <select class="form-control" id="avgworkday">
+                <option>1 days</option>
+                <option>2 days</option>
+                <option>3 days</option>
+                <option>4 days</option>
+                <option>5 days</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="avgmovspeed">New Average Canvasser Movement Speed: </label>
+            <select class="form-control" id="avgmovspeed">
+                <option>1 mile/hr</option>
+                <option>2 miles/hr</option>
+                <option>3 miles/hr</option>
+                <option>4 miles/hr</option>
+                <option>5 miles/hr</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Change Global Constants</button>
+        </form>
     </div>
+
+    
     <!-- User view-->
     <div id="tabs-v-2" class="tab-pane">
         <div class="table-responsive">
@@ -77,7 +113,7 @@
                     </th>
             </tr>
         </thead>
-        {% for instance in session %}
+        {% for instance in usr_session %}
         <tr>  
                 <td>
                     <input type="checkbox" name="rowid" class="action-checkbox" value="1" title="Select record" />
