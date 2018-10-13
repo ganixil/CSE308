@@ -13,7 +13,33 @@ def manPage():
     return render_template('manager_html/create_canvas_assignment.html')
 
 
-@bp.route('/view_campaign', methods=('GET', 'POST'))
+@bp.route('/view_campaign')
 def viewCampaign():
 	campaignObject = db_session.query(Campaign)
 	return render_template('manager_html/view_campaign.html', camp=campaignObject)
+
+#UPDATE THIS ROUTE STATEMENT
+@bp.route('/view_campaign_result')
+def viewCampaignResult():
+	result = 1;
+	return render_template('manager_html/view_campaign_result.html')
+
+@bp.route('/create_campaign')
+def createCampaign():
+	result = 1;
+	return render_template('manager_html/create_campaign.html')
+
+@bp.route('/edit_campaign')
+def editCampaign():
+	result = 1;
+	return render_template('manager_html/edit_campaign.html')
+
+@bp.route('/create_canvas_assignment')
+def createCanvasAssignment():
+	result = 1;
+	return render_template('manager_html/create_canvas_assignment.html');
+
+@bp.route('/view_canvas_assignment')
+def viewCanvasAssignment():
+	result = 1;
+	return render_template('manager_html/view_canvas_assignment.html');
