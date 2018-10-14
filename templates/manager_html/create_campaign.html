@@ -23,16 +23,12 @@
             </div>
             <div class="signOut"><span class="outText" onclick="" >Sign Out</span> </div>
 
-            <div id='manageTable' style="overflow-y: scroll">
-	            <table id="insertManager" cellpadding="3" >
-					<tr><th nowrap="" style="width:200px"> Manager</th></tr>
-					
-				</table>
-			</div>
+            
 		</div>
 			
 		<div class="container"  style="opacity: 1">
-			<form id="createCampaign"  >
+			<form id="createCampaign" method="post" >
+
 				<div class="box" style="height:130px; width:450px; top:160px;"><span class="label" style="font-size: 17px;">Campaign Info</span>
 					<div class="content" style="margin-left:10px;" >
 						<table  cellpadding="3">
@@ -51,6 +47,12 @@
 							</tr>
 						</table>
 					</div>
+					<div id='manageTable' style="overflow-y: scroll">
+	            <table id="insertManager" cellpadding="3" >
+					<tr><th nowrap="" style="width:200px"> Manager</th></tr>
+					
+				</table>
+			</div>
 				</div>
 				<div class="box" style="height:90px; width:450px; top:160px;"><span class="label" style="font-size: 17px;">Assign Canvasser</span>
 					<div class="content" style="margin-left:10px;" >
@@ -100,7 +102,7 @@
 				</div>
 
 
-				<button class="submit"  onclick="" >Create Campaign</button>
+				<button class="submit" type="submit"  onclick="" >Create Campaign</button>
 			</form>
 		</div>
 	</body>
