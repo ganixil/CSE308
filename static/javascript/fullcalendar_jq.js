@@ -41,11 +41,30 @@ $(document).ready(function() {
 			});
 			
 		});
-	
-	
+		//for loop converting fetched jason
+		var cEvents = JSON.parse(canvasEvents);
+		var clength = cEvents.length;
+		for (var i=0;i<clength;i++){
+
+			var startRaw = cEvents[i]["start"];
+			var start = new Date(Date.parse(startRaw));
+			cEvents[i]["start"] = start;
+
+			var endRaw = cEvents[i]["end"];
+			var end = new Date(Date.parse(endRaw));
+			cEvents[i]["end"] = end;
+
+			//for some reason all day doesnt work
+			/*if(cEvents[i]["allDay"].localeCompare("true")){
+				cEvents[i]["allDay"]=true;
+			}
+			else if(cEvents[i]["allDay"].localeCompare("true")){
+				cEvents[i]["allDay"]=false;
+			}*/
+
+		}
 		/* initialize the calendar
 		-----------------------------------------------------------------*/
-		
 		var calendar =  $('#calendar').fullCalendar({
 			header: {
 				left: 'title',
@@ -86,6 +105,17 @@ $(document).ready(function() {
 					);
 				}
 				calendar.fullCalendar('unselect');
+				$.getJSON($SCRIPT_ROOT + '/canvasser/update_ava',
+				{
+					title: title,
+					start: start,
+					end: end,
+					allDay: allDay
+				},function(data){
+
+				}
+				)
+				
 			},
 			droppable: true, // this allows things to be dropped onto the calendar !!!
 			drop: function(date, allDay) { // this function is called when something is dropped
@@ -112,53 +142,7 @@ $(document).ready(function() {
 				
 			},
 			
-			events: [
-				{
-					title: 'All Day Event',
-					start: new Date(y, m, 1)
-				}
-				//test example
-				/*{
-					id: 999,
-					title: 'Repeating Event',
-					start: new Date(y, m, d-3, 16, 0),
-					allDay: false,
-					className: 'info'
-				},
-				{
-					id: 999,
-					title: 'Repeating Event',
-					start: new Date(y, m, d+4, 16, 0),
-					allDay: false,
-					className: 'info'
-				},
-				{
-					title: 'Meeting',
-					start: new Date(y, m, d, 10, 30),
-					allDay: false,
-					className: 'important'
-				},
-				{
-					title: 'Lunch',
-					start: new Date(y, m, d, 12, 0),
-					end: new Date(y, m, d, 14, 0),
-					allDay: false,
-					className: 'important'
-				},
-				{
-					title: 'Birthday Party',
-					start: new Date(y, m, d+1, 19, 0),
-					end: new Date(y, m, d+1, 22, 30),
-					allDay: false,
-				},
-				{
-					title: 'Click for Google',
-					start: new Date(y, m, 28),
-					end: new Date(y, m, 29),
-					url: 'http://google.com/',
-					className: 'success'
-				}*/
-			],			
+			events: cEvents,			
 		});
 		
 		

@@ -40,9 +40,9 @@ def login():
              #redirects to canvasser page
                 elif(role == 'canvasser'):
                     session.clear()
-                    canvasserUser = Role.query.filter(Role.id == user.email, Role.role == role).first()
+                    canvasserUser = Role.query.filter(Role.email == user.email, Role.role == role).first()
                     session['canvasserUserId'] = canvasserUser.id
-                    return redirect(url_for('canvasser.canPage',u_name=user.name))
+                    return redirect(url_for('canvasser.canPage',u_email=user.email))
     
     return render_template('index.html')
 

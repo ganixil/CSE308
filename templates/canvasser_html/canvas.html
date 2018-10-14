@@ -16,7 +16,7 @@
     <!-- JQuery implementation -->
     <script src="../../static/jquery/jquery.js"></script>
     <script src="../../static/jquery/jquery-ui.min.js"></script>
-
+    
     
 
     <!-- Custom styles for this login page -->
@@ -51,7 +51,14 @@
     
     <button class="btn btn-outline-success btn-lg" type="button" id="canvas-btn">View Upcoming Assignment</button>
     <button class="btn btn-outline-success btn-lg" type="button" id="canvas-btn">Start Canvas</button>
-    
+
+  <script type=text/javascript>
+    $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+  </script>
+  <script type="text/javascript"  src="../../static/javascript/canvasser_script/canvas.js"></script>
+  <script type="text/javascript">
+    canvasEvents = myFunc({{avails|tojson}})
+  </script>
   <script type="text/javascript" src="../../static/javascript/fullcalendar_jq.js"></script>
   <script type="text/javascript" src="../../static/javascript/fullcalendar.js"></script>
   </body>
