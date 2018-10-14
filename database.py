@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, Date, Table, ForeignKey, Float
+from sqlalchemy import Column, Integer, Boolean, Float, String, Date, Table, ForeignKey, UniqueConstraint
 from werkzeug.security import check_password_hash, generate_password_hash
 from sqlalchemy.orm import relationship
 from datetime import date
@@ -24,69 +24,41 @@ def init_db():
 #database table models/object relational classes
 class User(Base):
     __tablename__ = 'users'
-    id = Column(Integer, primary_key=True)
-    email = Column(String(80), unique=True, nullable=False)
+    email = Column(String(80), primary_key=True)
     password = Column(String(255), nullable=False)
-    name = Column(String(80))
-    accType = Column(String(9))
+    name = Column(String(80), nullable=False)
+    rols = relationship('Role', backref='owner')
 
-    __mapper_args__ = {
-        'polymorphic_identity':'user',
-        #'polymorphic_on':accType
-    }
-
-    def __init__(self, id, email, password, name, accType):
-        self.id = id
+    def __init__(self,email, password, name):
         self.email = email
         self.password = password
         self.name = name
-        self.accType = accType
 
     def __repr__(self):
-        return "<User(email='%s', password='%s', accType='%s')>" % (self.email, self.password, self.accType)
+        return "<User(email='%s', password='%s')>" % (self.email, self.password)
 
-class Canvasser(User):
-    __tablename__ = 'canvassers'
-    id = Column(Integer, ForeignKey('users.id'), primary_key=True)
 
-    #availability = relationship('Availability')
-    __mapper_args__ = {
-        'polymorphic_identity':'canvasser',
-    }
+class Role(Base):
+    __tablename__ = 'roles'
+    id = Column(Integer, primary_key=True)
+    email=Column(String(80), ForeignKey('users.email', onupdate="CASCADE", ondelete="CASCADE"), nullable=False) #User's email
+    role= Column(String(20), nullable=False)
+    UniqueConstraint(email, role)
 
+    def __init__(self, role, user):
+        self.role = role
+        self.owner = user
     
-    def __init__(self, id, email, password, name, accType):
-        User.__init__(self, id, email, password, name, accType)
-
-class Admin(User):
-    __tablename__ = 'admins'
-    id = Column(Integer, ForeignKey('users.id'), primary_key=True)
-    
-    __mapper_args__ = {
-        'polymorphic_identity':'admin',
-    }
-
-    def __init__(self, id, email, password, name, accType):
-        User.__init__(self, id, email, password, name, accType)
-
-class Manager(User):
-    __tablename__ = 'managers'
-    id = Column(Integer, ForeignKey('users.id'), primary_key=True)
-    
-    __mapper_args__ = {
-        'polymorphic_identity':'manager',
-    }
-
-    def __init__(self, id, email, password, name, accType):
-        User.__init__(self, id, email, password, name, accType)
+    def __repr__(self):
+        return "<Role(email='%s',role='%s')>" % (self.email,self.role)
 
 class GlobalVariables(Base):
-    __tablename__ = 'globalVariables'
+    __tablename__ = 'globals'
     id = Column(Integer, primary_key=True)
-    workDayLength = Column(Float)
-    averageSpeed = Column(Float)
-    def __init__(self, id, workDayLength, averageSpeed):
-        self.id = id
+    workDayLength = Column(Integer, default = 1, nullable =False)
+    averageSpeed = Column(Float, default = 0.5, nullable = False)
+
+    def __init__(self, workDayLength, averageSpeed):
         self.workDayLength = workDayLength
         self.averageSpeed = averageSpeed
 
@@ -128,16 +100,20 @@ class Campaign(Base):
 if __name__ == "__main__":
     init_db()
     p1 = generate_password_hash('password')
-    can = Canvasser(1, 'user1@c.com', p1, 'Mark', 'canvasser')
-    ad = Admin(2, 'user2@c.com', p1, 'John', 'admin')
+    user1 =User('user1@c.com', p1, 'User1')
+    user2 = User('user2@c.com', p1, 'User2')
+    db_session.add(user1)
+    db_session.add(user2)
+    db_session.commit()
+    role = Role('admin', user1)
+    role1= Role('manager', user1)
+    role2= Role('admin', user2)
     campaign1 = Campaign("werh", "Kevin", "xin", "date", "time", "12 street")
-    man = Manager(3, 'user3@c.com', p1, 'Phil', 'manager')
-    glo = GlobalVariables(1, 1, 2)
-    
-    db_session.add(glo)
-    db_session.add(can)
-    db_session.add(ad)
-    db_session.add(man)
+    db_session.add(role)
+    db_session.add(role1)
+    db_session.add(role2)
     db_session.add(campaign1)
+    glo = GlobalVariables(1, 1)
+    db_session.add(glo)
     db_session.commit()
 

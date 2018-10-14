@@ -1,6 +1,6 @@
 from flask import (Blueprint, flash, g, redirect, render_template, request, url_for)
 from werkzeug.exceptions import abort
-from database import db_session, User, Admin, GlobalVariables
+from database import db_session, User, GlobalVariables
 
 #create the admin blueprint
 bp = Blueprint('admin', __name__, url_prefix='/admin')
@@ -13,7 +13,7 @@ def adminPage(u_name):
 		workday = request.form['workday']
 		movspeed = request.form['movspeed']
 		if(workday is None or movspeed is None):
-			usr_session = db_session.query(User).order_by(User.id)
+			usr_session = db_session.query(User).order_by(User.email)
 			gblvar_session = db_session.query(GlobalVariables).first()
 			return render_template('admin_html/admin.html',usr_session=usr_session, gblvar_session = gblvar_session,u_name=u_name)
 		else:
@@ -23,7 +23,7 @@ def adminPage(u_name):
 			db_session.commit()
 
 
-	usr_session = db_session.query(User).order_by(User.id)
+	usr_session = db_session.query(User).order_by(User.email)
 	gblvar_session = db_session.query(GlobalVariables).first()
 	return render_template('admin_html/admin.html',usr_session=usr_session, gblvar_session = gblvar_session,u_name=u_name)
 

@@ -2,7 +2,7 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for
 )
 from werkzeug.exceptions import abort
-from database import db_session, Manager, User, Campaign
+from database import db_session, User, Campaign
 
 #create the manager blueprint
 bp = Blueprint('manager', __name__, url_prefix='/manager')

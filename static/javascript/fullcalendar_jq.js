@@ -72,7 +72,7 @@ $(document).ready(function() {
 			allDaySlot: false,
 			selectHelper: true,
 			select: function(start, end, allDay) {
-				var title = prompt('Event Title:');
+				var title = prompt('Canvas Event Title:');
 				if (title) {
 					calendar.fullCalendar('renderEvent',
 						{
@@ -82,6 +82,7 @@ $(document).ready(function() {
 							allDay: allDay
 						},
 						true // make the event "stick"
+
 					);
 				}
 				calendar.fullCalendar('unselect');

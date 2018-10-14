@@ -18,6 +18,10 @@
     <link rel="stylesheet" href="../../static/jquery/jquery-ui.min.css">
     <script src="../../static/javascript/admin_script/admin.js"></script>
 
+    <!-- JQuery implementation -->
+    <script src="../../static/jquery/jquery.js"></script>
+    <script src="../../static/jquery/jquery-ui.min.js"></script>
+
     <!-- Custom styles for this login page -->
     <link href="../../static/css/admin.css" rel="stylesheet">
 
@@ -36,61 +40,59 @@
     <!-- main functional parts -->
     
     <div id="tabs-collapsible">
-    <ul>
-        <li><a href="#tabs-v-1" class="active">Admin Porfolio</a></li>
-        <li><a href="#tabs-v-2">Users</a></li>
-    </ul>
-    <div id="tabs-v-1" class="tab-pane">
-        <div class="col-sm" id="portrait">
-        <img src="../../static/image/placeholder.png" width="200" height="160"/>
-        <h2 id="name" >{{u_name}}</h2>
-        </div>
+        <ul>
+            <li><a href="#tabs-v-1" class="active">Admin Porfolio</a></li>
+            <li><a href="#tabs-v-2">Users</a></li>
+        </ul>
+        <div id="tabs-v-1" class="tab-pane">
+            <div class="col-sm" id="portrait">
+            <img src="../../static/image/placeholder.png" width="200" height="160"/>
+            <h2 id="name" > {{u_name}} </h2>
+            </div>
         
-        <p>
-        Mauris mauris ante, blandit et, ultrices a, suscipit eget, quam. Integer
-        ut neque. Vivamus nisi metus, molestie vel, gravida in, condimentum sit
-        amet, nunc. Nam a nibh. Donec suscipit eros. Nam mi. Proin viverra leo ut
-        odio. Curabitur malesuada. Vestibulum a velit eu ante scelerisque vulputate.
-        </p>
+            <p>
+            Mauris mauris ante, blandit et, ultrices a, suscipit eget, quam. Integer
+            ut neque. Vivamus nisi metus, molestie vel, gravida in, condimentum sit
+            amet, nunc. Nam a nibh. Donec suscipit eros. Nam mi. Proin viverra leo ut
+            odio. Curabitur malesuada. Vestibulum a velit eu ante scelerisque vulputate.
+            </p>
 
 
-        <div>
-            <h3>
-                <p style="text-align: center;">Current Global Variables: </br></p>
-                Average Work Day Length: {{gblvar_session.workDayLength}} Days</br>
-                Average Canvasser Movement Speed: {{gblvar_session.averageSpeed}} Miles/Hour</br>
-            </h3>
-        </div>
+            <div>
+                    <p style="text-align: center;">Current Global Variables: 
+                    Average Work Day Length: {{gblvar_session.workDayLength}} Days
+                    Average Canvasser Movement Speed: {{gblvar_session.averageSpeed}} Miles/Hour
+                    </p>
+            </div>
 
         <!-- form to change the global variables-->
-        <form id="global" method="post">
-        <div class="form-group">
-            <label for="avgworkday">New Average Work Day Length: </label>
-            <select class="form-control" id="avgworkday" type="workday" name="workday">
-                <option value="1">1 days</option>
-                <option value="2">2 days</option>
-                <option value="3">3 days</option>
-                <option value="4">4 days</option>
-                <option value="5">5 days</option>
-            </select>
+            <form id="global" method="post">
+            <div class="form-group">
+                <label for="avgworkday">New Average Work Day Length: </label>
+                <select class="form-control" id="avgworkday" type="workday" name="workday">
+                    <option value="1">1 days</option>
+                    <option value="2">2 days</option>
+                    <option value="3">3 days</option>
+                    <option value="4">4 days</option>
+                    <option value="5">5 days</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="avgmovspeed">New Average Canvasser Movement Speed: </label>
+                <select class="form-control" id="avgmovspeed" type="movspeed" name="movspeed">
+                    <option value="1">1 mile/hr</option>
+                    <option value="2">2 miles/hr</option>
+                    <option value="3">3 miles/hr</option>
+                    <option value="4">4 miles/hr</option>
+                    <option value="5">5 miles/hr</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Change Global Constants</button>
+            </form>
         </div>
-        <div class="form-group">
-            <label for="avgmovspeed">New Average Canvasser Movement Speed: </label>
-            <select class="form-control" id="avgmovspeed" type="movspeed" name="movspeed">
-                <option value="1">1 mile/hr</option>
-                <option value="2">2 miles/hr</option>
-                <option value="3">3 miles/hr</option>
-                <option value="4">4 miles/hr</option>
-                <option value="5">5 miles/hr</option>
-            </select>
-        </div>
-        <button type="submit" class="btn btn-primary">Change Global Constants</button>
-        </form>
-    </div>
-
     
     <!-- User view-->
-    <div id="tabs-v-2" class="tab-pane">
+        <div id="tabs-v-2" class="tab-pane">
         <div class="table-responsive">
         <table class="table table-striped table-bordered table-hover model-list">
         <thead>
@@ -111,7 +113,7 @@
         <tr>  
                 <td class="list-buttons-column">
                     <button id="change"><img src="../../static/image/pencil.svg"/></button>
-                    <button id="delete"><img src="../../static/image/delete.svg"/></a></button>
+                    <button id="delete"><img src="../../static/image/delete.svg"/></button>
                 </td>
                 <td class="list-buttons-column">
                     {{instance.name}}
@@ -130,6 +132,7 @@
 
         </div>
     
+      </div>
     </div>
   </body>
 </html>
