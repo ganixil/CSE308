@@ -34,9 +34,12 @@ def login():
                 elif(role == 'manager'):
                     return redirect(url_for('manager.manPage',u_name=user.name))
                 elif(role == 'canvasser'):
-                    return redirect(url_for('canvasser.canPage',u_name=user.name))
-      
-    return render_template('index.html', error= error)
+                    session.clear()
+                    canvasserUser = Role.query.filter(Role.email == user.email, Role.role == role).first()
+                    session['canvasserUserId'] = canvasserUser.id
+                    return redirect(url_for('canvasser.canPage',u_email=user.email))
+    
+    return render_template('index.html')
 
 
 @bp.route("/logout")

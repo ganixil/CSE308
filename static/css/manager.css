@@ -4,12 +4,17 @@ body{
     overflow-x: hidden;
 
 }
+input.disable{
+  text-align: center;
+  border-radius: 0px;
+}
+
 #manageTable{
-	width:270px; 
-	height:200px; 
+	width:230px; 
+	height:330px; 
 	border: 1px solid;
-	margin-left:1100px;
-	margin-top: 100px;
+	margin-left:600px;
+	margin-top: -100px;
 }
 
 #map{
@@ -110,14 +115,14 @@ form {
 
 	position: relative;
   left:0px;
-  top:-20px;
+  top:250px;
   width: 600px;
   height: 1230px;
   margin-top: -280px;
   margin-right: auto;
   margin-left: auto;
   /*background-color: white;*/
-  border-radius: 0px;
+  border-radius: 20px;
   border: 3.3px solid rgb(252,253, 255);
   
   
@@ -150,29 +155,29 @@ td{
 select, input{
   width: 200px;
   height: 25px;
-  border-radius: 100px;
+  border-radius: 2px;
    border: 1px solid rgb(86, 180, 239);
-   transition:2300ms ;
+   transition:1100ms ;
 	outline: none;
   /*background-color: #e8ffe8;*/
 }
 
 select:hover, input:hover{  
-  transition:1100ms ;
-  transform: scale(1.14);	
-  border-radius: 10px;
-  background-color: white;
+  transition:700ms ;
+  transform: scale(1.3);	
+  border-radius: 100px;
+  background-color: #ddffd6;
   border: 1px solid rgb(86, 180, 239);
   box-shadow: 3px 3px 3px 3px rgba(0, 0, 0, 0.24);
-  border-radius: 0px;
+  
 }
 
 .box{
   margin-right: auto;
   margin-left: auto;
-  border-radius: 3px;
+  border-radius: 30px;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
-  border:.5px solid rgb(86, 180, 239);
+  border:2px solid rgb(86, 180, 239);
   padding: 10px 25px;
   display: block;
   margin-top: 60px;
@@ -182,7 +187,7 @@ select:hover, input:hover{
 .box:hover{
 	transition:500ms ;
   border: 1px solid rgb(86, 180, 239);
-  transform: scale(1.09);
+  transform: scale(1.20);
   box-shadow: 3px 3px 3px 3px rgba(0, 0, 0, 0.23);
   opacity: 1;
 }
@@ -196,8 +201,8 @@ span.label{
   margin-right: auto;
   margin-left: auto;
   border-radius: 3px;
-  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
-  border:.1px solid rgb(86, 180, 239);  
+  
+  
   transition:1100ms ;
   outline: none;
 }

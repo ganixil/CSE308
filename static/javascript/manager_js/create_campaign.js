@@ -17,17 +17,21 @@ function addManagerToTable(){
 		var ob = document.getElementsByName("flaskManager");
 		if(ob.length == 0){
 			var node = document.getElementById("insertManager");//insertManager is name of table
-			var trNode = document.createElement("tr");
+			var trNode = document.createElement("input");
 			trNode.setAttribute("name", "flaskManager");
-			trNode.innerHTML =b;
+			trNode.setAttribute("type", "button");
+			trNode.setAttribute("class", "disable");
+			trNode.setAttribute("value", b)
 			node.appendChild(trNode);
 		}else{
 			var bool = exists(b, ob);
 			if(bool ==false){
 				var node = document.getElementById("insertManager");//insertManager is name of table
-				var trNode = document.createElement("tr");
+				var trNode = document.createElement("input");
 				trNode.setAttribute("name", "flaskManager");
-				trNode.innerHTML =b;
+				trNode.setAttribute("type", "button");
+				trNode.setAttribute("class", "disable");
+				trNode.setAttribute("value", b)
 				node.appendChild(trNode);
 			}
 		}	
@@ -35,15 +39,15 @@ function addManagerToTable(){
 
 }
 
+
+
 function exists(text, arr ){
-	
 	for( var i = 0; i < arr.length; i++){
-		if(text == arr[i].innerHTML){
+		if(text == arr[i].value){
 			return true;
 		}
 	}
 	return false;
-	
 }
 
 generate_map();

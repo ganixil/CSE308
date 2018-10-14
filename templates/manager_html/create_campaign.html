@@ -23,16 +23,12 @@
             </div>
             <div class="signOut"><span class="outText" onclick="" >Sign Out</span> </div>
 
-            <div id='manageTable' style="overflow-y: scroll">
-	            <table id="insertManager" cellpadding="3" >
-					<tr><th nowrap="" style="width:200px"> Manager</th></tr>
-					
-				</table>
-			</div>
+            
 		</div>
 			
 		<div class="container"  style="opacity: 1">
-			<form id="createCampaign"  >
+			<form id="createCampaign" method="post" >
+
 				<div class="box" style="height:130px; width:450px; top:160px;"><span class="label" style="font-size: 17px;">Campaign Info</span>
 					<div class="content" style="margin-left:10px;" >
 						<table  cellpadding="3">
@@ -43,22 +39,36 @@
 							<tr>
 								<td nowrap="" style="width:200px"> Set Manager: </td>
 								<td><select type="text" id="manager_selector" onchange="addManagerToTable()"  >
-										<option value='null' ></option>
-										<option value='1'> 1 </option>
-										<option value='2'> 2</option>
+									
+									<option value='null' ></option>
+									{% for item in managers %}
+										<option value='{{item.name}}'> {{item.name}} </option>
+										
+									{% endfor %}
+									
+									
 									</select>
 								</td>
 							</tr>
 						</table>
 					</div>
+					<div id='manageTable' style="overflow-y: scroll">
+			            <table id="insertManager" cellpadding="3">
+							<tr><th nowrap="" style="width:200px"> Manager</th></tr>
+						</table>
+			</div>
 				</div>
 				<div class="box" style="height:90px; width:450px; top:160px;"><span class="label" style="font-size: 17px;">Assign Canvasser</span>
 					<div class="content" style="margin-left:10px;" >
 						<table  cellpadding="3">
 							<tr>
 								<td nowrap="" style="width:200px"> Set Canvasser: </td>
-								<td><select name="campaign_name" value="">
-										<option value="none"></option>
+								<td><select name="canvasser_selector" value="">
+										<option value='null' ></option>
+									{% for item in canvasser %}
+										<option value='{{item.name}}'> {{item.name}} </option>
+										
+									{% endfor %}
 										
 									</select>
 								</td>
@@ -100,7 +110,7 @@
 				</div>
 
 
-				<button class="submit"  onclick="" >Create Campaign</button>
+				<button class="submit" type="submit"  onclick="" >Create Campaign</button>
 			</form>
 		</div>
 	</body>

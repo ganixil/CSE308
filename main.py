@@ -12,6 +12,8 @@ app = create_app()
 #set the server certificate and key
 context = ('server.crt', 'server.key')
 #run the flask app
-app.run(ssl_context=context, debug = True)
+
+app.run(ssl_context=context, debug=True)
+
 
 #cosadfasd
