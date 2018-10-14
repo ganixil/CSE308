@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>{% block head %}{% endblock %}</head>
+<body>
+  {% block div %}{% endblock %}
+  <div class="container">
+    <div class="row">
+      <div class="col-md-10 ">
+        <form class="form-horizontal" action="{{ url_for('adminProfile',owner_table.email) }}" method="post">
+          <fieldset>
+            <legend>Edit Profile</legend>
+      <!-- Name input-->
+              <div class="form-group">
+                <label class="col-md-4 control-label" for="fullname">Name (FullName)</label>  
+                <div class="col-md-4">
+                    <div class="input-group">
+                          <input id="name" name="name" type="text" placeholder="Name (FullName)" class="form-control input-md" >
+                    </div> 
+                </div> 
+              </div>
+
+      <!-- Avator Button --> 
+            <div class="form-group">
+              <label class="col-md-4 control-label" for="Upload photo">Upload photo</label>
+              <div class="col-md-4">
+                <input id="Upload photo" name="Upload photo" class="input-file" type="file">
+              </div>
+            </div>
+
+      <!-- Emailinput-->
+            <div class="form-group">
+              <label class="col-md-4 control-label" for="email">Email</label>  
+              <div class="col-md-4">
+              <div class="input-group">
+                <input type="email" name="email" id="inputEmail" class="form-control input-md" placeholder="Email address">
+                </div>
+              </div>
+            </div>
+      <!-- Password-->
+            <div class="form-group">
+              <label class="col-md-4 control-label" for="Password">Password</label>  
+              <div class="col-md-4">
+              <div class="input-group">
+                <input type="password" id="password" name="password" type="password" placeholder="Password" class="form-control input-md">
+                </div>
+              </div>
+            </div>
+
+      <!-- Button Field-->
+          <div class="form-group">
+            <label class="col-md-4 control-label" ></label>  
+            <div class="col-md-4">
+              <a class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-thumbs-up"></span> Saved </a>
+              <a class="btn btn-danger btn-lg" value=""><span class="glyphicon glyphicon-remove-sign"></span> Clear</a>
+             </div>
+          </div>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+</div>
+{% block footer %}{% endblock %}
+</body>
+</html>
