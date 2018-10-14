@@ -27,7 +27,7 @@ class User(Base):
     email = Column(String(80), primary_key=True)
     password = Column(String(255), nullable=False)
     name = Column(String(80), nullable=False)
-    rols = relationship('Role', backref='owner')
+    users_relation = relationship('Role', backref='users')
 
     def __init__(self,email, password, name):
         self.email = email
@@ -156,7 +156,7 @@ if __name__ == "__main__":
     db_session.commit()
     role = Role('User1','admin')
     role1= Role('User2','manager')
-    role2= Role('User1','manager')
+    role2= Role('User1','canvasser')
     
     user1.users_relation=[role, role2]
     user2.users_relation.append(role1)
@@ -175,8 +175,8 @@ if __name__ == "__main__":
     testL2 = CampaignLocation() # location2 + campaign1
     testL3 = CampaignLocation() # location2 + campaign2
 
-    role2.roles_relation = [test,  test2]
-    role1.roles_relation.append(test3)
+    #role2.roles_relation = [test,  test2]
+    #role1.roles_relation.append(test3)
 
     location2.locations_relation =[testL3, testL2]
     location1.locations_relation.append(testL1)
