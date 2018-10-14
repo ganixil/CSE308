@@ -17,18 +17,24 @@ function addManagerToTable(){
 		var ob = document.getElementsByName("flaskManager");
 		if(ob.length == 0){
 			var node = document.getElementById("insertManager");//insertManager is name of table
-			var trNode = document.createElement("tr");
+			var trNode = document.createElement("input");
 			trNode.setAttribute("name", "flaskManager");
-			trNode.innerHTML =b;
+			trNode.setAttribute("type", "text");
+			trNode.setAttribute("class", "disabled");
+			trNode.value =b;
+			trNode.disabled = true;
 			node.appendChild(trNode);
 		}else{
 			var bool = exists(b, ob);
 			if(bool ==false){
 				var node = document.getElementById("insertManager");//insertManager is name of table
-				var trNode = document.createElement("tr");
-				trNode.setAttribute("name", "flaskManager");
-				trNode.innerHTML =b;
-				node.appendChild(trNode);
+			var trNode = document.createElement("input");
+			trNode.setAttribute("name", "flaskManager");
+			trNode.setAttribute("type", "text");
+			trNode.setAttribute("class", "disabled");
+			trNode.value =b;
+			trNode.disabled = true;
+			node.appendChild(trNode);
 			}
 		}	
 	}

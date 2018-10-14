@@ -9,7 +9,13 @@ bp = Blueprint('manager', __name__, url_prefix='/manager')
 
 @bp.route('/create_campaign', methods=('GET', 'POST'))
 def createCampaign():
-	
+	if request.method == 'POST':
+		campaignName = request.form['campaign_name']
+		managers = request.form.getlist('flaskManager')
+		print(campaignName)
+
+		for manager in managers:
+			print(manager)
 	return render_template('manager_html/create_campaign.html')
 
 #function to render the manager page and set the manager page url
