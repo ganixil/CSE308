@@ -18,9 +18,10 @@ def createCampaign():
 			print(manager)
 	else:
 		managerObject = db_session.query(Role).filter(Role.role =='manager')
+		canvasObject  = db_session.query(Role).filter(Role.role == 'canvasser')
 		for item in managerObject:
 			print(item.name)
-		return render_template('manager_html/create_campaign.html', managers=managerObject)
+		return render_template('manager_html/create_campaign.html', managers=managerObject, canvasser=canvasObject)
 
 	return render_template('manager_html/create_campaign.html')
 

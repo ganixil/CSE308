@@ -64,8 +64,12 @@
 						<table  cellpadding="3">
 							<tr>
 								<td nowrap="" style="width:200px"> Set Canvasser: </td>
-								<td><select name="campaign_name" value="">
-										<option value="none"></option>
+								<td><select name="campaign_name" value="" onchange="addCanvasserToTable()">
+										<option value='null' ></option>
+									{% for canvas in canvasser %}
+										<option value='{{canvas.name}}'> {{canvas.name}} </option>
+										
+									{% endfor %}
 										
 									</select>
 								</td>
