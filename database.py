@@ -66,17 +66,18 @@ class GlobalVariables(Base):
 class Campaign(Base):
 
     __tablename__ = 'campaign'
-    id = Column(String(100), primary_key=True) #id = campaign name
-    manager = Column(String(20), nullable=False)
-    canvasser = Column(String(20), nullable=False)
+    id = Column(Integer, primary_key=True) #id = campaign name
+    campaign = Column(String(40), nullable=False)
+    personName = Column(String(20), nullable=False)
+    role = Column(String(20), nullable=False)
     date = Column(String(20), nullable=False)
     location = Column(String(20), nullable=False)        
 
 
-    def __init__(self, id, manager, canvasser, date, time, location):
-        self.id = id
-        self.manager = manager
-        self.canvasser = canvasser
+    def __init__(self, campaign, personName, role, date, time, location):
+        self.campaign = campaign
+        self.personName = personName
+        self.role = role
         self.date = date
         self.time = time
         self.location = location
@@ -114,7 +115,7 @@ if __name__ == "__main__":
     role2= Role('admin', user2, user2.name)
     role3= Role('manager', user3, user3.name)
     role4= Role('manager', user4, user4.name)
-    campaign1 = Campaign("werh", "Kevin", "xin", "date", "time", "12 street")
+    campaign1 = Campaign("Miss Camp", "Kevin", "manager", "10/19", "12:00pm", "12 street")
     db_session.add(role)
     db_session.add(role1)
     db_session.add(role2)
