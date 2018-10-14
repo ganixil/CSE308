@@ -39,19 +39,23 @@
 							<tr>
 								<td nowrap="" style="width:200px"> Set Manager: </td>
 								<td><select type="text" id="manager_selector" onchange="addManagerToTable()"  >
-										<option value='null' ></option>
-										<option value='1'> 1 </option>
-										<option value='2'> 2</option>
+									
+									<option value='null' ></option>
+									{% for item in managers %}
+										<option value='{{item.name}}'> {{item.name}} </option>
+										
+									{% endfor %}
+									
+									
 									</select>
 								</td>
 							</tr>
 						</table>
 					</div>
 					<div id='manageTable' style="overflow-y: scroll">
-	            <table id="insertManager" cellpadding="3" >
-					<tr><th nowrap="" style="width:200px"> Manager</th></tr>
-					
-				</table>
+			            <table id="insertManager" cellpadding="3">
+							<tr><th nowrap="" style="width:200px"> Manager</th></tr>
+						</table>
 			</div>
 				</div>
 				<div class="box" style="height:90px; width:450px; top:160px;"><span class="label" style="font-size: 17px;">Assign Canvasser</span>

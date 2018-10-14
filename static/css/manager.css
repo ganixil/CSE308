@@ -11,7 +11,7 @@ input.disable{
 
 #manageTable{
 	width:230px; 
-	height:130px; 
+	height:330px; 
 	border: 1px solid;
 	margin-left:600px;
 	margin-top: -100px;
@@ -162,7 +162,7 @@ select, input{
   /*background-color: #e8ffe8;*/
 }
 
-select:hover, input:hover{  
+select:hover, input[type="text"]:hover{  
   transition:1100ms ;
   transform: scale(1.14);	
   border-radius: 10px;

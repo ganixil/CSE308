@@ -41,14 +41,15 @@ class User(Base):
 class Role(Base):
     __tablename__ = 'roles'
     id = Column(Integer, primary_key=True)
+    name = Column(String(80), nullable=False)
     email=Column(String(80), ForeignKey('users.email', onupdate="CASCADE", ondelete="CASCADE"), nullable=False) #User's email
     role= Column(String(20), nullable=False)
     UniqueConstraint(email, role)
 
-    def __init__(self, role, user):
+    def __init__(self, role, user, name):
         self.role = role
         self.owner = user
-    
+        self.name = name    
     def __repr__(self):
         return "<Role(email='%s',role='%s')>" % (self.email,self.role)
 
@@ -65,14 +66,12 @@ class GlobalVariables(Base):
 class Campaign(Base):
 
     __tablename__ = 'campaign'
-    id = Column(String(100), primary_key=True)
+    id = Column(String(100), primary_key=True) #id = campaign name
     manager = Column(String(20), nullable=False)
     canvasser = Column(String(20), nullable=False)
-    date = Column(String(20))
-    location = Column(String(20))        
+    date = Column(String(20), nullable=False)
+    location = Column(String(20), nullable=False)        
 
-    
-    #id = campaign name
 
     def __init__(self, id, manager, canvasser, date, time, location):
         self.id = id
@@ -100,18 +99,27 @@ class Campaign(Base):
 if __name__ == "__main__":
     init_db()
     p1 = generate_password_hash('password')
-    user1 =User('user1@c.com', p1, 'User1')
-    user2 = User('user2@c.com', p1, 'User2')
+    user1 =User('user1@c.com', p1, 'Kevin')
+    user2 = User('user2@c.com', p1, 'Conor')
+    user3 =User('user3@c.com', p1, 'XiangY')
+    user4 = User('user4@c.com', p1, 'Xiang')
     db_session.add(user1)
     db_session.add(user2)
+    db_session.add(user3)
+    db_session.add(user4)
     db_session.commit()
-    role = Role('admin', user1)
-    role1= Role('manager', user1)
-    role2= Role('admin', user2)
+
+    role = Role('admin', user1, user1.name)
+    role1= Role('manager', user1, user1.name)
+    role2= Role('admin', user2, user2.name)
+    role3= Role('manager', user3, user3.name)
+    role4= Role('manager', user4, user4.name)
     campaign1 = Campaign("werh", "Kevin", "xin", "date", "time", "12 street")
     db_session.add(role)
     db_session.add(role1)
     db_session.add(role2)
+    db_session.add(role3)
+    db_session.add(role4)
     db_session.add(campaign1)
     glo = GlobalVariables(1, 1)
     db_session.add(glo)
