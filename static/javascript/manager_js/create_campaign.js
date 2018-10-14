@@ -20,9 +20,9 @@ function addManagerToTable(){
 			var trNode = document.createElement("input");
 			trNode.setAttribute("name", "flaskManager");
 			trNode.setAttribute("type", "text");
-			trNode.setAttribute("class", "disabled");
+			trNode.setAttribute("class", "disable");
 			trNode.value =b;
-			trNode.disabled = true;
+			//trNode.disabled = true;
 			node.appendChild(trNode);
 		}else{
 			var bool = exists(b, ob);
@@ -31,9 +31,9 @@ function addManagerToTable(){
 			var trNode = document.createElement("input");
 			trNode.setAttribute("name", "flaskManager");
 			trNode.setAttribute("type", "text");
-			trNode.setAttribute("class", "disabled");
+			trNode.setAttribute("class", "disable");
 			trNode.value =b;
-			trNode.disabled = true;
+			//trNode.disabled = true;
 			node.appendChild(trNode);
 			}
 		}	
