@@ -6,7 +6,7 @@ import logging.handlers
 
 #logging module implementation
 
-logging.basicConfig(filename='../log/supercanvasser.log',filemode='w',level = logging.DEBUG)
+logging.basicConfig(filename='supercanvasser.log',filemode='w',level = logging.DEBUG)
 
 #create flask app
 logging.debug('Starting Super Canvasser')
