@@ -7,7 +7,26 @@ function generate_map() {
 	}
 	var map = new google.maps.Map(document.getElementById("map"), mapOptions);
 }
+generate_map();
 
+function a(){
+	document.querySelector('.disable').addEventListener('click', function(e) {
+					
+					var name = e.target.name;
+					var value = e.target.value;
+					var arr = document.getElementsByName(name);
+					//arr[0].remove();
+					var str = "";
+					for(var i = 0; i < arr.length; i++){
+						str += arr[i].value + " " ;
+						if(arr[i].value == value){
+							arr[i].remove();
+						}
+					}
+
+					//alert(arr.length + "  " + str);
+	});
+}
 
 
 function addManagerToTable(){
@@ -23,6 +42,7 @@ function addManagerToTable(){
 			trNode.setAttribute("class", "disable");
 			trNode.setAttribute("value", b)
 			node.appendChild(trNode);
+			
 		}else{
 			var bool = exists(b, ob);
 			if(bool ==false){
@@ -33,6 +53,7 @@ function addManagerToTable(){
 				trNode.setAttribute("class", "disable");
 				trNode.setAttribute("value", b)
 				node.appendChild(trNode);
+
 			}
 		}	
 	}
@@ -53,6 +74,11 @@ function addCanvasserToTable(){
 			trNode.setAttribute("class", "disable");
 			trNode.setAttribute("value", b)
 			node.appendChild(trNode);
+			var newButton = document.createElement("button");
+			newButton.innerHTML="X";
+			newButton.setAttribute("class", "deleteM");
+			node.appendChild(newButton);
+
 		}else{
 			var bool = exists(b, ob);
 			if(bool ==false){
@@ -63,21 +89,16 @@ function addCanvasserToTable(){
 				trNode.setAttribute("class", "disable");
 				trNode.setAttribute("value", b)
 				node.appendChild(trNode);
+				var newButton = document.createElement("button");
+				newButton.innerHTML="X";
+				newButton.setAttribute("class", "deleteM");
+				node.appendChild(newButton);
 			}
 		}	
 	}
 	a.selectedIndex= -1;
 
 }
-
-
-
-
-
-
-
-
-
 
 
 function exists(text, arr ){
@@ -88,7 +109,5 @@ function exists(text, arr ){
 	}
 	return false;
 }
-
-generate_map();
 //
 //<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBu-916DdpKAjTmJNIgngS6HL_kDIKU0aU&callback=myMap"></script>

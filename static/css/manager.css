@@ -4,9 +4,24 @@ body{
     overflow-x: hidden;
 
 }
+#insertManager{
+	background-color: white;
+	height: 200px;
+}
+
+.deleteM{
+	width:30px;
+	height:30px;
+}
 input.disable{
   text-align: center;
   border-radius: 0px;
+  width: 100px;
+}
+input.disable:hover{
+  text-align: center;
+  border-radius: 0px;
+  transform: scale(1);
 }
 
 #manageTable{
@@ -230,7 +245,6 @@ span.label{
 }
 button.submit:hover{
 	transform: scale(1.2);
-	background:white;
 	transition:300ms ;
 	background-image: url("../image/index1.jpg");
 }

@@ -3,7 +3,13 @@
 	<head>
 		<link rel="stylesheet" type="text/css" href="../../static/css/manager.css">
 		
-		
+		<script type="text/javascript">
+			document.querySelector('input.deleteM').addEventListener('click', function() {
+				//var n = document.getElementsByName('flaskManager');
+				alert("Button");
+
+			});
+		</script>
 		
 	</head>
     
@@ -53,8 +59,9 @@
 						</table>
 					</div>
 					<div id='manageTable' style="overflow-y: scroll">
-			            <table id="insertManager" cellpadding="3">
+			            <table id="insertManager" cellpadding="3" onmousemove="a()">
 							<tr><th nowrap="" style="width:200px"> Manager</th></tr>
+							<!----INSERTTRTRTETETTE--->
 						</table>
 					</div>
 				</div>
