@@ -68,7 +68,7 @@ class CampaignDate(Base):
 class Role(Base):  # One user can have many role : one to many
     __tablename__ = 'roles'
     id = Column(Integer, primary_key=True)
-    email=Column(String(80), ForeignKey('users.email', onupdate="CASCADE", ondelete="CASCADE"), nullable=False) #User's email
+    email=Column(String(80), ForeignKey('users.email', onupdate="CASCADE", ondelete="CASCADE")) #User's email
     name = Column(String(80), nullable = False)
     role= Column(String(20), nullable=False)
     #One roles can be work on multiple campaign

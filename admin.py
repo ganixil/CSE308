@@ -13,10 +13,7 @@ def adminPage(u_name):
 	if 'user' in session:
 		email = session['user']
 	else:  #No user makes login
-		logging.warning("no user")
 		return render_template('index.html') 
-
-
 	if request.method == 'POST':  # Response to update
 		workday = request.form['workday']
 		movspeed = request.form['movspeed']
@@ -31,7 +28,6 @@ def adminPage(u_name):
 				global_table.workDayLength = int(workday)
 			if(global_table.averageSpeed != int(movspeed)):
 				global_table.averageSpeed = int(movspeed)
-			logging.info("updaing workday: "+workday +" and average speed "+movspeed)
 			db_session.commit()
 
 	user_table = db_session.query(User).order_by(User.email).filter(User.email != email )
@@ -39,7 +35,16 @@ def adminPage(u_name):
 	global_table = db_session.query(GlobalVariables).first()
 	return render_template('admin_html/admin.html',usr_session =user_table ,gblvar_session= global_table,u_name=u_name)
 
-
+@bp.route('/<email>/delete', methods=('GET', 'POST'))
+def delete(email):
+        if request.method == 'POST':
+                deletedUser = User.query.filter(User.email == email).first()
+                print(deletedUser.name)
+                db_session.delete(deletedUser)
+                db_session.commit()
+                user = session['user']
+                return redirect(url_for('admin.adminPage',u_name=user))
+                
 # #function to render the admin page and set the admin page url
 # @bp.route('/adminProfile/<u_email>', methods=('GET', 'POST'))
 # def adminProfile(u_email):

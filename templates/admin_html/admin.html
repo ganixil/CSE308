@@ -124,9 +124,13 @@
             {% for instance in usr_session %}
             <tr>  
                     <td class="list-buttons-column">
-                        <button id="change"><img src="../../static/image/pencil.svg"/></button>
-    
-                        <button id="delete"><img src="../../static/image/delete.svg"/></button>
+                        
+                            <button id="change" ><img src="../../static/image/pencil.svg"/></button>
+                      <form method = "post" action="{{ url_for('admin.delete', email=instance.email)}}">
+                            
+                            <input type='image' src="../../static/image/delete.svg" alt="Submit Form">
+                       </form>
+                        
                     </td>
                     <td class="list-buttons-column">
                         {{instance.name}}
@@ -138,9 +142,8 @@
                         {{instance.email}}
                     </td>
             </tr>
-            {% endfor %}
+                {% endfor %}
             </table>
-            
             </div>
         </div>
      <div id="tabs-v-3" class="tab-pane">
