@@ -123,24 +123,29 @@
             </thead>
             {% for instance in usr_session %}
             <tr>  
+            
                     <td class="list-buttons-column">
-                        
-                            <button id="change" ><img src="../../static/image/pencil.svg"/></button>
-                      <form method = "post" action="{{ url_for('admin.delete', email=instance.email)}}">
-                            
+                        <form method = "post" action="{{ url_for('admin.delete', email=instance.email)}}">
                             <input type='image' src="../../static/image/delete.svg" alt="Submit Form">
                        </form>
+                     <form  method="post" action="{{ url_for('admin.editUser')}}">
+                            <input type='image'  src="../../static/image/pencil.svg" alt='Submit Form'>
+                            
+                      
                         
                     </td>
+                    
                     <td class="list-buttons-column">
-                        {{instance.name}}
+                        <input name='name' type='text' value='{{instance.name}}'>
                     </td>
                     <td class="list-buttons-column">
-                        {{"secret password"}}
+                        <input name='password' type='text' value='{{'Secret Password'}}'>
                     </td>
                     <td class="list-buttons-column">
-                        {{instance.email}}
+                        <input name='email' type='text' value='{{instance.email}}'>
+                        <input hidden name='realEmail' type='text' value='{{instance.email}}'>
                     </td>
+                    </form>
             </tr>
                 {% endfor %}
             </table>

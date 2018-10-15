@@ -45,7 +45,30 @@ def delete(email):
                 db_session.delete(deletedUser)
                 db_session.commit()
                 user = session['user']
-                return redirect(url_for('admin.adminPage',u_name=user))
+                return redirect(url_for('admin.adminPage',u_name=user.name))
+
+@bp.route('/editUser', methods=('GET', 'POST'))
+def editUser():
+        if request.method == 'POST':
+                email = request.form['email']
+                realEmail = request.form['realEmail']
+                password = request.form['password']
+                name = request.form['name']
+                if(password == 'Secret Password'):
+                        user = User.query.filter(User.email == email).first()
+                        user.email = email
+                        user.name = name
+                        db_session.commit()
+                        admin = session['user']
+                        return redirect(url_for('admin.adminPage',u_name=admin.name))
+                else:
+                        user = User.query.filter(User.email == email).first()
+                        user.email = email
+                        user.name = name
+                        user.password = generate_password_hash(password)
+                        db_session.commit()
+                        admin = session['user']
+                        return redirect(url_for('admin.adminPage',u_name=admin.name))
                 
 # #function to render the admin page and set the admin page url
 # @bp.route('/adminProfile/<u_email>', methods=('GET', 'POST'))
