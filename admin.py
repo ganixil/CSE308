@@ -15,6 +15,7 @@ def adminPage(u_name):
 		email = session['user']
 	else:  #No user makes login
 		return render_template('index.html') 
+
 	if request.method == 'POST':  # Response to update
 		workday = request.form['workday']
 		movspeed = request.form['movspeed']
