@@ -56,14 +56,14 @@
 			            <table id="insertManager" cellpadding="3">
 							<tr><th nowrap="" style="width:200px"> Manager</th></tr>
 						</table>
-			</div>
+					</div>
 				</div>
 				<div class="box" style="height:90px; width:450px; top:160px;"><span class="label" style="font-size: 17px;">Assign Canvasser</span>
 					<div class="content" style="margin-left:10px;" >
 						<table  cellpadding="3">
 							<tr>
 								<td nowrap="" style="width:200px"> Set Canvasser: </td>
-								<td><select name="canvasser_selector" value="">
+								<td><select id="canvasser_selector" onchange="addCanvasserToTable()">
 										<option value='null' ></option>
 									{% for item in canvasser %}
 										<option value='{{item.name}}'> {{item.name}} </option>
@@ -76,19 +76,24 @@
 							
 						</table>
 					</div>
+					<div id='canvasTable' style="overflow-y: scroll">
+			            <table id="insertCanvasser" cellpadding="3">
+							<tr><th nowrap="" style="width:200px"> Canvasser</th></tr>
+						</table>
+					</div>
 				</div>
 
 				<div class="box" style="height:130px; width:450px; top:160px;"><span class="label" style="font-size: 17px;">Time</span>
 					<div class="content" style="margin-left: 30px">
 						<table>
 							<tr>
-								<td nowrap="" style="width:130px; " > Set Date: </td>
-								<td> <input type="date" name="campaign_date"></td>
+								<td nowrap="" style="width:130px; " > Start Date: </td>
+								<td> <input type="date" name="start_date"></td>
 							</tr>
 							<tr>
-								<td nowrap="" style="width:130px; " > Set Time: </td>
-								<td> <input type="time" name="campaign_time"></td>
-								<td nowrap="" style="font-size: 11px " > hh:mm AM/PM </td>
+								<td nowrap="" style="width:130px; " > End Date: </td>
+								<td> <input type="date" name="end_date"></td>
+								
 							</tr>
 						</table>
 					</div>
@@ -102,9 +107,13 @@
                                 <td><div id="map" name="map_location" style="position: relative; left:5px; top: 30px;height: 250px; width: 270px;background-color: blue"></div></td>
                             </tr>
                             <tr>
-                                <td nowrap="" style="width:200px;position: relative; top:50px">Address: </td>
-                                <td> <input type="text" name="address_location" style="position:relative;top:50px; left:-20px;width:300px" name="address"></td>
+                                <td nowrap="" style="width:200px;position: relative; top:50px">Street Address: </td>
+                                <td> <input type="text" name="address" style="position:relative;top:50px; left:-20px;width:270px" ></td>
                             </tr>
+
+
+
+
                         </table>
 					</div>
 				</div>

@@ -11,10 +11,17 @@ input.disable{
 
 #manageTable{
 	width:230px; 
-	height:330px; 
+	height:200px; 
 	border: 1px solid;
-	margin-left:600px;
-	margin-top: -100px;
+	margin-left:540px;
+	margin-top: -150px;
+}
+#canvasTable{
+  width:230px; 
+  height:120px; 
+  border: 1px solid;
+  margin-left:540px;
+  margin-top: -80px;
 }
 
 #map{
@@ -48,7 +55,7 @@ div.float{
 .signOut{
 	position: relative;
 	margin-top: 10px;
-	margin-left: 1300px;
+	margin-left: 1370px;
 	border: 1px solid white;
 	border-radius: 4px;
 	width: 120px;
