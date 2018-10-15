@@ -155,95 +155,104 @@ class CanAva(Base):
 
 #for populating the database for testing purposes
 if __name__ == "__main__":
-    init_db()
+    # init_db()
+    # p1 = generate_password_hash('password')
+    # user1 =User('user1@c.com', p1, 'User1')
+    # user2 = User('user2@c.com', p1, 'User2')
+    # user3 = User('user3@c.com', p1, 'User3')
+    # user4 = User('user4@c.com', p1, 'User4')
+    # db_session.add(user1)
+    # db_session.add(user2)
+    # db_session.add(user3)
+    # db_session.add(user4)
+
+    # campaign1 = Campaign("sell compaing1", "1/1" , "2/2")
+    # campaign2 = Campaign("election compaing2", "1/1", "2/2")
+    # db_session.add(campaign1)
+    # db_session.add(campaign2)
+
+    # location1 = Location( "street")
+    # location2 = Location( "street2")
+    # location3 = Location( "street3")
+    # db_session.add(location1)
+    # db_session.add(location2)
+    # db_session.add(location3)
+
+    # db_session.commit()
+
+    # role = Role('User1','admin')
+    # role1= Role('User1','manager')
+    # role2 = Role('User2', 'canvasser')
+    # role3= Role('User2','manager')
+    # role4= Role('User3', 'canvasser')
+    # role5 = Role('User3', 'manager')
+    # role6 = Role('User4', 'admin')
+    # role7 = Role('User4', 'canvasser')
+    # role8 = Role('User4', 'manager')
+    
+    # user1.users_relation=[role, role1] # user1 = admin + manager
+    # user2.users_relation=[role2, role3] # user2 = manager + canvasser
+    # user3.users_relation= [role4, role5]  # user3 = canvasser+ manager
+    # user4.users_relation=[role6, role7, role8] # user4 = admin +  canvasser + manager
+
+
+
+    # campM1= CampaignManager() # (role1 + campaign1  
+    # campM2= CampaignManager() # (role8 + campaign1
+    # campM3= CampaignManager() # (role3 + campaign2    
+    # campM4= CampaignManager() # (role5 + campaign2   
+
+    # role1.roles_relation.append(campM1) 
+    # role8.roles_relation.append(campM1) 
+    # role3.roles_relation.append(campM2) 
+    # role5.roles_relation.append(campM2) 
+
+    # campaign1.campaigns_relation.append(campM1) 
+    # campaign1.campaigns_relation.append(campM2)
+    # campaign2.campaigns_relation.append(campM2)
+    # campaign2.campaigns_relation.append(campM2)
+
+
+
+
+    # campCan1= CampaignCanvasser()  # (role2 + campaign1)  --->user2
+    # campCan2= CampaignCanvasser() # (role4 + campaign2)  ---> user3 
+    # campCan3= CampaignCanvasser()  # (role2  + campaign2)  --->user1
+    # campCan4= CampaignCanvasser() #  (role7 + campaign2)  ---> user4
+
+    # role2.roles_relation_1.append(campCan1)
+    # role4.roles_relation_1.append(campCan2)  
+    # role2.roles_relation_1.append(campCan3) 
+    # role7.roles_relation_1.append(campCan4) 
+
+    # campaign1.campaigns_relation_1.append(campCan1) 
+    # campaign2.campaigns_relation_1.append(campCan2) 
+    # campaign2.campaigns_relation_1.append(campCan3)
+    # campaign2.campaigns_relation_1.append(campCan4)
+
+
+    # testL1= CampaignLocation() # location1 + campaign1
+    # testL2 = CampaignLocation() # location2 + campaign1
+    # testL3 = CampaignLocation() # location2 + campaign2
+
+
+    # location2.locations_relation =[testL3, testL2]  # 
+    # location1.locations_relation.append(testL1)
+
+    # campaign1.campaigns_relation_2 = [testL1, testL2]
+    # campaign2.campaigns_relation_2.append(testL3)
+    # glo = GlobalVariables(1, 1)
+    # db_session.add(glo)
+
+    # db_session.commit()
     p1 = generate_password_hash('password')
-    user1 =User('user1@c.com', p1, 'User1')
-    user2 = User('user2@c.com', p1, 'User2')
-    user3 = User('user3@c.com', p1, 'User3')
+        
     user4 = User('user4@c.com', p1, 'User4')
-    db_session.add(user1)
-    db_session.add(user2)
-    db_session.add(user3)
     db_session.add(user4)
-
-    campaign1 = Campaign("sell compaing1", "1/1" , "2/2")
-    campaign2 = Campaign("election compaing2", "1/1", "2/2")
-    db_session.add(campaign1)
-    db_session.add(campaign2)
-
-    location1 = Location( "street")
-    location2 = Location( "street2")
-    location3 = Location( "street3")
-    db_session.add(location1)
-    db_session.add(location2)
-    db_session.add(location3)
-
-    db_session.commit()
-
-    role = Role('User1','admin')
-    role1= Role('User1','manager')
-    role2 = Role('User2', 'canvasser')
-    role3= Role('User2','manager')
-    role4= Role('User3', 'canvasser')
-    role5 = Role('User3', 'manager')
     role6 = Role('User4', 'admin')
     role7 = Role('User4', 'canvasser')
     role8 = Role('User4', 'manager')
-    
-    user1.users_relation=[role, role1] # user1 = admin + manager
-    user2.users_relation=[role2, role3] # user2 = manager + canvasser
-    user3.users_relation= [role4, role5]  # user3 = canvasser+ manager
     user4.users_relation=[role6, role7, role8] # user4 = admin +  canvasser + manager
-
-
-
-    campM1= CampaignManager() # (role1 + campaign1  
-    campM2= CampaignManager() # (role8 + campaign1
-    campM3= CampaignManager() # (role3 + campaign2    
-    campM4= CampaignManager() # (role5 + campaign2   
-
-    role1.roles_relation.append(campM1) 
-    role8.roles_relation.append(campM1) 
-    role3.roles_relation.append(campM2) 
-    role5.roles_relation.append(campM2) 
-
-    campaign1.campaigns_relation.append(campM1) 
-    campaign1.campaigns_relation.append(campM2)
-    campaign2.campaigns_relation.append(campM2)
-    campaign2.campaigns_relation.append(campM2)
-
-
-
-
-    campCan1= CampaignCanvasser()  # (role2 + campaign1)  --->user2
-    campCan2= CampaignCanvasser() # (role4 + campaign2)  ---> user3 
-    campCan3= CampaignCanvasser()  # (role2  + campaign2)  --->user1
-    campCan4= CampaignCanvasser() #  (role7 + campaign2)  ---> user4
-
-    role2.roles_relation_1.append(campCan1)
-    role4.roles_relation_1.append(campCan2)  
-    role2.roles_relation_1.append(campCan3) 
-    role7.roles_relation_1.append(campCan4) 
-
-    campaign1.campaigns_relation_1.append(campCan1) 
-    campaign2.campaigns_relation_1.append(campCan2) 
-    campaign2.campaigns_relation_1.append(campCan3)
-    campaign2.campaigns_relation_1.append(campCan4)
-
-
-    testL1= CampaignLocation() # location1 + campaign1
-    testL2 = CampaignLocation() # location2 + campaign1
-    testL3 = CampaignLocation() # location2 + campaign2
-
-
-    location2.locations_relation =[testL3, testL2]  # 
-    location1.locations_relation.append(testL1)
-
-    campaign1.campaigns_relation_2 = [testL1, testL2]
-    campaign2.campaigns_relation_2.append(testL3)
-    glo = GlobalVariables(1, 1)
-    db_session.add(glo)
-
     db_session.commit()
 
 
