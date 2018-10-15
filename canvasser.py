@@ -6,15 +6,16 @@ from database import db_session, User, CanAva
 import json
 import logging
 
-#create canvasser blueprint
+# Create canvasser blueprint
 bp = Blueprint('canvasser', __name__, url_prefix='/canvasser')
 user_email=""
-#canvasser page url and render method
 
+
+# Canvasser page url and render method, this method is for updating availability
 @bp.route('/update_ava')
 def update_ava():
-	#fetching info from the calendar implemented in canvasser
-	#heavily rely on the javascript->html->jinja2->python interactions
+	# Fetching info from the calendar implemented in canvasser
+	# Using the javascript->html->jinja2->python interactions
 	title = request.args.get('title')
 	start = request.args.get('start')
 	end = request.args.get('end')
@@ -26,13 +27,15 @@ def update_ava():
 
 	return "set availability ok"
 
+
+# Method for rendering the canvasser's homepage
 @bp.route('/canPage/<u_email>', methods=('GET', 'POST'))
 def canPage(u_email):
 	global user_email
 	user_email = u_email
 
-	#fetching data from db and format it into json
-	#this part is intend for fetching stored availabilities in db
+	# Fetching data from db and format it into json
+	# This part is intended for fetching stored availabilities in db
 	events = db_session.query(CanAva).filter(CanAva.email == u_email)
 	avails =[]
 	for instance in events:

@@ -1,15 +1,15 @@
 import functools
-
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 from database import db_session, User, init_db, Role
 
-#create blueprint for auth
+# Create blueprint for auth
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
-#login method url path
+
+# Login method url path
 @bp.route('/login',  methods=('GET', 'POST'))
 def login():
     error = None
@@ -37,7 +37,7 @@ def login():
                     canvasserUser = Role.query.filter(Role.email == user.email, Role.role == role).first()
                     session['canvasserUserId'] = canvasserUser.id
                     return redirect(url_for('canvasser.canPage',u_email=user.email))
-    
+
     return render_template('index.html')
 
 

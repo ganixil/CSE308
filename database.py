@@ -7,20 +7,22 @@ from sqlalchemy.orm import relationship
 from datetime import date
 import pymysql
 
-#database connection string example
-#'mysql+pymysql://username:password@address:port/databaseName'
-#connect to the database with the database connection string
+# Database connection string example
+# 'mysql+pymysql://username:password@address:port/databaseName'
+# Connect to the database with the database connection string
 engine = create_engine('mysql+pymysql://xiangyiliu:111308288@mysql3.cs.stonybrook.edu:3306/xiangyiliu', convert_unicode=True)
 db_session = scoped_session(sessionmaker(autocommit=False, autoflush=False,bind=engine))
-#make the sqlalchemy object relation mapper base class
+# Make the sqlalchemy object relation mapper base class
 Base = declarative_base()
 Base.query = db_session.query_property()
 
-#function to initalize the database
+
+# Function to initalize the database
 def init_db():
     Base.metadata.create_all(bind=engine)
 
-#database table models/object relational classes
+
+# Database table models/object relational classes
 class User(Base):
     __tablename__ = 'users'
     email = Column(String(80), primary_key=True)
@@ -36,10 +38,11 @@ class User(Base):
     def __repr__(self):
         return "<User(email='%s', password='%s')>" % (self.email, self.password)
 
+
 class Campaign(Base):
     __tablename__ = 'campaigns'
     id = Column(Integer, primary_key = True)
-    campaign_name = Column(String(80), nullable = False)  #One company with unique name
+    campaign_name = Column(String(80), nullable = False)  # One company with a unique name
     startDate = Column(String(30), nullable=False)
     endDate = Column(String(30), nullable=False)
     # talking = Column(Text, default="None", nullable= False) # defautl = None 
@@ -54,7 +57,8 @@ class Campaign(Base):
         self.campaign_name = campaign_name
         self.startDate = startDate
         self.endDate = endDate
-    
+
+
 class CampaignDate(Base):
     __tablename__ = 'date'
     id = Column(Integer, primary_key =True)
@@ -65,13 +69,14 @@ class CampaignDate(Base):
         self.startDate = startDate
         self.endDate = endaDate
 
+
 class Role(Base):  # One user can have many role : one to many
     __tablename__ = 'roles'
     id = Column(Integer, primary_key=True)
     email=Column(String(80), ForeignKey('users.email', onupdate="CASCADE", ondelete="CASCADE")) #User's email
     name = Column(String(80), nullable = False)
     role= Column(String(20), nullable=False)
-    #One roles can be work on multiple campaign
+    # One role can work on multiple campaigns
     roles_relation = relationship("CampaignManager", backref= "roles")
     roles_relation_1 = relationship("CampaignCanvasser", backref= "roles")
     UniqueConstraint(email, role)
@@ -83,6 +88,7 @@ class Role(Base):  # One user can have many role : one to many
     
     def __repr__(self):
         return "<Role(email='%s',role='%s')>" % (self.email,self.role)
+
 
 class Location(Base):
     __tablename__ = 'locations'
@@ -101,7 +107,7 @@ class Location(Base):
         self.street = street
         
 
-class CampaignManager(Base):   #Association Table (Campaign + Manager)
+class CampaignManager(Base):   # Association Table (Campaign + Manager)
     __tablename__ = 'campaign_Manager'
     id = Column(Integer, primary_key = True)
     campaign_id = Column(Integer,ForeignKey('campaigns.id', onupdate="CASCADE", ondelete="CASCADE") )
@@ -109,7 +115,7 @@ class CampaignManager(Base):   #Association Table (Campaign + Manager)
     UniqueConstraint(campaign_id, user_id) # one manager + one campaign 
 
 
-class CampaignCanvasser(Base):   #Association Table (Campaign + User)
+class CampaignCanvasser(Base):   # Association Table (Campaign + User)
     __tablename__ = 'campaign_Canvasser'
     id = Column(Integer, primary_key = True)
     campaign_id = Column(Integer,ForeignKey('campaigns.id', onupdate="CASCADE", ondelete="CASCADE") )
@@ -117,7 +123,7 @@ class CampaignCanvasser(Base):   #Association Table (Campaign + User)
     UniqueConstraint(campaign_id, user_id) # one canvasser + one campaign 
 
 
-class CampaignLocation(Base):   #Association Table (Campaign + Locations)
+class CampaignLocation(Base):   # Association Table (Campaign + Locations)
     __tablename__ = 'campaign_locations'
     id = Column(Integer, primary_key = True)
     campaign_id = Column(Integer,ForeignKey('campaigns.id', onupdate="CASCADE", ondelete="CASCADE") )
@@ -143,7 +149,7 @@ class CanAva(Base):
     start = Column(String(80),nullable = False)
     end = Column(String(80),nullable = False)
     allDay = Column(String(80),nullable = False)
-    email=Column(String(80), nullable=False) #User's email
+    email=Column(String(80), nullable=False) # User's email
 
     def __init__(self,title,start,end,allDay,email):
         self.title = title
@@ -153,7 +159,7 @@ class CanAva(Base):
         self.email = email   
 
 
-#for populating the database for testing purposes
+# For populating the database for testing purposes.
 if __name__ == "__main__":
     # init_db()
     # p1 = generate_password_hash('password')

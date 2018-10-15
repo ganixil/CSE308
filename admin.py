@@ -2,15 +2,15 @@ from flask import (Blueprint, flash, g, redirect, render_template, request, url_
 from werkzeug.exceptions import abort
 from database import db_session, User, GlobalVariables, Role
 from werkzeug.security import check_password_hash, generate_password_hash
-#create the admin blueprint
 
+# Create the admin blueprint
 bp = Blueprint('admin', __name__, url_prefix='/admin')
 
-#function to render the admin page and set the admin page url
+
+# Function to render the admin page and set the admin page url
 @bp.route('/adminPage/<u_name>', methods=('GET', 'POST'))
 def adminPage(u_name):
         email = None
-	
         if 'user' in session:
                 email = session['user']
         else:
@@ -37,12 +37,15 @@ def adminPage(u_name):
         global_table = db_session.query(GlobalVariables).first()
         return render_template('admin_html/admin.html',usr_session =user_table ,gblvar_session= global_table,u_name=u_name)
 
+
+# Function that handles deleting users
 @bp.route('/<email>/delete', methods=('GET', 'POST'))
 def delete(email):
         if request.method == 'POST':
                 deletedUser = User.query.filter(User.email == email).first()
                 db_session.delete(deletedUser)
                 roles = Role.query.filter(Role.email == email).all()
+                # Handle deletion for rows related to the user that are outside of the user table
                 for ele in roles:
                         db_session.delete(ele)
                         deletedUser.users_relation.remove(ele)
@@ -51,6 +54,7 @@ def delete(email):
                 return redirect(url_for('admin.adminPage',u_name=user))
 
 
+# Function that handles editing users
 @bp.route('/editUser', methods=('GET', 'POST'))
 def editUser():
         if request.method == 'POST':
@@ -74,7 +78,7 @@ def editUser():
                         admin = session['user']
                         return redirect(url_for('admin.adminPage',u_name=admin))
                 
-# #function to render the admin page and set the admin page url
+# Function to render the admin page and set the admin page url (to be implemented)
 # @bp.route('/adminProfile/<u_email>', methods=('GET', 'POST'))
 # def adminProfile(u_email):
 # 	if request.method == 'POST':  # Response to update
