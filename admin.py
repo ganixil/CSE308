@@ -39,7 +39,9 @@ def adminPage(u_name):
 def delete(email):
         if request.method == 'POST':
                 deletedUser = User.query.filter(User.email == email).first()
-                print(deletedUser.name)
+                roles = Role.query.filter(Role.email ==email).all()
+                for ele in roles:
+                	deletedUser.users_relation.remove(ele)
                 db_session.delete(deletedUser)
                 db_session.commit()
                 user = session['user']

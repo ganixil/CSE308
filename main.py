@@ -26,6 +26,7 @@ logging.info('server cert and key set successfully')
 #run the flask app
 
 logging.info("run app")
+
 app.run(ssl_context=context, debug=True)
 
 
