@@ -52,6 +52,7 @@
     <button class="btn btn-outline-success btn-lg" type="button" id="canvas-btn">View Upcoming Assignment</button>
     <button class="btn btn-outline-success btn-lg" type="button" id="canvas-btn">Start Canvas</button>
 
+  <!-- scripts below will taking care of calendar javascript interactions-->
   <script type=text/javascript>
     $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
   </script>
@@ -61,5 +62,7 @@
   </script>
   <script type="text/javascript" src="../../static/javascript/fullcalendar_jq.js"></script>
   <script type="text/javascript" src="../../static/javascript/fullcalendar.js"></script>
+
+
   </body>
 </html>

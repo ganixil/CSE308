@@ -10,7 +10,7 @@ import pymysql
 #database connection string example
 #'mysql+pymysql://username:password@address:port/databaseName'
 #connect to the database with the database connection string
-engine = create_engine('mysql+pymysql://root:1969@localhost:3306/cse308', convert_unicode=True)
+engine = create_engine('mysql+pymysql://xiangyiliu:111308288@mysql3.cs.stonybrook.edu:3306/xiangyiliu', convert_unicode=True)
 db_session = scoped_session(sessionmaker(autocommit=False, autoflush=False,bind=engine))
 
 #make the sqlalchemy object relation mapper base class
@@ -45,16 +45,15 @@ class Campaign(Base):
     talking = Column(Text, default="None", nullable= False) # defautl = None 
     questionairs = Column(Text, nullable= True)  # question1;question2;....
     durations = Column(Integer, default = 0, nullable=False) # default = 0
-    campaigns_relation= relationship("CampaignManager", backref = "campaigns")
-    campaigns_relation_2= relationship("CampaignLocation", backref = "campaigns")
-    campaigns_relation_1= relationship("CampaignCanvasser", backref = "campaigns")
+
+    
+    campaigns_relation= relationship("CampaignUser", backref = "campaigns")
+    campaigns_relation_1= relationship("CampaignLocation", backref = "campaigns")
 
 
-    def __init__(self, campaign_name, talking, questionairs, durations):
+    def __init__(self, campaign_name):
         self.campaign_name = campaign_name
-        self.talking = talking
-        self.questionairs = questionairs
-        self.durations = durations
+        
 
 class Role(Base):  # One user can have many role : one to many
     __tablename__ = 'roles'
@@ -75,42 +74,43 @@ class Role(Base):  # One user can have many role : one to many
     
     def __repr__(self):
         return "<Role(email='%s',role='%s')>" % (self.email,self.role)
-
+        
 class Location(Base):
     __tablename__ = 'locations'
     id = Column(Integer, primary_key= True)
-    number = Column(Integer, nullable = True) # street number
+    #number = Column(Integer, nullable = True) # street number
     street = Column(String(60), nullable= False) 
-    unit = Column(String(60), nullable = True) # Apartment16B
-    city = Column(String(60), nullable= False)
-    state = Column(String(60), nullable = False)
-    zipCode = Column(String(10), nullable = False)
+    date = Column(String(16), nullable= False) 
+    time = Column(String(16), nullable= False) 
+    #unit = Column(String(60), nullable = True) # Apartment16B
+    #city = Column(String(60), nullable= False)
+    #state = Column(String(60), nullable = False)
+    #zipCode = Column(String(10), nullable = False)
     # One locations can be owner by multiple campaigns
     locations_relation = relationship('CampaignLocation', backref = "locations") 
 
-    def __init__(self, number, street, unit, city, state, zipCode):
-        self.number = number
+    def __init__(self, street, date, time):
         self.street = street
-        self.unit = unit
-        self.city = city
-        self.state = state
-        self.zipCode = zipCode
+        self .date = date
+        self.time = time
 
 
-# class CampaignManager(Base):   #Association Table (Campaign + Manager)
-#     __tablename__ = 'campaign_Manager'
-#     id = Column(Integer, primary_key = True)
-#     campaign_id = Column(Integer,ForeignKey('campaigns.id', onupdate="CASCADE", ondelete="CASCADE") )
-#     role_id = Column(Integer, ForeignKey('roles.id', onupdate="CASCADE", ondelete="CASCADE"))
-#     UniqueConstraint(campaign_id, role_id) # one manager + one campaign 
+
+class CampaignManager(Base):   #Association Table (Campaign + Manager)
+    __tablename__ = 'campaign_Manager'
+    id = Column(Integer, primary_key = True)
+    campaign_id = Column(Integer,ForeignKey('campaigns.id', onupdate="CASCADE", ondelete="CASCADE") )
+    role_id = Column(Integer, ForeignKey('roles.id', onupdate="CASCADE", ondelete="CASCADE"))
+    UniqueConstraint(campaign_id, role_id) # one manager + one campaign 
+
+class CampaignCanvasser(Base):   #Association Table (Campaign + User)
+    __tablename__ = 'campaign_Canvasser'
+    id = Column(Integer, primary_key = True)
+    campaign_id = Column(Integer,ForeignKey('campaigns.id', onupdate="CASCADE", ondelete="CASCADE") )
+    role_id = Column(Integer, ForeignKey('roles.id', onupdate="CASCADE", ondelete="CASCADE"))
+    UniqueConstraint(campaign_id, role_id) # one canvasser + one campaign 
 
 
-# class CampaignCanvasser(Base):   #Association Table (Campaign + User)
-#     __tablename__ = 'campaign_Canvasser'
-#     id = Column(Integer, primary_key = True)
-#     campaign_id = Column(Integer,ForeignKey('campaigns.id', onupdate="CASCADE", ondelete="CASCADE") )
-#     role_id = Column(Integer, ForeignKey('roles.id', onupdate="CASCADE", ondelete="CASCADE"))
-#     UniqueConstraint(campaign_id, role_id) # one canvasser + one campaign 
 
 
 class CampaignUser(Base):   #Association Table (Campaign + Users)
@@ -194,36 +194,12 @@ if __name__ == "__main__":
     user3.users_relation= [role3, role4]  # user3 = canvasser+ manager
     db_session.commit()
 
+    campaign1 = Campaign("sell compaing")
+    campaign2 = Campaign("election compaing")
 
-    campaign1 = Campaign("sell compaing", "for test", "question1; qeustion2", 1)
-    campaign2 = Campaign("election compaing", "for test", "question1; qeustion2", 2)
-    db_session.add(campaign1)
-    db_session.add(campaign2)
-    db_session.commit()
+    location1 = Location("1088 Peter Street", "10/19/2019", "4:00AM")
+    location2 = Location("1078 Nostrand Ave", "10/20/3012", "5:00AM")
 
-    location1 = Location(1, "street", "unit", "city", "state", "1111")
-    location2 = Location(2, "street2", "unit2", "city2", "state2", "1211")
-    db_session.add(location1)
-    db_session.add(location2)
-    db_session.commit()
-
-    test= CampaignManager()  #user3 + campaign1 + manager -->  role4
-    test2= CampaignManager() # user2 + campaign2 +manager  --> role1
-
-    role1.roles_relation.append(test2) # manager + role1
-    role4.roles_relation.append(test) # manager + role4
-
-    campaign1.campaigns_relation.append(test) # manager + campaign1
-    campaign2.campaigns_relation.append(test2) # manager + campaign2
-
-    testC= CampaignCanvasser()  #user3 + campaign1 + canvasser ---> role3
-    testC2= CampaignCanvasser() # user1 + campaign2 + canvasser ---> role2
-
-    role3.roles_relation_1.append(testC) # canvasser + role3
-    role2.roles_relation_1.append(testC2) # canvasser+ role2
-
-    campaign1.campaigns_relation.append(testC) # canvasser + campaign1
-    campaign2.campaigns_relation.append(testC2) # canvasser + campaing2
 
 
     testL1= CampaignLocation() # location1 + campaign1
@@ -234,26 +210,19 @@ if __name__ == "__main__":
     location2.locations_relation =[testL3, testL2]
     location1.locations_relation.append(testL1)
 
-    campaign1.campaigns_relation_2 = [testL1, testL2]
-    campaign2.campaigns_relation_2.append(testL3)
 
-    # #role2.roles_relation = [test,  test2]
-    # #role1.roles_relation.append(test3)
+    #campaign1.campaigns_relation = [test, test3] #user + campaign
+    #campaign2.campaigns_relation.append(test2)
 
-    # location2.locations_relation =[testL3, testL2]
-    # location1.locations_relation.append(testL1)
+    
+    
 
-    # campaign1.campaigns_relation = [test, test3]
-    # campaign2.campaigns_relation.append(test2)
-
-    # campaign1.campaigns_relation_1 = [testL1, testL2]
-    # campaign2.campaigns_relation_1.append(testL3)
-
-
+    campaign1.campaigns_relation_1 = [testL1, testL2]
+    campaign2.campaigns_relation_1.append(testL3)
+    db_session.add(campaign1);
+    db_session.add(campaign2)
 
     db_session.commit()
     glo = GlobalVariables(1, 1)
     db_session.add(glo)
     db_session.commit()
-
-

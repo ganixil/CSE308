@@ -72,8 +72,7 @@
                 </p>
             </div>
 
-        <!-- form to change the global variables-->
-            <form id="global" action="{{ url_for('adminPage', onwer_table.email) }}" method="post">
+            <form id="global" method="post">
                 <div class="form-group">
                     <label for="avgworkday"  name ="workday_title"> Average Work Day Length: </label>
                         <select class="form-control" id="avgworkday" type="workday" name = "workday">

@@ -41,9 +41,10 @@ def create_app(test_config=None):
     import canvasser
     
     app.register_blueprint(auth.bp)
-    app.register_blueprint(admin.bp)
     app.register_blueprint(manager.bp)
     app.register_blueprint(canvasser.bp)
+    app.register_blueprint(admin.bp)
+        
     
     return app
     
