@@ -160,7 +160,7 @@ if __name__ == "__main__":
     user1 =User('user1@c.com', p1, 'User1')
     user2 = User('user2@c.com', p1, 'User2')
     user3 = User('user3@c.com', p1, 'User3')
-    user4 = User('user4@c.com', p1, 'User3')
+    user4 = User('user4@c.com', p1, 'User4')
     db_session.add(user1)
     db_session.add(user2)
     db_session.add(user3)
