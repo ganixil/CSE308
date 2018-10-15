@@ -1,6 +1,6 @@
 from flask import (Blueprint, flash, g, redirect, render_template, request, url_for, session)
 from werkzeug.exceptions import abort
-from database import db_session, User, GlobalVariables
+from database import db_session, User, GlobalVariables, Role
 from werkzeug.security import check_password_hash, generate_password_hash
 #create the admin blueprint
 
@@ -39,13 +39,15 @@ def adminPage(u_name):
 def delete(email):
         if request.method == 'POST':
                 deletedUser = User.query.filter(User.email == email).first()
-                roles = Role.query.filter(Role.email ==email).all()
-                for ele in roles:
-                	deletedUser.users_relation.remove(ele)
                 db_session.delete(deletedUser)
+                roles = Role.query.filter(Role.email == email).all()
+                for ele in roles:
+                        db_session.delete(ele)
+                        deletedUser.users_relation.remove(ele)
                 db_session.commit()
                 user = session['user']
-                return redirect(url_for('admin.adminPage',u_name=user.name))
+                return redirect(url_for('admin.adminPage',u_name=user))
+
 
 @bp.route('/editUser', methods=('GET', 'POST'))
 def editUser():

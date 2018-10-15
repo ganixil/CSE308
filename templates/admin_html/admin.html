@@ -125,7 +125,7 @@
             <tr>  
             
                     <td class="list-buttons-column">
-                        <form method = "post" action="{{ url_for('admin.delete', email=instance.email)}}">
+                        <form method = "post" action="{{ url_for('admin.delete', email= instance.email)}}">
                             <input type='image' src="../../static/image/delete.svg" alt="Submit Form">
                        </form>
                      <form  method="post" action="{{ url_for('admin.editUser')}}">
