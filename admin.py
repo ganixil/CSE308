@@ -19,7 +19,7 @@ def adminPage(u_name):
 		workday = request.form['workday']
 		movspeed = request.form['movspeed']
 		if(workday is None or movspeed is None):  # No invalid values
-			user_table = db_session.query(User).order_by(User.email).filter(User.email != email )
+			user_table = db_session.query(User).order_by(User.email).filter(User.email != email)
 			# onwer_table = db_session.query(User).filter(User.email == email)
 			global_table = db_session.query(GlobalVariables).first()
 			return render_template('admin_html/admin.html',usr_session =user_table,gblvar_session= global_table,u_name=u_name)

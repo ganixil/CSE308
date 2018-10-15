@@ -107,7 +107,7 @@
                                 <a href="#" title="Sort by First Name">Name</a>
                         </th>
                         <th class="column-header col-last_name">
-                            <a href="#" title="Sort by Last Name">Account Type</a> 
+                            <a href="#" title="Sort by Last Name">Password</a> 
                         </th>
                         <th class="column-header col-email">
                             <a href="#" title="Sort by Email">Email</a>
@@ -118,13 +118,14 @@
             <tr>  
                     <td class="list-buttons-column">
                         <button id="change"><img src="../../static/image/pencil.svg"/></button>
+                        
                         <button id="delete"><img src="../../static/image/delete.svg"/></button>
                     </td>
                     <td class="list-buttons-column">
                         {{instance.name}}
                     </td>
                     <td class="list-buttons-column">
-                        {{instance.accType}}
+                        {{"secret password"}}
                     </td>
                     <td class="list-buttons-column">
                         {{instance.email}}

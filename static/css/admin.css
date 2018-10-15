@@ -16,30 +16,10 @@
 	border: none;
 	background: none;
 }
-@keyframes bounce {
-	0%, 20%, 60%, 100% {
-		-webkit-transform: translateY(0);
-		transform: translateY(0);
-	}
-
-	40% {
-		-webkit-transform: translateY(-20px);
-		transform: translateY(-20px);
-	}
-
-	80% {
-		-webkit-transform: translateY(-10px);
-		transform: translateY(-10px);
-	}
+#done{
+	padding: 0;
+	border: none;
+	background: none;
 }
-#change:focus{
-	outline: none;
-	animation: bounce 1s;
-}
-#delete:focus{
-	outline: none;
-	animation: bounce 1s;
-}
-
 
 
