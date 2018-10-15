@@ -8,7 +8,6 @@ function generate_map() {
 	var map = new google.maps.Map(document.getElementById("map"), mapOptions);
 }
 generate_map();
-
 function a(){
 	document.querySelector('.disable').addEventListener('click', function(e) {
 					
@@ -27,6 +26,8 @@ function a(){
 					//alert(arr.length + "  " + str);
 	});
 }
+
+
 
 
 function addManagerToTable(){
@@ -74,10 +75,7 @@ function addCanvasserToTable(){
 			trNode.setAttribute("class", "disable");
 			trNode.setAttribute("value", b)
 			node.appendChild(trNode);
-			var newButton = document.createElement("button");
-			newButton.innerHTML="X";
-			newButton.setAttribute("class", "deleteM");
-			node.appendChild(newButton);
+			
 
 		}else{
 			var bool = exists(b, ob);
@@ -89,10 +87,7 @@ function addCanvasserToTable(){
 				trNode.setAttribute("class", "disable");
 				trNode.setAttribute("value", b)
 				node.appendChild(trNode);
-				var newButton = document.createElement("button");
-				newButton.innerHTML="X";
-				newButton.setAttribute("class", "deleteM");
-				node.appendChild(newButton);
+				
 			}
 		}	
 	}
