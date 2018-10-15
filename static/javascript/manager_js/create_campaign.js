@@ -12,14 +12,14 @@ function generate_map() {
 
 function addManagerToTable(){
 	var a = document.getElementById("manager_selector");
-	b = a.value;
+	var b = a.value;
 	if(b != "null"){
 		var ob = document.getElementsByName("flaskManager");
 		if(ob.length == 0){
 			var node = document.getElementById("insertManager");//insertManager is name of table
 			var trNode = document.createElement("input");
 			trNode.setAttribute("name", "flaskManager");
-			trNode.setAttribute("type", "button");
+			trNode.setAttribute("type", "text");
 			trNode.setAttribute("class", "disable");
 			trNode.setAttribute("value", b)
 			node.appendChild(trNode);
@@ -29,15 +29,54 @@ function addManagerToTable(){
 				var node = document.getElementById("insertManager");//insertManager is name of table
 				var trNode = document.createElement("input");
 				trNode.setAttribute("name", "flaskManager");
-				trNode.setAttribute("type", "button");
+				trNode.setAttribute("type", "text");
 				trNode.setAttribute("class", "disable");
 				trNode.setAttribute("value", b)
 				node.appendChild(trNode);
 			}
 		}	
 	}
+	a.selectedIndex= -1;
 
 }
+
+function addCanvasserToTable(){
+	var a = document.getElementById("canvasser_selector");
+	var b = a.value;
+	if(b != "null"){
+		var ob = document.getElementsByName("flaskCanvasser");
+		if(ob.length == 0){
+			var node = document.getElementById("insertCanvasser");//insertManager is name of table
+			var trNode = document.createElement("input");
+			trNode.setAttribute("name", "flaskCanvasser");
+			trNode.setAttribute("type", "text");
+			trNode.setAttribute("class", "disable");
+			trNode.setAttribute("value", b)
+			node.appendChild(trNode);
+		}else{
+			var bool = exists(b, ob);
+			if(bool ==false){
+				var node = document.getElementById("insertCanvasser");//insertManager is name of table
+				var trNode = document.createElement("input");
+				trNode.setAttribute("name", "flaskCanvasser");
+				trNode.setAttribute("type", "text");
+				trNode.setAttribute("class", "disable");
+				trNode.setAttribute("value", b)
+				node.appendChild(trNode);
+			}
+		}	
+	}
+	a.selectedIndex= -1;
+
+}
+
+
+
+
+
+
+
+
 
 
 

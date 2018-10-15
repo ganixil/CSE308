@@ -2,8 +2,9 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for
 )
 from werkzeug.exceptions import abort
+from database import db_session, User, Campaign, Role, Location,CampaignLocation,CampaignCanvasser, CampaignManager
 
-from database import db_session, User, Campaign, Role
+
 
 
 #create the manager blueprint
@@ -11,21 +12,49 @@ bp = Blueprint('manager', __name__, url_prefix='/manager')
 
 @bp.route('/create_campaign', methods=['GET','POST'])
 def createCampaign():
-
+	managerObject = db_session.query(Role).filter(Role.role =='manager')
+	canvasObject  = db_session.query(Role).filter(Role.role == 'canvasser')
 	if request.method == 'POST':
+		
 		campaignName = request.form['campaign_name']
+		address = request.form['address'];
+		startdate = request.form['start_date']
+		enddate = request.form['end_date']
 		managers = request.form.getlist('flaskManager')
-		print(campaignName)
-		for manager in managers:
-			print(manager)
+		canvassers = request.form.getlist('flaskCanvasser')
+		
+		
+		campObj = Campaign(campaignName, startdate, enddate)
+		locationObj = Location(address)
+		db_session.add(locationObj)
+		db_session.add(campObj)
+
+		##
+		testL = CampaignLocation()
+		locationObj.locations_relation.append(testL)
+		campObj.campaigns_relation_2.append(testL)
+		##
+		for m in managers:
+			role = db_session.query(Role).filter(Role.role == 'manager',  Role.name == m).first()
+			print(role)
+			mObject = CampaignManager()
+			role.roles_relation.append(mObject)
+			campObj.campaigns_relation.append(mObject)
+
+		for c in canvassers:
+			role = db_session.query(Role).filter(Role.role == 'canvasser',  Role.name == c).first()
+			print(role)
+			cObject = CampaignCanvasser()
+			role.roles_relation_1.append(cObject)
+			campObj.campaigns_relation_1.append(cObject)
+
+		
+		db_session.commit()
+		
 	else:
-		managerObject = db_session.query(Role).filter(Role.role =='manager')
-		canvasObject  = db_session.query(Role).filter(Role.role == 'canvasser')
-		for item in managerObject:
-			print(item.name)
 		return render_template('manager_html/create_campaign.html', managers=managerObject, canvasser=canvasObject)
 
-	return render_template('manager_html/create_campaign.html')
+	return render_template('manager_html/create_campaign.html', managers=managerObject, canvasser=canvasObject)
 
 #function to render the manager page and set the manager page url
 @bp.route('/manpage', methods=('GET', 'POST'))
