@@ -1,0 +1,29 @@
+DEBUG:root:Starting Super Canvasser
+DEBUG:root:blue prints are created for auth, mananger, canvasser, admin
+INFO:root:app created successfully
+INFO:root:server cert and key set successfully
+INFO:root:run app
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 594-841-257
+INFO:werkzeug:127.0.0.1 - - [15/Oct/2018 00:24:40] "GET /admin/adminPage/User1 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [15/Oct/2018 00:24:40] "GET /static/css/bs_css/bootstrap.min.css HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [15/Oct/2018 00:24:40] "GET /static/jquery/jquery-ui.min.css HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [15/Oct/2018 00:24:40] "GET /static/css/admin.css HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [15/Oct/2018 00:24:41] "GET / HTTP/1.1" 302 -
+INFO:werkzeug:127.0.0.1 - - [15/Oct/2018 00:24:41] "GET /auth/login HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [15/Oct/2018 00:24:42] "GET /static/css/bs_css/bootstrap.min.css HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [15/Oct/2018 00:24:42] "GET /static/css/signin.css HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [15/Oct/2018 00:24:42] "GET / HTTP/1.1" 302 -
+INFO:werkzeug:127.0.0.1 - - [15/Oct/2018 00:24:42] "GET /auth/login HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [15/Oct/2018 00:24:42] "GET /static/image/title_logo.png HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [15/Oct/2018 00:24:42] "GET /static/css/signin.css HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [15/Oct/2018 00:24:42] "GET /static/css/bs_css/bootstrap.min.css HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [15/Oct/2018 00:24:46] "POST /auth/login HTTP/1.1" 302 -
+INFO:werkzeug:127.0.0.1 - - [15/Oct/2018 00:24:46] "GET /admin/adminPage/User1 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [15/Oct/2018 00:24:46] "GET /static/css/bs_css/bootstrap.min.css HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [15/Oct/2018 00:24:46] "GET /static/jquery/jquery-ui.min.css HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [15/Oct/2018 00:24:46] "GET /static/css/admin.css HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [15/Oct/2018 00:24:47] "GET /auth/login HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [15/Oct/2018 00:24:47] "GET /static/css/signin.css HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [15/Oct/2018 00:24:47] "GET /static/css/bs_css/bootstrap.min.css HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [15/Oct/2018 00:24:47] "GET /static/image/title_logo.png HTTP/1.1" 200 -
