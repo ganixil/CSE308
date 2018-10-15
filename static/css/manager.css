@@ -4,21 +4,21 @@ body{
     overflow-x: hidden;
 
 }
-#insertManager{
+#manageTable:hover, #canvasTable:hover{
 	background-color: white;
-	height: 200px;
+	
 }
 
 .deleteM{
 	width:30px;
 	height:30px;
 }
-input.disable{
+input.dis{
   text-align: center;
   border-radius: 0px;
   width: 100px;
 }
-input.disable:hover{
+input.dis:hover{
   text-align: center;
   border-radius: 0px;
   transform: scale(1);

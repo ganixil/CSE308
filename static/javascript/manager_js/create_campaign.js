@@ -9,21 +9,31 @@ function generate_map() {
 }
 generate_map();
 function a(){
-	document.querySelector('.disable').addEventListener('click', function(e) {
-					
-					var name = e.target.name;
-					var value = e.target.value;
-					var arr = document.getElementsByName(name);
-					//arr[0].remove();
-					var str = "";
-					for(var i = 0; i < arr.length; i++){
-						str += arr[i].value + " " ;
-						if(arr[i].value == value){
-							arr[i].remove();
-						}
-					}
 
-					//alert(arr.length + "  " + str);
+
+	document.addEventListener("click", function(e){
+		if(e.target.name == "flaskManager"){
+			var value = e.target.value;
+			var arr = document.getElementsByName('flaskManager');
+
+			for(var i = 0; i < arr.length; i++){
+						
+				if(arr[i].value == value){
+				 	arr[i].parentNode.removeChild(arr[i]);
+				}
+			}
+		}else if(e.target.name == "flaskCanvasser"){
+			var value = e.target.value;
+			var arr = document.getElementsByName('flaskCanvasser');
+
+			for(var i = 0; i < arr.length; i++){
+				if(arr[i].value == value){
+				 	arr[i].parentNode.removeChild(arr[i]);
+				}
+			}
+		}
+
+
 	});
 }
 
@@ -40,7 +50,7 @@ function addManagerToTable(){
 			var trNode = document.createElement("input");
 			trNode.setAttribute("name", "flaskManager");
 			trNode.setAttribute("type", "text");
-			trNode.setAttribute("class", "disable");
+			trNode.setAttribute("class", "dis");
 			trNode.setAttribute("value", b)
 			node.appendChild(trNode);
 			
@@ -51,7 +61,7 @@ function addManagerToTable(){
 				var trNode = document.createElement("input");
 				trNode.setAttribute("name", "flaskManager");
 				trNode.setAttribute("type", "text");
-				trNode.setAttribute("class", "disable");
+				trNode.setAttribute("class", "dis");
 				trNode.setAttribute("value", b)
 				node.appendChild(trNode);
 
@@ -72,7 +82,7 @@ function addCanvasserToTable(){
 			var trNode = document.createElement("input");
 			trNode.setAttribute("name", "flaskCanvasser");
 			trNode.setAttribute("type", "text");
-			trNode.setAttribute("class", "disable");
+			trNode.setAttribute("class", "dis");
 			trNode.setAttribute("value", b)
 			node.appendChild(trNode);
 			
@@ -84,7 +94,7 @@ function addCanvasserToTable(){
 				var trNode = document.createElement("input");
 				trNode.setAttribute("name", "flaskCanvasser");
 				trNode.setAttribute("type", "text");
-				trNode.setAttribute("class", "disable");
+				trNode.setAttribute("class", "dis");
 				trNode.setAttribute("value", b)
 				node.appendChild(trNode);
 				

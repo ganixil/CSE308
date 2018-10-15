@@ -14,6 +14,7 @@ bp = Blueprint('manager', __name__, url_prefix='/manager')
 def createCampaign():
 	managerObject = db_session.query(Role).filter(Role.role =='manager')
 	canvasObject  = db_session.query(Role).filter(Role.role == 'canvasser')
+	campaignObject = db_session.query(Campaign)
 	if request.method == 'POST':
 		
 		campaignName = request.form['campaign_name']
@@ -54,7 +55,7 @@ def createCampaign():
 	else:
 		return render_template('manager_html/create_campaign.html', managers=managerObject, canvasser=canvasObject)
 
-	return render_template('manager_html/create_campaign.html', managers=managerObject, canvasser=canvasObject)
+	return render_template('manager_html/view_campaign.html', camp=campaignObject)
 
 #function to render the manager page and set the manager page url
 @bp.route('/manpage', methods=('GET', 'POST'))

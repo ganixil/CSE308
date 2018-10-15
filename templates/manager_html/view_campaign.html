@@ -32,8 +32,8 @@
 						<table  cellpadding="3" >
 							<tr>
 								<th style="width:270px;">Campaign</th>
-								<th style="width:270px;">Canvasser</th>
-								<th style="width:270px;">Location</th>
+								<th style="width:270px;">Start Date</th>
+								<th style="width:270px;">End Date</th>
 								
 							</tr>
 							
@@ -41,9 +41,9 @@
 								{% for item in camp %}
 
 								<tr>
-									<th style="width:250px;height: 35px">{{item.date}}</th>
-									<th style="width:250px;">{{item.canvasser}}</th>
-									<th style="width:250px;">{{item.location}}</th>
+									<th style="width:250px;height: 35px">{{item.campaign_name}}</th>
+									<th style="width:250px;">{{item.startDate}}</th>
+									<th style="width:250px;">{{item.endDate}}</th>
 									
 								</tr>
 								{% endfor %}
