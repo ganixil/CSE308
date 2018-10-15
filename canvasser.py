@@ -4,6 +4,7 @@ from flask import (
 from werkzeug.exceptions import abort
 from database import db_session, User, CanAva
 import json
+import logging
 
 #create canvasser blueprint
 bp = Blueprint('canvasser', __name__, url_prefix='/canvasser')
@@ -42,5 +43,5 @@ def canPage(u_email):
 			'allDay':instance.allDay
 			})
 	canvasEvents = json.dumps(avails)
-	logging.debg("fetching info availability from database for "+u_email)
+	logging.debug("fetching info availability from database for "+u_email)
 	return render_template('canvasser_html/canvas.html',avails=canvasEvents)

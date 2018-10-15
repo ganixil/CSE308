@@ -9,31 +9,33 @@ bp = Blueprint('admin', __name__, url_prefix='/admin')
 #function to render the admin page and set the admin page url
 @bp.route('/adminPage/<u_name>', methods=('GET', 'POST'))
 def adminPage(u_name):
-	email = None
-	if 'user' in session:
-		email = session['user']
-	else:  #No user makes login
-		return render_template('index.html') 
-	if request.method == 'POST':  # Response to update
-		workday = request.form['workday']
-		movspeed = request.form['movspeed']
-		if(workday is None or movspeed is None):  # No invalid values
-			user_table = db_session.query(User).order_by(User.email).filter(User.email != email)
-			# onwer_table = db_session.query(User).filter(User.email == email)
-			global_table = db_session.query(GlobalVariables).first()
-			return render_template('admin_html/admin.html',usr_session =user_table,gblvar_session= global_table,u_name=u_name)
-		else:
-			global_table= db_session.query(GlobalVariables).first()
-			if(global_table.workDayLength != int(workday)):
-				global_table.workDayLength = int(workday)
-			if(global_table.averageSpeed != int(movspeed)):
-				global_table.averageSpeed = int(movspeed)
-			db_session.commit()
+        email = None
+	
+        if 'user' in session:
+                email = session['user']
+        else:
+                return render_template('index.html') 
 
-	user_table = db_session.query(User).order_by(User.email).filter(User.email != email )
+        if request.method == 'POST':  # Response to update
+                workday = request.form['workday']
+                movspeed = request.form['movspeed']
+                if(workday is None or movspeed is None):  # No invalid values
+                        user_table = db_session.query(User).order_by(User.email).filter(User.email != email)
+		      # onwer_table = db_session.query(User).filter(User.email == email)
+                        global_table = db_session.query(GlobalVariables).first()
+                        return render_template('admin_html/admin.html',usr_session =user_table,gblvar_session= global_table,u_name=u_name)
+                else:
+                        global_table= db_session.query(GlobalVariables).first()
+                        if(global_table.workDayLength != int(workday)):
+                                global_table.workDayLength = int(workday)
+                        if(global_table.averageSpeed != int(movspeed)):
+                                global_table.averageSpeed = int(movspeed)
+                        db_session.commit()
+
+        user_table = db_session.query(User).order_by(User.email).filter(User.email != email )
 	# onwer_table = db_session.query(User).filter(User.email == email).first()
-	global_table = db_session.query(GlobalVariables).first()
-	return render_template('admin_html/admin.html',usr_session =user_table ,gblvar_session= global_table,u_name=u_name)
+        global_table = db_session.query(GlobalVariables).first()
+        return render_template('admin_html/admin.html',usr_session =user_table ,gblvar_session= global_table,u_name=u_name)
 
 @bp.route('/<email>/delete', methods=('GET', 'POST'))
 def delete(email):
@@ -62,7 +64,7 @@ def editUser():
                         user.name = name
                         db_session.commit()
                         admin = session['user']
-                        return redirect(url_for('admin.adminPage',u_name=admin.name))
+                        return redirect(url_for('admin.adminPage',u_name=admin))
                 else:
                         user = User.query.filter(User.email == email).first()
                         user.email = email
@@ -70,7 +72,7 @@ def editUser():
                         user.password = generate_password_hash(password)
                         db_session.commit()
                         admin = session['user']
-                        return redirect(url_for('admin.adminPage',u_name=admin.name))
+                        return redirect(url_for('admin.adminPage',u_name=admin))
                 
 # #function to render the admin page and set the admin page url
 # @bp.route('/adminProfile/<u_email>', methods=('GET', 'POST'))
