@@ -1,0 +1,8 @@
+DEBUG:root:Starting Super Canvasser
+DEBUG:root:blue prints are created for auth, mananger, canvasser, admin
+INFO:root:app created successfully
+INFO:root:server cert and key set successfully
+INFO:root:run app
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 287-725-466
+INFO:werkzeug: * Running on https://127.0.0.1:5000/ (Press CTRL+C to quit)
