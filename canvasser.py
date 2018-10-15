@@ -20,6 +20,7 @@ def update_ava():
 	allDay = request.args.get('allDay')
 	ava = CanAva(title,start,end,allDay,user_email)
 	db_session.add(ava)
+	logging.info("updating availability for email "+user_email+" with "+tile+""+start+""+end)
 	db_session.commit()
 
 	return "set availability ok"
@@ -41,4 +42,5 @@ def canPage(u_email):
 			'allDay':instance.allDay
 			})
 	canvasEvents = json.dumps(avails)
+	logging.debg("fetching info availability from database for "+u_email)
 	return render_template('canvasser_html/canvas.html',avails=canvasEvents)

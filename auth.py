@@ -17,7 +17,6 @@ def login():
         email = request.form['email']
         password = request.form['password']
         role = request.form.get('choice')  # Use this method for getting options
-        print("choice = %s" % role)
         if role is not None:
             user = User.query.filter(User.email == email).first()
             userRole = Role.query.filter(Role.email == email, Role.role == role).first()

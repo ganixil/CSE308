@@ -11,10 +11,11 @@ bp = Blueprint('admin', __name__, url_prefix='/admin')
 def adminPage(u_name):
 	email = None
 	if 'user' in session:
-		print(session['user'])
 		email = session['user']
 	else:  #No user makes login
+		logging.warning("no user")
 		return render_template('index.html') 
+
 
 	if request.method == 'POST':  # Response to update
 		workday = request.form['workday']
@@ -30,6 +31,7 @@ def adminPage(u_name):
 				global_table.workDayLength = int(workday)
 			if(global_table.averageSpeed != int(movspeed)):
 				global_table.averageSpeed = int(movspeed)
+			logging.info("updaing workday: "+workday +" and average speed "+movspeed)
 			db_session.commit()
 
 	user_table = db_session.query(User).order_by(User.email).filter(User.email != email )

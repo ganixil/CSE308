@@ -1,4 +1,5 @@
 import os
+import logging
 from flask import Flask, redirect, url_for
 from database import db_session, init_db
 
@@ -13,6 +14,7 @@ def create_app(test_config=None):
     if test_config is None:
         # load the instance config, if it exists, when not testing
         app.config.from_pyfile('config.py', silent=True)
+
     else:
         # load the test config if passed in
         app.config.from_mapping(test_config)
@@ -44,7 +46,8 @@ def create_app(test_config=None):
     app.register_blueprint(manager.bp)
     app.register_blueprint(canvasser.bp)
     app.register_blueprint(admin.bp)
-        
+    
+    logging.debug("blue prints are created for auth, mananger, canvasser, admin")
     
     return app
     
