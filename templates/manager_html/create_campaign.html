@@ -27,13 +27,13 @@
 	                <div class="n" onclick="location.href='{{ url_for('manager.createCanvasAssignment') }}'"><span class="link">Create Canvas Assignment</span></div>
 	            </div>
             </div>
-            <div class="signOut"><span class="outText" onclick="" >Sign Out</span> </div>
+            <div class="signOut" onclick="location.href='{{ url_for('auth.login') }}'"><span class="outText" >Sign Out</span> </div>
 
             
 		</div>
 			
 		<div class="container"  style="opacity: 1">
-			<form id="createCampaign" method="post" >
+			<form id="createCampaign" method="post" style="height: 1350px">
 
 				<div class="box" style="height:130px; width:450px; top:160px;"><span class="label" style="font-size: 17px;">Campaign Info</span>
 					<div class="content" style="margin-left:10px;" >
@@ -125,6 +125,30 @@
 					</div>
 				</div>
 
+
+				<div class="box" style="height:90px; width:450px; margin-top:40px;"><span class="label" style="font-size: 17px;">Questionaires</span>
+					<div class="content" style="margin-left:10px;" >
+						<table  cellpadding="3">
+							<tr>
+								<td nowrap="" style="width:200px"> Select Questions: </td>
+								<td><select type="text" id="question_selector" style="width:300px" onchange="addManagerToTable()"  >
+									
+									
+									<option value='q1'> How is your experience with the campaign </option>
+									<option value="q2"> Did you enjoy the campign?</option>
+									<option value="q3"> Are you satisfied with the outcome?</option>
+									</select>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<!-- <div id='questionTable' style="overflow-y: scroll" onmousemove="a()">
+			            <table id="insertManager" cellpadding="3" >
+							<tr><th nowrap="" style="width:200px"> Manager</th></tr>
+							
+						</table>
+					</div>
+ -->				</div>
 
 				<button class="submit" type="submit"  onclick="" >Create Campaign</button>
 			</form>

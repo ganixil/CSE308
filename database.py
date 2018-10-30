@@ -253,12 +253,20 @@ if __name__ == "__main__":
     # db_session.commit()
     p1 = generate_password_hash('password')
         
-    user4 = User('user4@c.com', p1, 'User4')
-    db_session.add(user4)
-    role6 = Role('User4', 'admin')
-    role7 = Role('User4', 'canvasser')
-    role8 = Role('User4', 'manager')
-    user4.users_relation=[role6, role7, role8] # user4 = admin +  canvasser + manager
+    user1 = User('user1@c.com', p1, 'User1')
+    db_session.add(user1)
+    role1 = Role('User1', 'canvasser')
+    user1.users_relation=[role1]
+
+    user2 = User('user2@c.com', p1, 'User2')
+    db_session.add(user2)
+    role2 = Role('User2', 'canvasser')
+    user2.users_relation=[role2]
+
+    user3 = User('user3@c.com', p1, 'User3')
+    db_session.add(user3)
+    role3 = Role('User3', 'canvasser')
+    user3.users_relation=[role3]
     db_session.commit()
 
 
