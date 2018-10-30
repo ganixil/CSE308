@@ -15,7 +15,7 @@
 			</div>
             <div class="float">
             	<div class="stay" style="position:fixed">
-	                <div class="n" onclick="location.href='{{ url_for('manager.createCampaign') }}'"><span class="link">Create Campaign<span></div>
+                    <div class="n" onclick="location.href='{{ url_for('manager.createCampaign') }}'"><span class="link">Create Campaign</span></div>
 	                <div class="onPage" onclick="location.href='{{ url_for('manager.editCampaign') }}'"><span class="link">Edit Campaign</span></div>
 	                <div class="n" onclick="location.href='{{ url_for('manager.viewCampaign') }}'"><span class="link">View Campaign</span></div>
 	                <div class="n" onclick="location.href='{{ url_for('manager.viewCampaignResult') }}'"><span class="link">View Campaign Result</span></div>
@@ -27,20 +27,29 @@
 		</div>
 
 		<div class="container">
-			<form id="createCampaign">
+			<form id="createCampaign" method="post">
 				<div class="box" style="height:120px; width:450px; top:160px;"><span class="label" style="font-size: 17px;">Select Campaign</span>
 					<div class="content" style="margin-left:10px;" >
 						<table  cellpadding="3">
 							<tr>
-								<td nowrap="" style="width:200px"> Select Campaign: </td>
-								<td><select name="campaign_name" value="">
-										<option value="none"></option>
-									</select>
-								</td>
+								
+									<td nowrap="" style="width:200px"> Select Campaign: </td>
+									<td>
+										<select name="campaign_name" value="" >
+											<option value=""></option>
+											{% for item in camp %}
+												<option value='{{item.campaign_name}}'><a>
+												 {{item.campaign_name}}
+												</a>
+												</option>
+											{% endfor %}
+										</select>
+										<button alt='Submit Form'>Select Campaign</button>
+									</td>
 							</tr>
 							<tr>
-								<td nowrap="" style="width:130px; " > New Campiagn Name:</td>
-								<td> <input type="text" name="new_campaign_name"></td>
+								<td nowrap="" style="width:130px; ">Campiagn Name:</td>
+								<td> <input type="text" name="new_campaign_name" value="{{campaign_name}}"></td>
 							</tr>
 
 						</table>
@@ -55,6 +64,7 @@
 								<td nowrap="" style="width:200px"> Select Manager: </td>
 								<td><select name="manager_name" value="">
 										<option value="none"></option>
+										
 									</select>
 								</td>
 							</tr>
@@ -68,6 +78,24 @@
 							
 						</table>
 					</div>
+					<div id='manageTable' style="height: 120px;overflow-y: scroll" onmousemove="a()">
+			            <table id="insertManager" cellpadding="3" >
+							<tr><th nowrap="" style="width:200px"> Manager</th></tr>
+							{% for i in manager_name%}
+							<input name="flaskManager" type="text" class="dis" value="{{i.name}}">
+							{% endfor %}
+						</table>
+					</div>
+
+					<div id='canvasTable' style="margin-top:40px; height:120px;overflow-y: scroll" onmousemove="a()">
+			            <table id="insertCanvasser" cellpadding="3" >
+							<tr><th nowrap="" style="width:200px"> Canvasser</th></tr>
+							{% for i in canvasser_name%}
+							<input name="flaskCanvasser" type="text" class="dis" value="{{i.name}}">
+							{% endfor %}
+						</table>
+					</div>
+
 				</div>
 
  				<div class="box" style="height:130px; width:450px; top:160px;"><span class="label" style="font-size: 17px;">Time</span>

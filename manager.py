@@ -5,7 +5,8 @@ from werkzeug.exceptions import abort
 from database import db_session, User, Campaign, Role, Location,CampaignLocation,CampaignCanvasser, CampaignManager
 
 
-
+#global variables
+campaignObject = None
 
 #create the manager blueprint
 bp = Blueprint('manager', __name__, url_prefix='/manager')
@@ -42,7 +43,6 @@ def createCampaign():
 			role.roles_relation.append(mObject)
 			campObj.campaigns_relation.append(mObject)
 
-
 		for c in canvassers:
 			role = db_session.query(Role).filter(Role.role == 'canvasser',  Role.name == c).first()
 			print(role)
@@ -72,14 +72,40 @@ def viewCampaign():
 #UPDATE THIS ROUTE STATEMENT
 @bp.route('/view_campaign_result')
 def viewCampaignResult():
-	result = 1;
+	result = 1
 	return render_template('manager_html/view_campaign_result.html')
 
 
-@bp.route('/edit_campaign')
+@bp.route('/edit_campaign',methods=('GET','POST'))
 def editCampaign():
-	result = 1;
-	return render_template('manager_html/edit_campaign.html')
+
+	global campaignObject
+	if campaignObject == None:
+		campaignObject = db_session.query(Campaign)
+		return render_template('manager_html/edit_campaign.html', camp=campaignObject)
+	else:
+		campaignObject = db_session.query(Campaign)
+		campaign_name = request.form['campaign_name']
+		###Till for loop, those lines are querying for manager accounted for the campaign######
+		campaign_id = campaignObject.filter(Campaign.campaign_name == campaign_name).first().id
+		campaign_managers = db_session.query(CampaignManager).filter(CampaignManager.campaign_id == campaign_id).all()
+
+		manager_name = []
+		for cm in campaign_managers:
+			tmp = db_session.query(Role).filter(Role.id == cm.user_id).all()
+			manager_name+=tmp
+
+		###Below are the code query for canvasser assign to the campaign####
+		campaign_canvasser = db_session.query(CampaignCanvasser).filter(CampaignCanvasser.campaign_id == campaign_id).all()
+		canvasser_name = []
+		for cc in campaign_canvasser:
+			tmp = db_session.query(Role).filter(Role.id == cc.user_id).all()
+			canvasser_name+=tmp
+
+
+		return render_template('manager_html/edit_campaign.html', camp=campaignObject,campaign_name=campaign_name,manager_name=manager_name,canvasser_name=canvasser_name)
+	
+
 
 @bp.route('/create_canvas_assignment')
 def createCanvasAssignment():
