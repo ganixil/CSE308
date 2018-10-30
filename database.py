@@ -45,6 +45,7 @@ class Campaign(Base):
     campaign_name = Column(String(80), nullable = False)  # One company with a unique name
     startDate = Column(String(30), nullable=False)
     endDate = Column(String(30), nullable=False)
+    
     # talking = Column(Text, default="None", nullable= False) # defautl = None 
     # questionairs = Column(Text, nullable= True)  # question1;question2;....
     # durations = Column(Integer, default = 0, nullable=False) # default = 0

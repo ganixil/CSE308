@@ -102,8 +102,11 @@ def editCampaign():
 			tmp = db_session.query(Role).filter(Role.id == cc.user_id).all()
 			canvasser_name+=tmp
 
+		###Passing Map Geocoding address#####
+		location_id = db_session.query(CampaignLocation).filter(CampaignLocation.campaign_id == campaign_id).first().location_id
+		location_address = db_session.query(Location).filter(Location.id == location_id).first().street
 
-		return render_template('manager_html/edit_campaign.html', camp=campaignObject,campaign_name=campaign_name,manager_name=manager_name,canvasser_name=canvasser_name)
+		return render_template('manager_html/edit_campaign.html', camp=campaignObject,campaign_name=campaign_name,manager_name=manager_name,canvasser_name=canvasser_name,location=location_address)
 	
 
 

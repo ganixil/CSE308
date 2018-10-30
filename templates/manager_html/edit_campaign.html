@@ -124,7 +124,7 @@
                             </tr>
                             <tr>
                                 <td nowrap="" style="width:200px;position: relative; top:50px">Address: </td>
-                                <td> <input type="text" name="address_location" style="position:relative;top:50px; left:-20px;width:300px" name="address"></td>
+                                <td> <input type="text" name="address_location" style="position:relative;top:50px; left:-20px;width:300px" name="address" value="{{location}}"></td>
                             </tr>
                         </table>
 					</div>
@@ -135,8 +135,30 @@
 
 
 		</div>
-		
-		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBu-916DdpKAjTmJNIgngS6HL_kDIKU0aU&callback=myMap"></script>
+		<script type="text/javascript">
+			function myMap(){
+
+				var mapProp = {
+					center:new google.maps.LatLng(51.508742,-0.120850),
+			    	zoom:15,
+				};
+				var map = new google.maps.Map(document.getElementById("map"),mapProp);
+				var geocoder = new google.maps.Geocoder();
+				geocoder.geocode({'address': '{{location}}' }, function(results, status) {
+			          if (status === 'OK') {
+			            map.setCenter(results[0].geometry.location);
+			            var marker = new google.maps.Marker({
+			              map: map,
+			              position: results[0].geometry.location
+			            });
+			          } else {
+			            alert('Geocode was not successful for the following reason: ' + status);
+			          }
+			        });
+				
+			}
+		</script>
+		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCGuEpRycbTYDCcS6uxiot0x0eSLkpTbiY&callback=myMap"></script>
 		<script type="text/javascript" src="../../static/javascript/manager_js/edit_campaign.js"></script>
 	</body>
 </html>
