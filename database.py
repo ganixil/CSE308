@@ -49,7 +49,7 @@ class Campaign(Base):
     startDate = Column(String(30), nullable=False)
     endDate = Column(String(30), nullable=False)
     talking = Column(String(80), default="None", nullable= True) # defautl = None 
-    duration = Column(Integer, default = 0, nullable=True) # default = 0
+    duration = Column(Integer, nullable=True) 
     campaigns_relation= relationship("CampaignManager", backref = "campaigns",cascade="all,save-update,delete-orphan")
     campaigns_relation_1= relationship("CampaignCanvasser", backref = "campaigns",cascade="all,save-update,delete-orphan")
     campaigns_relation_2= relationship("CampaignLocation", backref = "campaigns",cascade="all,save-update,delete-orphan")
@@ -60,7 +60,7 @@ class Campaign(Base):
         self.startDate = startDate
         self.endDate = endDate
         self.talking = talking
-        self.durations = duration
+        self.duration = duration
 
 class Questionnaire(Base):
     __tablename__ = 'questionnaire'
@@ -181,8 +181,8 @@ if __name__ == "__main__":
     user4.users_relation=[role6, role7, role8] # user4 = admin +  canvasser + manager
 
 
-    campaign1 = Campaign("sell compaing1", "1/1" , "2/2","talk something","5")
-    campaign2 = Campaign("election compaing2", "1/1", "2/2","say something","5")
+    campaign1 = Campaign("sell compaing1", "1/1" , "2/2","talk something",5)
+    campaign2 = Campaign("election compaing2", "1/1", "2/2","say something",5)
     db_session.add(campaign1)
     db_session.add(campaign2)
 
