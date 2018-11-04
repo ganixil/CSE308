@@ -60,7 +60,7 @@ class Campaign(Base):
         self.startDate = startDate
         self.endDate = endDate
         self.talking = talking
-        self.durations = duration
+        self.duration = duration
 
 class Questionnaire(Base):
     __tablename__ = 'questionnaire'

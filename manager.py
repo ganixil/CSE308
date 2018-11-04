@@ -225,6 +225,7 @@ def showCampaign():
 			print("Taking----------> ", talkObj)
 
 			durationObj = db_session.query(Campaign).filter(Campaign.id == campId).first().duration
+			print("Duration is" , durationObj)
 																	       # campaign questions
 			return render_template('manager_html/edit_campaign.html', duration= durationObj, talk=talkObj,locations=displayLocation,questions=displayQuestion, camp=campaignObject, show=campaignName, managers=allMan, canvasser=allCan, currentManagers=displayManagers, currentCanvassers=displayCanvas,start=start, end=end)
 
