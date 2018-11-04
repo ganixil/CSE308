@@ -22,7 +22,7 @@ def update_ava():
 	allDay = request.args.get('allDay')
 	ava = CanAva(title,start,end,allDay,user_email)
 	db_session.add(ava)
-	logging.info("updating availability for email "+user_email+" with "+tile+""+start+""+end)
+	logging.info("updating availability for email "+user_email+" with "+title+""+start+""+end)
 	db_session.commit()
 
 	return "set availability ok"

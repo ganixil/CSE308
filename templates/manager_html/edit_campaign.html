@@ -27,29 +27,27 @@
 		</div>
 
 		<div class="container">
-			<form id="createCampaign" method="post">
+			<form id="createCampaign" method='post' action="{{url_for('manager.showCampaign')}}">
 				<div class="box" style="height:120px; width:450px; top:160px;"><span class="label" style="font-size: 17px;">Select Campaign</span>
 					<div class="content" style="margin-left:10px;" >
 						<table  cellpadding="3">
 							<tr>
-								
-									<td nowrap="" style="width:200px"> Select Campaign: </td>
-									<td>
-										<select name="campaign_name" value="" >
-											<option value=""></option>
-											{% for item in camp %}
-												<option value='{{item.campaign_name}}'><a>
-												 {{item.campaign_name}}
-												</a>
-												</option>
-											{% endfor %}
-										</select>
-										<button alt='Submit Form'>Select Campaign</button>
-									</td>
+								<td nowrap="" style="width:200px"> Select Campaign: </td>
+								<td><select id="scampaign_name" value="" onchange="displayEdit()"> 
+										<option value="none" ></option>
+										<option value='{{show}}' selected="selected">{{show}}</option>
+										
+										{% for item in camp %}
+
+											<option value='{{item.campaign_name}}'> {{item.campaign_name}} </option>
+											
+										{% endfor %}
+									</select>
+								</td>
 							</tr>
 							<tr>
-								<td nowrap="" style="width:130px; ">Campiagn Name:</td>
-								<td> <input type="text" name="new_campaign_name" value="{{campaign_name}}"></td>
+								<td nowrap="" style="width:130px; " > New Campiagn Name:</td>
+								<td> <input type="text" name="new_campaign_name" id="new_campaign_name" value ='{{show}}'></td>
 							</tr>
 
 						</table>
@@ -64,7 +62,10 @@
 								<td nowrap="" style="width:200px"> Select Manager: </td>
 								<td><select name="manager_name" value="">
 										<option value="none"></option>
+										{% for item in managers %}
+											<option value='{{item}}'> {{item}} </option>
 										
+										{% endfor %}
 									</select>
 								</td>
 							</tr>
@@ -72,27 +73,49 @@
 								<td nowrap="" style="width:200px"> Select Canvasser: </td>
 								<td><select name="canvasser_name" value="">
 										<option value="none"></option>
+										{% for item in canvasser %}
+											<option value='{{item}}'> {{item}} </option>
+										
+										{% endfor %}
 									</select>
 								</td>
 							</tr>
 							
 						</table>
 					</div>
+					
 					<div id='manageTable' style="height: 120px;overflow-y: scroll" onmousemove="a()">
 			            <table id="insertManager" cellpadding="3" >
-							<tr><th nowrap="" style="width:200px"> Manager</th></tr>
-							{% for i in manager_name%}
-							<input name="flaskManager" type="text" class="dis" value="{{i.name}}">
-							{% endfor %}
+ 							<tr><th nowrap="" style="width:200px"> Manager</th></tr>
+								{% for item in currentManagers %}
+									<script type="text/javascript">
+										var b = '{{item}}'
+										var node = document.getElementById("insertManager");//insertManager is name of table
+										var trNode = document.createElement("input");
+										trNode.setAttribute("name", "flaskManager");
+										trNode.setAttribute("type", "text");
+										trNode.setAttribute("class", "dis");
+										trNode.setAttribute("value", b)
+										node.appendChild(trNode);
+									</script>
+								{% endfor %}
 						</table>
 					</div>
-
+					
 					<div id='canvasTable' style="margin-top:40px; height:120px;overflow-y: scroll" onmousemove="a()">
 			            <table id="insertCanvasser" cellpadding="3" >
 							<tr><th nowrap="" style="width:200px"> Canvasser</th></tr>
-							{% for i in canvasser_name%}
-							<input name="flaskCanvasser" type="text" class="dis" value="{{i.name}}">
-							{% endfor %}
+								{% for item in currentCanvassers %}
+									<script type="text/javascript">
+										var node = document.getElementById("insertCanvasser");//insertManager is name of table
+										var trNode = document.createElement("input");
+										trNode.setAttribute("name", "flaskCanvasser");
+										trNode.setAttribute("type", "text");
+										trNode.setAttribute("class", "dis");
+										trNode.setAttribute("value", b)
+										node.appendChild(trNode);
+									</script>
+								{% endfor %}
 						</table>
 					</div>
 
@@ -102,13 +125,13 @@
 					<div class="content" style="margin-left: 30px">
 						<table>
 							<tr>
-								<td nowrap="" style="width:130px; " > Set Date: </td>
-								<td> <input type="date" name="campaign_date"></td>
+								<td nowrap="" style="width:130px; " > Start Date: </td>
+								<td> <input type="date" name="start_date" value='{{start}}'></td>
 							</tr>
 							<tr>
-								<td nowrap="" style="width:130px; " > Set Time: </td>
-								<td> <input type="time" name="campaign_time"></td>
-								<td nowrap="" style="font-size: 11px " > hh:mm AM/PM </td>
+								<td nowrap="" style="width:130px; " > End Date: </td>
+								<td> <input type="date" name="end_date" value='{{end}}'></td>
+								
 							</tr>
 						</table>
 					</div>
@@ -124,40 +147,18 @@
                             </tr>
                             <tr>
                                 <td nowrap="" style="width:200px;position: relative; top:50px">Address: </td>
-                                <td> <input type="text" name="address_location" style="position:relative;top:50px; left:-20px;width:300px" name="address" value="{{location}}"></td>
+                                <td> <input type="text" name="address_location" style="position:relative;top:50px; left:-20px;width:300px" name="address"></td>
                             </tr>
                         </table>
 					</div>
 				</div>
-				<button class="submit"  onclick="" >Update Campaign</button>
+				<button class="submit" name='submit_btn' value="submit_form">Update Campaign</button>
 			</form>
 
 
 
 		</div>
-		<script type="text/javascript">
-			function myMap(){
-
-				var mapProp = {
-					center:new google.maps.LatLng(51.508742,-0.120850),
-			    	zoom:15,
-				};
-				var map = new google.maps.Map(document.getElementById("map"),mapProp);
-				var geocoder = new google.maps.Geocoder();
-				geocoder.geocode({'address': '{{location}}' }, function(results, status) {
-			          if (status === 'OK') {
-			            map.setCenter(results[0].geometry.location);
-			            var marker = new google.maps.Marker({
-			              map: map,
-			              position: results[0].geometry.location
-			            });
-			          } else {
-			            alert('Geocode was not successful for the following reason: ' + status);
-			          }
-			        });
-				
-			}
-		</script>
+		
 		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCGuEpRycbTYDCcS6uxiot0x0eSLkpTbiY&callback=myMap"></script>
 		<script type="text/javascript" src="../../static/javascript/manager_js/edit_campaign.js"></script>
 	</body>

@@ -2,15 +2,6 @@
 <html>
 	<head>
 		<link rel="stylesheet" type="text/css" href="../../static/css/manager.css">
-		
-		<script type="text/javascript">
-			document.querySelector('input.deleteM').addEventListener('click', function() {
-				//var n = document.getElementsByName('flaskManager');
-				alert("Button");
-
-			});
-		</script>
-		
 	</head>
     
 	<body  >
@@ -33,7 +24,7 @@
 		</div>
 			
 		<div class="container"  style="opacity: 1">
-			<form id="createCampaign" method="post" style="height: 1350px">
+			<form id="createCampaign" method="post" style="height: 1800px">
 
 				<div class="box" style="height:130px; width:450px; top:160px;"><span class="label" style="font-size: 17px;">Campaign Info</span>
 					<div class="content" style="margin-left:10px;" >
@@ -48,7 +39,7 @@
 									
 									<option value='null' ></option>
 									{% for item in managers %}
-										<option value='{{item.name}}'> {{item.name}} </option>
+										<option value='{{item}}'> {{item}} </option>
 										
 									{% endfor %}
 									
@@ -73,7 +64,7 @@
 								<td><select id="canvasser_selector" onchange="addCanvasserToTable()">
 										<option value='null' ></option>
 									{% for item in canvasser %}
-										<option value='{{item.name}}'> {{item.name}} </option>
+										<option value='{{item}}'> {{item}} </option>
 										
 									{% endfor %}
 										
@@ -110,50 +101,89 @@
 					<div class="content" style="margin-left: -15px; margin-top: -10px">
 						<table>
                             <tr>
-                                <td nowrap="" style="width:200px;position: relative; top:-80px">Pick Location:</td>
+                                <td nowrap="" style="width:200px;position: relative; top:-80px">Pick Locations:</td>
                                 <td><div id="map" name="map_location" style="position: relative; left:5px; top: 30px;height: 250px; width: 270px;background-color: blue"></div></td>
                             </tr>
                             <tr>
                                 <td nowrap="" style="width:200px;position: relative; top:50px">Street Address: </td>
-                                <td> <input type="text" name="address" style="position:relative;top:50px; left:-20px;width:270px" ></td>
+                                <td> <input type="text" id="address" style="position:relative;top:50px; left:-20px;width:270px" ></td>
                             </tr>
+                            <tr>
+                            	<td></td>
+                            	<td>
+                            	<button class="submit" type="button" onclick="addLocationToTable()">Add Location</button>
+                            	</td>
 
-
-
-
+                            </tr>
                         </table>
+					</div>
+					<div id='locationTable' style="overflow-y: scroll" onmousemove="a()">
+			            <table id="insertLocation" cellpadding="3" >
+							<tr><th nowrap="" style="width:200px">Locations</th></tr>
+						</table>
 					</div>
 				</div>
 
 
-				<div class="box" style="height:90px; width:450px; margin-top:40px;"><span class="label" style="font-size: 17px;">Questionaires</span>
+				<div class="box" style="height:140px; width:450px; margin-top:40px;"><span class="label" style="font-size: 17px;">Questionaires</span>
 					<div class="content" style="margin-left:10px;" >
 						<table  cellpadding="3">
 							<tr>
-								<td nowrap="" style="width:200px"> Select Questions: </td>
-								<td><select type="text" id="question_selector" style="width:300px" onchange="addManagerToTable()"  >
-									
-									
-									<option value='q1'> How is your experience with the campaign </option>
-									<option value="q2"> Did you enjoy the campign?</option>
-									<option value="q3"> Are you satisfied with the outcome?</option>
+								<td nowrap="" style="width:200px"> Enter Questions: </td>
+								<td>
+								<input id="questions" type="" name="questions">
+								</td>
+							</tr>
+							<tr>
+								<td></td>
+								<td>
+									<button class="submit-location" type="button" onclick="addQuestionToTable()">Add Question</button>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div id='questionTable' style="overflow-y: scroll" onmousemove="a()">
+			            <table id="insertQuestions" cellpadding="3" >
+							<tr><th nowrap="" style="width:200px">Questions</th></tr>
+						</table>
+					</div>
+			</div>
+			<div class="box" style="height:120px; width:450px; top:160px;"><span class="label" style="font-size: 17px;">Set Talking Points</span>
+					<div class="content" style="margin-left:10px;" >
+						<table  cellpadding="3">
+							<tr><span class="label" style="font-size: 17px;">What the Canvasser should say during the visit</span></tr>
+							<tr>
+								<textarea name="talking" style="width: 300px;height: 50px;margin-top: 2px;"></textarea>
+							</tr>
+							
+						</table>
+					</div>
+			</div>
+
+			<div class="box" style="height:90px; width:450px; top:160px;"><span class="label" style="font-size: 17px;">Duration of Canvas</span>
+					<div class="content" style="margin-left:10px;" >
+						<table  cellpadding="3">
+							<tr>
+								<td nowrap="" style="width:200px"> Set Duration: </td>
+								<td>
+									<select name = "duration">
+										<option value="5">5 minutes</option>
+										<option value="10">10 minutes</option>
+										<option value="15">15 minutes</option>
+										<option value="20">20 minutes</option>
+										<option value="25">25 minutes</option>
+										<option value="30">30 minutes</option>
 									</select>
 								</td>
 							</tr>
 						</table>
 					</div>
-					<!-- <div id='questionTable' style="overflow-y: scroll" onmousemove="a()">
-			            <table id="insertManager" cellpadding="3" >
-							<tr><th nowrap="" style="width:200px"> Manager</th></tr>
-							
-						</table>
-					</div>
- -->				</div>
+			</div>
 
 				<button class="submit" type="submit"  onclick="" >Create Campaign</button>
 			</form>
 		</div>
 	</body>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBu-916DdpKAjTmJNIgngS6HL_kDIKU0aU&callback=myMap"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCGuEpRycbTYDCcS6uxiot0x0eSLkpTbiY"></script>
     <script type="text/javascript" src="../../static/javascript/manager_js/create_campaign.js"></script>
 </html>
