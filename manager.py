@@ -72,13 +72,14 @@ def createCampaign():
 		for l  in locations:
 			loc = CampaignLocation(l)
 			campObj.campaigns_relation_2.append(loc)
-
+			db_session.commit()
 
 		####################################################ADD question to database
 		questions = request.form.getlist('flaskQuestion')
 		for q in questions:
 			ques = Questionnaire(q)
 			campObj.campaigns_relation_3.append(ques)
+			db_session.commit()
 
 
 		db_session.commit()
@@ -189,7 +190,7 @@ def showCampaign():
 				if r.id in canvasId:
 					nameObj = db_session.query(User).filter(User.email== r.email).first();
 					displayCanvas.append(nameObj.name)
-				
+			
 			############################################	 Display All Manager in selector
 			allMan = []
 			roleList = db_session.query(Role).filter(Role.role =='manager')
@@ -220,10 +221,20 @@ def showCampaign():
 			displayLocation = []
 			for l in currentLocations:
 				if l.campaign_id == campId:
-					displayQuestion.append(l.location)
+					displayLocation.append(l.location)
+			print("Locations for this campaign is : ",displayLocation)
+
+
+			############################################	 Display current talking point in table
+			talkObj = db_session.query(Campaign).filter(Campaign.id == campId).first().talking
+
+
+
+
+
 
 																	       # campaign questions
-			return render_template('manager_html/edit_campaign.html',locations='displayLocation',questions=displayQuestion, camp=campaignObject, show=campaignName, managers=allMan, canvasser=allCan, currentManagers=displayManagers, currentCanvassers=displayCanvas,start=start, end=end)
+			return render_template('manager_html/edit_campaign.html',talk=talkObj,locations='displayLocation',questions=displayQuestion, camp=campaignObject, show=campaignName, managers=allMan, canvasser=allCan, currentManagers=displayManagers, currentCanvassers=displayCanvas,start=start, end=end)
 
 
 
