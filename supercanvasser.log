@@ -4,5 +4,8 @@ INFO:root:app created successfully
 INFO:root:server cert and key set successfully
 INFO:root:run app
 WARNING:werkzeug: * Debugger is active!
-INFO:werkzeug: * Debugger PIN: 715-22INFO:werkzeug: * Restarting with stat
- in 'C:\\Users\\Kevin Lin\\Desktop\\CSE308\\main.py', reloading
+INFO:werkzeug: * Debugger PIN: 715-223-168
+INFO:werkzeug: * Running on https://127.0.0.1:5000/ (Press CTRL+C to quit)
+INFO:werkzeug:127.0.0.1 - - [03/Nov/2018 23:29:58] "GET / HTTP/1.1" 302 -
+INFO:werkzeug:127.0.0.1 - - [03/Nov/2018 23:29:58] "GET /auth/home/0 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Nov/2018 23:29:59] "GET /static/image/home.jpg HTTP/1.1" 200 -
