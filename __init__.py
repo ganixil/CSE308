@@ -1,12 +1,15 @@
 import os
 import logging
-from flask import Flask, redirect, url_for
+from flask import Flask, redirect, url_for, session
 from database import db_session, init_db
+
+UPLOAD_FOLDER = "static/image/profile/"
 
 # Factory method to create the flask app
 def create_app(test_config=None):
     # Create and configure the app
     app = Flask(__name__, instance_relative_config=True)
+    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
     app.config.from_mapping(
         SECRET_KEY='dev',
     )
@@ -33,7 +36,7 @@ def create_app(test_config=None):
     # Redirect to the first page which is the login page
     @app.route('/')
     def start():
-        return redirect(url_for('auth.login'))
+        return redirect(url_for('auth.home', index = 0))
 
     # Register the flask app's blueprints
     import auth

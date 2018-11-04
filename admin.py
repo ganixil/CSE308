@@ -2,121 +2,177 @@ from flask import (Blueprint, flash, g, redirect, render_template, request, url_
 from werkzeug.exceptions import abort
 from database import db_session, User, GlobalVariables, Role
 from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.utils import secure_filename
 
 # Create the admin blueprint
 bp = Blueprint('admin', __name__, url_prefix='/admin')
 
+ALLOWED_EXTENSIONS = set(["png", "jpg", "jpeg", "gif"])
+
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def unique_user(old_email, new_email):
+    if old_email!= new_email:
+        new_user = User.query.filter(User.email == new_email).first()
+        if new_user is not None:
+            return False
+    return True
 
 # Function to render the admin page and set the admin page url
-@bp.route('/adminPage/<u_name>', methods=('GET', 'POST'))
+@bp.route('/adminPage/<u_name>/', methods=('GET', 'POST'))
 def adminPage(u_name):
-        email = None
-        if 'user' in session:
-                email = session['user']
-        else:
-                return render_template('index.html') 
-
-        if request.method == 'POST':  # Response to update
-                workday = request.form['workday']
-                movspeed = request.form['movspeed']
-                if(workday is None or movspeed is None):  # No invalid values
-                        user_table = db_session.query(User).order_by(User.email).filter(User.email != email)
-		      # onwer_table = db_session.query(User).filter(User.email == email)
-                        global_table = db_session.query(GlobalVariables).first()
-                        return render_template('admin_html/admin.html',usr_session =user_table,gblvar_session= global_table,u_name=u_name)
-                else:
-                        global_table= db_session.query(GlobalVariables).first()
-                        if(global_table.workDayLength != int(workday)):
-                                global_table.workDayLength = int(workday)
-                        if(global_table.averageSpeed != int(movspeed)):
-                                global_table.averageSpeed = int(movspeed)
-                        db_session.commit()
-
-        user_table = db_session.query(User).order_by(User.email).filter(User.email != email )
-	# onwer_table = db_session.query(User).filter(User.email == email).first()
-        global_table = db_session.query(GlobalVariables).first()
-        return render_template('admin_html/admin.html',usr_session =user_table ,gblvar_session= global_table,u_name=u_name)
+    if 'info' not in session:
+        return render_template('index.html', error = None)
+    user_table = db_session.query(User).order_by(User.email).filter(User.email != session['info']['email'])
+    users={}  # Dic to store other users info 
+    if 'info' in session:
+        session['info']['account'] = 'admin'
+    for ele in user_table:
+        instance={}
+        instance['name'] = ele.name
+        instance['email'] = ele.email
+        instance['avatar'] = ele.avatar
+        instance['roles']=[]
+        for role_table in ele.users_relation:
+            instance['roles'].append(role_table.role)
+        users[ele.email]= instance
+        print("one other user %s ----> %s" %(ele.email, users[ele.email]))
+    if request.method == 'POST':  
+        workday = request.form['workday']
+        movspeed = request.form['movspeed']
+        params = GlobalVariables.query.first()
+        commmit = False
+        if (int(workday) != session['params'][0]):
+            session['params'][0] = int(workday)
+            commmit = True
+            params.workDayLength = int(workday)
+        if (int(movspeed) != session['params'][1]):
+            commmit = True
+            session['params'][1] = int(movspeed)
+            params.averageSpeed = int(movspeed)
+        if commmit:
+            db_session.commit()
+    session['users'] = users
+    for ele in users:
+        print(ele) 
+    return render_template('admin_html/admin.html')
 
 
 # Function that handles deleting users
-@bp.route('/<email>/delete', methods=('GET', 'POST'))
-def delete(email):
-        if request.method == 'POST':
-                deletedUser = User.query.filter(User.email == email).first()
-                db_session.delete(deletedUser)
-                roles = Role.query.filter(Role.email == email).all()
-                # Handle deletion for rows related to the user that are outside of the user table
-                for ele in roles:
-                        db_session.delete(ele)
-                        deletedUser.users_relation.remove(ele)
-                db_session.commit()
-                user = session['user']
-                return redirect(url_for('admin.adminPage',u_name=user))
+@bp.route('/delete/<u_email>/', methods=('GET', 'POST'))
+def delete(u_email):
+    if request.method == 'POST':
+        deletedUser = User.query.filter(User.email == u_email).first()
+        if deletedUser is not None:
+            db_session.delete(deletedUser)
+            db_session.commit() 
+    return redirect(url_for('admin.adminPage',u_name=session['info']['name']))
+        
+# Function for handling adding
+@bp.route('/add', methods=('GET', 'POST'))
+def add():
+    print("Enter the add funcion")
+    if request.method == "POST":
+        name = request.form['name']
+        email = request.form['email']
+        password = request.form['password']
+        confirm_password = request.form['confirm-password']
+        file = None
+        filename = None
+        if 'file' in request.files:
+            file = request.files['file']
+        admin = request.form.get('admin')
+        manager = request.form.get('manager')
+        canvasser = request.form.get('canvasser')
+        print('roles---->')
+        print(admin)
+        print(manager)
+        print(canvasser)
+        print("-----------> over here")
+        if not (admin == "admin" or manager == "manager" or canvasser == "canvasser"):
+            flash("Fail to add, You must set at least one position for this user!!", "error")
+            return redirect(url_for("admin.adminPage", u_name = session['info']['name']))
+        if password != confirm_password:
+            flash("Fail to add, Please Match password!!", "error")
+            return redirect(url_for("admin.adminPage", u_name = session['info']['name']))
+        if not unique_user(session['info']['email'], email):
+            flash("Fail to add, This email already is used!!")
+            return redirect(url_for("admin.adminPage", u_name = session['info']['name']))
+        user = User.query.filter(User.email == email).first()
+        if user is not None:
+            flash("Fail to add, This email already exists, please add another one", "error")
+            return redirect(url_for("admin.adminPage", u_name = session['info']['name']))
+        else:  # Everything already matches
+            if file and file.filename != '' and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            ps = generate_password_hash(password)
+            new_user = User(email,ps, name, filename)
+            db_session.add(new_user)
+            db_session.commit()
+            if admin == "admin":
+                role = Role('admin')
+                new_user.users_relation.append(role)
+            if canvasser == "canvasser":
+                role = Role('canvasser')
+                new_user.users_relation.append(role)
+            if manager == "manager":
+                role = Role('manager')
+                new_user.users_relation.append(role)
+            db_session.commit()
+            flash("add user Successfully", "info")
+    return redirect(url_for('admin.adminPage', u_name = session['info']['name']))
 
-
-# Function that handles editing users
-@bp.route('/editUser', methods=('GET', 'POST'))
-def editUser():
-        if request.method == 'POST':
-                email = request.form['email']
-                realEmail = request.form['realEmail']
-                password = request.form['password']
-                name = request.form['name']
-                if(password == 'Secret Password'):
-                        user = User.query.filter(User.email == email).first()
-                        user.email = email
-                        user.name = name
-                        db_session.commit()
-                        admin = session['user']
-                        return redirect(url_for('admin.adminPage',u_name=admin))
-                else:
-                        user = User.query.filter(User.email == email).first()
-                        user.email = email
-                        user.name = name
-                        user.password = generate_password_hash(password)
-                        db_session.commit()
-                        admin = session['user']
-                        return redirect(url_for('admin.adminPage',u_name=admin))
-                
-# Function to render the admin page and set the admin page url (to be implemented)
-# @bp.route('/adminProfile/<u_email>', methods=('GET', 'POST'))
-# def adminProfile(u_email):
-# 	if request.method == 'POST':  # Response to update
-# 		name = request.form['name']
-# 		# imageFile = request.form['Upload photo']  ---> solve later
-# 		email = request.form['email']
-# 		pasword = request.form['pasword']
-# 		pre_email= None
-# 		if 'user' in session:
-# 			pre_email = session['user'] # Getting current email
-# 			print(pre_email)
-# 		if pre_email is not None:
-# 			onwer_table = db_session.query(User).filter(User.email == email).first()
-# 			check_email =None
-# 			if email != pre_email:#Change the email---> need to check if duplicate
-# 	        	check_email = db_session.query(User).order_by(User.email).filter(User.email == email)
-# 	        if check_email is not None:
-# 	        	flask("duplicate email, please enter unique one")
-# 	        else:
-# 	        	change= False
-# 	        	if onwer_table != email  :
-# 	        		onwer_table.email = email
-# 	        		change = True
-# 	        	if onwer_table.name != name:
-# 	        		onwer_table.name = name
-# 	        		change = True
-# 	        	if(not check_password_hash(onwer_table.password, password)):
-# 	        		onwer_table.password = generate_password_hash(password)
-# 	        		change = True
-# 	        	if change:
-# 	        		db_session.commit() #Update owenr_table
-# 	elif request.method == 'GET':  # Response to get
-# 		onwer_table = db_session.query(User).filter(User.email == u_email).first()
-# 		request.form['name'] =  onwer_table.name
-# 		request.form['Upload photo'] = url_for('static', filename='image/'+ u_email)
-# 		request.form['email'] = onwer_table.email
-# 		request.form['pasword'] = owenr_table.password
-
-# 	return return redirect(url_for('admin.adminProfile',u_email=user.email))
-
-
+#  Function that handles editing users
+@bp.route('/edit/<u_email>', methods=('GET', 'POST'))
+def edit(u_email):
+    file = None
+    filename = None
+    if request.method == "POST":
+        print("Enter post for editing user")
+        user = User.query.filter(User.email == u_email).first()
+        filename = user.avatar
+        name = request.form['name']
+        email = request.form['email']
+        admin = request.form.get('admin')
+        manager = request.form.get('manager')
+        canvasser = request.form.get('canvasser')
+        if 'file' in request.files:
+            file = request.files['file']
+        if not (admin == "admin" or manager == "manager" or canvasser == "canvasser"):
+            flash("Fail to edit, You must set at least one position for this user!!", "error")
+            return redirect(url_for("admin.adminPage", u_name = session['info']['name']))
+        if not unique_user(u_email, email):
+            flash("Fail to edit, This email already is used!!", "error")
+            return redirect(url_for("admin.adminPage", u_name = session['info']['name']))
+        if file and file.filename != ''and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        # Match everthing
+        user.name = name
+        user.email = email
+        user.avatar = filename
+        role_relation = user.users_relation
+        roles = []
+        others = []
+        if admin == "admin":
+            others.append(admin)
+        if manager == "manager":
+            others.append(manager)
+        if canvasser == "canvasser":
+            others.append(canvasser)
+        for ele in role_relation:
+            if ele.role not in others:
+                user.users_relation.remove(ele)
+            else:
+                roles.append(ele.role)
+        for ele in others:
+            if ele not in roles:
+                role = Role(ele)
+                user.users_relation.append(role)
+        db_session.commit()
+        flash("Saved Successfully","info")
+        print("Pass here")
+    return redirect(url_for('admin.adminPage', u_name = session['info']['name']))
