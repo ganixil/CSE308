@@ -35,10 +35,14 @@
 								<td nowrap="" style="width:200px"> Select Campaign: </td>
 								<td><select id="scampaign_name" value="" onchange="displayEdit()"> 
 										<option value="none" ></option>
-										<otion value='{{show}}' selected="selected">{{show}}</option>
+										
 										
 										{% for item in camp %}
-											<option value='{{item.campaign_name}}'> {{item.campaign_name}} </option>
+											{% if item.campaign_name == show %}
+												<option value='{{item.campaign_name}}' selected="selected"> {{item.campaign_name}}</option>
+											{% else %}
+												<option value='{{item.campaign_name}}'> {{item.campaign_name}}</option>
+											{% endif %}
 										{% endfor %}
 									</select>
 								</td>
@@ -238,12 +242,27 @@
 								<td nowrap="" style="width:200px"> Set Duration: </td>
 								<td>
 									<select name = "duration">
-										<option value="5">5 minutes</option>
-										<option value="10">10 minutes</option>
-										<option value="15">15 minutes</option>
-										<option value="20">20 minutes</option>
-										<option value="25">25 minutes</option>
-										<option value="30">30 minutes</option>
+
+
+										{%  for num in range(1,7) %}
+											<option value="5">5 minutes</option>
+											<option value="10">10 minutes</option>
+											<option value="15">15 minutes</option>
+											<option value="20">20 minutes</option>
+											<option value="25">25 minutes</option>
+											<option value="30">30 minutes</option>
+
+										{% endfor %}
+
+										<!-- {% for item in camp %}
+											{% if item.campaign_name == show %}
+												<option value='{{item.campaign_name}}' selected="selected"> {{item.campaign_name}}</option>
+											{% else %}
+												<option value='{{item.campaign_name}}'> {{item.campaign_name}}</option>
+											{% endif %}
+										{% endfor %}
+ -->
+
 									</select>
 								</td>
 							</tr>

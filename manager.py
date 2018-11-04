@@ -33,7 +33,6 @@ def createCampaign():
 	for e in canvasser_email:
 		canvasser_name.append(db_session.query(User).filter(User.email==e).first().name)
 
-
 	campaignObject = db_session.query(Campaign)
 	if request.method == 'POST':
 		
@@ -83,9 +82,6 @@ def createCampaign():
 
 
 		db_session.commit()
-		
-
-
 	else:
 		return render_template('manager_html/create_campaign.html', managers=manager_name, canvasser=canvasser_name)
 
@@ -99,7 +95,7 @@ def showCampaign():
 
 		try:
 			if request.form['submit_btn'] == 'submit_form':
-				
+				print("POST_SUBMIT_-------------------")
 				#Update old Campaign name
 				oldCamp = db_session.query(Campaign).filter(Campaign.campaign_name ==  request.form['scampaign_name']).first()
 				oldCamp.campaign_name = request.form['new_campaign_name']
@@ -216,7 +212,6 @@ def showCampaign():
 					displayQuestion.append(q.question)
 
 			############################################	 Display current Location in table
-
 			currentLocations = db_session.query(CampaignLocation)
 			displayLocation = []
 			for l in currentLocations:
@@ -227,14 +222,11 @@ def showCampaign():
 
 			############################################	 Display current talking point in table
 			talkObj = db_session.query(Campaign).filter(Campaign.id == campId).first().talking
+			print("Taking----------> ", talkObj)
 
-
-
-
-
-
+			durationObj = db_session.query(Campaign).filter(Campaign.id == campId).first().duration
 																	       # campaign questions
-			return render_template('manager_html/edit_campaign.html',talk=talkObj,locations=displayLocation,questions=displayQuestion, camp=campaignObject, show=campaignName, managers=allMan, canvasser=allCan, currentManagers=displayManagers, currentCanvassers=displayCanvas,start=start, end=end)
+			return render_template('manager_html/edit_campaign.html', duration= durationObj, talk=talkObj,locations=displayLocation,questions=displayQuestion, camp=campaignObject, show=campaignName, managers=allMan, canvasser=allCan, currentManagers=displayManagers, currentCanvassers=displayCanvas,start=start, end=end)
 
 
 
