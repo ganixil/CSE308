@@ -6,6 +6,31 @@ INFO:root:run app
 WARNING:werkzeug: * Debugger is active!
 INFO:werkzeug: * Debugger PIN: 715-223-168
 INFO:werkzeug: * Running on https://127.0.0.1:5000/ (Press CTRL+C to quit)
-INFO:werkzeug:127.0.0.1 - - [03/Nov/2018 23:29:58] "GET / HTTP/1.1" 302 -
-INFO:werkzeug:127.0.0.1 - - [03/Nov/2018 23:29:58] "GET /auth/home/0 HTTP/1.1" 200 -
-INFO:werkzeug:127.0.0.1 - - [03/Nov/2018 23:29:59] "GET /static/image/home.jpg HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 09:26:20] "GET / HTTP/1.1" 302 -
+INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 09:26:20] "GET /auth/home/0 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 09:26:21] "GET /static/css/bs_css/bootstrap.min.css HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 09:26:21] "GET /static/css/js_css/jquery-ui.min.css HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 09:26:21] "GET /static/css/bs_css/font-awesome.css HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 09:26:21] "GET /static/css/bs_css/font-awesome.min.css HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 09:26:21] "GET /static/js/bootstrap.min.js HTTP/1.1" 404 -
+INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 09:26:21] "GET /static/js/jquery.min.js HTTP/1.1" 404 -
+INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 09:26:21] "GET /static/js/home.js HTTP/1.1" 404 -
+INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 09:26:21] "GET /static/css/home.css HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 09:26:21] "GET /static/image/logo.png HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 09:26:21] "GET /static/image/profile/avatar.png HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 09:26:21] "GET /static/image/title_logo.png HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 09:26:21] "GET /static/js/bootstrap.min.js HTTP/1.1" 404 -
+INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 09:26:21] "GET /static/js/home.js HTTP/1.1" 404 -
+INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 09:26:21] "GET /static/image/home.jpg HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 09:26:36] "GET / HTTP/1.1" 302 -
+INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 09:26:36] "GET /auth/home/0 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 09:26:36] "GET /static/js/jquery.min.js HTTP/1.1" 404 -
+INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 09:26:36] "GET /static/js/bootstrap.min.js HTTP/1.1" 404 -
+INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 09:26:36] "GET /static/js/home.js HTTP/1.1" 404 -
+INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 09:26:48] "GET / HTTP/1.1" 302 -
+INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 09:26:48] "GET /auth/home/0 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 09:26:49] "GET /static/js/jquery.min.js HTTP/1.1" 404 -
+INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 09:26:49] "GET /static/js/bootstrap.min.js HTTP/1.1" 404 -
+INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 09:26:49] "GET /static/js/home.js HTTP/1.1" 404 -
+INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 09:30:23] "GET /static/css/bs_css/bootstrap.min.css.map HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 09:30:41] "GET /favicon.ico HTTP/1.1" 404 -
