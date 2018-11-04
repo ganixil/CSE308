@@ -128,7 +128,7 @@ class GlobalVariables(Base):
     __tablename__ = 'globals'
     id = Column(Integer, primary_key=True)
     workDayLength = Column(Integer, default = 1, nullable =False)
-    averageSpeed = Column(Integer, default = 1, nullable = False)
+    averageSpeed = Column(Float, default = 1, nullable = False)
     hqX = Column(Float)
     hqY = Column(Float)
 
@@ -244,7 +244,7 @@ if __name__ == "__main__":
     campaign1.campaigns_relation_2 = [testL1, testL2]
     campaign2.campaigns_relation_2.append(testL3)
 
-    glo = GlobalVariables(1, 1)
+    glo = GlobalVariables(1, 1,1,1)
     db_session.add(glo)
     
     db_session.commit()

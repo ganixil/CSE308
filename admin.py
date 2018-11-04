@@ -47,11 +47,11 @@ def adminPage(u_name):
         if (int(workday) != session['params'][0]):
             session['params'][0] = int(workday)
             commmit = True
-            params.workDayLength = int(workday)
+            params.workDayLength = int(workday)*60
         if (int(movspeed) != session['params'][1]):
             commmit = True
             session['params'][1] = int(movspeed)
-            params.averageSpeed = int(movspeed)
+            params.averageSpeed = int(movspeed)/60
         if commmit:
             db_session.commit()
     session['users'] = users

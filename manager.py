@@ -327,7 +327,9 @@ def createCanvasAssignment():
 			sortComplete = 1
 			for i in range(len(dates)):
 				if(i != (len(dates)-1)):
+
 					if(dates[i].date > dates[i+1].date):
+
 						temp = dates[i+1]
 						dates[i+1] = dates[i]
 						dates[i] = temp
