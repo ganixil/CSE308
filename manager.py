@@ -45,7 +45,7 @@ def createCampaign():
 		talking = request.form['talking']
 		duration = request.form['duration']
 
-		campObj = Campaign(campaignName, startdate, enddate, talking,duration)
+		campObj = Campaign(campaignName, startdate, enddate, talking,int(duration))
 		db_session.add(campObj)
 
 		####################################################ADD Manager to database
