@@ -1,13 +1,19 @@
-
 function generate_map() {
-	var mapOptions = {
-	    center: new google.maps.LatLng(51.5, -0.12),
-	    zoom: 10,
-	    mapTypeId: google.maps.MapTypeId.HYBRID
+		var mapOptions = {
+		    center: new google.maps.LatLng(51.5, 40.12),
+		    zoom: 10,
+		    mapTypeId: google.maps.MapTypeId.HYBRID
+		}
+		var map = new google.maps.Map(document.getElementById("map"), mapOptions);
 	}
-	var map = new google.maps.Map(document.getElementById("map"), mapOptions);
-}
+generate_map();
+// <option value='{{show}}' selected="selected">{{show}}</option>
+function displayEdit(){
+	var a = document.getElementById("scampaign_name");
+	document.getElementById("new_campaign_name").value = a.value; 
+	document.getElementById("createCampaign").submit();
 
+}
 function a(){
 	document.addEventListener("click", function(e){
 		if(e.target.name == "flaskManager"){
@@ -51,12 +57,11 @@ function a(){
 	});
 }
 
-
-
-
 function addManagerToTable(){
+	console.log("Im here and b = ");
 	var a = document.getElementById("manager_selector");
 	var b = a.value;
+	
 	if(b != "null"){
 		var ob = document.getElementsByName("flaskManager");
 		if(ob.length == 0){
@@ -189,5 +194,3 @@ function exists(text, arr ){
 	}
 	return false;
 }
-//
-//<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBu-916DdpKAjTmJNIgngS6HL_kDIKU0aU&callback=myMap"></script>

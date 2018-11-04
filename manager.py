@@ -37,27 +37,29 @@ def createCampaign():
 	campaignObject = db_session.query(Campaign)
 	if request.method == 'POST':
 		
+
+
+		################################################Create a campaign 
 		campaignName = request.form['campaign_name']
 		startdate = request.form['start_date']
 		enddate = request.form['end_date']
 		talking = request.form['talking']
 		duration = request.form['duration']
-		managers = request.form.getlist('flaskManager')
-		canvassers = request.form.getlist('flaskCanvasser')
-		locations = request.form.getlist('flaskLocation')
-		questions = request.form.getlist('flaskQuestion')
 
-		
 		campObj = Campaign(campaignName, startdate, enddate, talking,duration)
 		db_session.add(campObj)
 
-		##
+		####################################################ADD Manager to database
+		managers = request.form.getlist('flaskManager')
+		
 		for m in managers:
 			nameObj = db_session.query(User).filter(User.name == m).first()
 			role = db_session.query(Role).filter(Role.role == 'manager',  Role.email == nameObj.email).first()
 			mObject = CampaignManager()
 			role.roles_relation.append(mObject)
 			campObj.campaigns_relation.append(mObject)
+		####################################################ADD Canvasser to database
+		canvassers = request.form.getlist('flaskCanvasser')
 
 		for c in canvassers:
 			nameObj = db_session.query(User).filter(User.name == c).first()
@@ -65,17 +67,24 @@ def createCampaign():
 			cObject = CampaignCanvasser()
 			role.roles_relation_1.append(cObject)
 			campObj.campaigns_relation_1.append(cObject)
-
+		####################################################ADD Location to database
+		locations = request.form.getlist('flaskLocation')
 		for l  in locations:
 			loc = CampaignLocation(l)
 			campObj.campaigns_relation_2.append(loc)
 
+
+		####################################################ADD question to database
+		questions = request.form.getlist('flaskQuestion')
 		for q in questions:
 			ques = Questionnaire(q)
 			campObj.campaigns_relation_3.append(ques)
-		
+
+
 		db_session.commit()
 		
+
+
 	else:
 		return render_template('manager_html/create_campaign.html', managers=manager_name, canvasser=canvasser_name)
 
@@ -197,9 +206,24 @@ def showCampaign():
 				userObj = db_session.query(User).filter(User.email == r.email).first()
 				allCan.append(userObj.name)
 
+			############################################	 Display All Question in table
 
+			currentQuestions = db_session.query(Questionnaire)
+			displayQuestion = []
+			for q in currentQuestions:
+				if q.campaign_id == campId:
+					displayQuestion.append(q.question)
 
-			return render_template('manager_html/edit_campaign.html', camp=campaignObject, show=campaignName, managers=allMan, canvasser=allCan, currentManagers=displayManagers, currentCanvassers=displayCanvas,start=start, end=end)
+			############################################	 Display current Location in table
+
+			currentLocations = db_session.query(CampaignLocation)
+			displayLocation = []
+			for l in currentLocations:
+				if l.campaign_id == campId:
+					displayQuestion.append(l.location)
+
+																	       # campaign questions
+			return render_template('manager_html/edit_campaign.html',locations='displayLocation',questions=displayQuestion, camp=campaignObject, show=campaignName, managers=allMan, canvasser=allCan, currentManagers=displayManagers, currentCanvassers=displayCanvas,start=start, end=end)
 
 
 

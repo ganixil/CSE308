@@ -90,7 +90,7 @@
  							<tr><th nowrap="" style="width:200px"> Manager</th></tr>
 								{% for item in currentManagers %}
 									<script type="text/javascript">
-										var b = '{{item}}'
+										var b = '{{item}}';
 										var node = document.getElementById("insertManager");//insertManager is name of table
 										var trNode = document.createElement("input");
 										trNode.setAttribute("name", "flaskManager");
@@ -108,6 +108,7 @@
 							<tr><th nowrap="" style="width:200px"> Canvasser</th></tr>
 								{% for item in currentCanvassers %}
 									<script type="text/javascript">
+										var b = '{{item}}';
 										var node = document.getElementById("insertCanvasser");//insertManager is name of table
 										var trNode = document.createElement("input");
 										trNode.setAttribute("name", "flaskCanvasser");
@@ -162,6 +163,18 @@
 					<div id='locationTable' style="overflow-y: scroll" onmousemove="a()">
 			            <table id="insertLocation" cellpadding="3" >
 							<tr><th nowrap="" style="width:200px">Locations</th></tr>
+							{% for item in locations %}
+								<script type="text/javascript">
+									var b = '{{item}}';
+									var node = document.getElementById("insertLocation");
+									var trNode = document.createElement("input");
+									trNode.setAttribute("name", "flaskLocation");
+									trNode.setAttribute("type", "text");
+									trNode.setAttribute("class", "dis");
+									trNode.setAttribute("value", b)
+									node.appendChild(trNode);
+								</script>
+							{% endfor %}
 						</table>
 					</div>
 				</div>
@@ -185,13 +198,26 @@
 					<div id='questionTable' style="overflow-y: scroll" onmousemove="a()">
 			            <table id="insertQuestions" cellpadding="3" >
 							<tr><th nowrap="" style="width:200px">Questions</th></tr>
+							{% for item in questions %}
+								<script type="text/javascript">
+									var b = '{{item}}';
+									var node = document.getElementById("insertQuestions");
+									var trNode = document.createElement("input");
+									trNode.setAttribute("name","flaskQuestion");
+									trNode.setAttribute("type", "text");
+									trNode.setAttribute("class", "dis");
+									trNode.setAttribute("value", b)	
+									node.appendChild(trNode);
+
+								</script>
+							{% endfor %}
 						</table>
 					</div>
 			</div>
 			<div class="box" style="height:120px; width:450px; top:160px;"><span class="label" style="font-size: 17px;">Set Talking Points</span>
 					<div class="content" style="margin-left:10px;" >
 						<table  cellpadding="3">
-							<tr><span class="label" style="font-size: 17px;">What the Canvasser should say during the visit</span></tr>
+							<tr><span class="label" style="font-size: 17px;">What Canvasser should say during the visit</span></tr>
 							<tr>
 								<textarea name="talking" style="width: 300px;height: 50px;margin-top: 2px;"></textarea>
 							</tr>

@@ -57,10 +57,11 @@ input.dis:hover{
 	transition:1100ms ;
 	outline: none;
 }
-#map:hover{
+/*#map:hover{
 	transform: scale(1.1);
 	transition:1100ms ;
 }
+*/
 span.link{
   font-size: 24px;
     color: black;
@@ -221,13 +222,13 @@ select, input{
   transition:1100ms ;
   outline: none;
 }
-.box:hover{
+/*.box:hover{
 	transition:500ms ;
   border: 1px solid rgb(86, 180, 239);
   transform: scale(1.20);
   box-shadow: 3px 3px 3px 3px rgba(0, 0, 0, 0.23);
   opacity: 1;
-}
+}*/
 .content{
   margin-top: 15px;
 }
