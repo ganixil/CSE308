@@ -234,7 +234,7 @@ def showCampaign():
 
 
 																	       # campaign questions
-			return render_template('manager_html/edit_campaign.html',talk=talkObj,locations='displayLocation',questions=displayQuestion, camp=campaignObject, show=campaignName, managers=allMan, canvasser=allCan, currentManagers=displayManagers, currentCanvassers=displayCanvas,start=start, end=end)
+			return render_template('manager_html/edit_campaign.html',talk=talkObj,locations=displayLocation,questions=displayQuestion, camp=campaignObject, show=campaignName, managers=allMan, canvasser=allCan, currentManagers=displayManagers, currentCanvassers=displayCanvas,start=start, end=end)
 
 
 
