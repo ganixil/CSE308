@@ -3,6 +3,10 @@ from flask import (
 )
 from werkzeug.exceptions import abort
 from database import db_session, User, Campaign, Role,CampaignLocation,CampaignCanvasser, CampaignManager, Questionnaire
+from gmap import key
+import googlemaps
+
+
 
 class DateObject():
 	def __init__(self, date, canEmail, dateId):
@@ -17,7 +21,8 @@ class assignmentMapping():
         self.dateId = dateId
         self.assignment = assignment
 
-
+#link google map
+gmaps = googlemaps.Client(key = key)
 #create the manager blueprint
 bp = Blueprint('manager', __name__, url_prefix='/manager')
 
@@ -80,7 +85,9 @@ def createCampaign():
 		####################################################ADD Location to database
 		locations = request.form.getlist('flaskLocation')
 		for l  in locations:
-			loc = CampaignLocation(l,None,None,None)
+			lat = gmaps.geocode(l)[0]['geometry']['location']['lat']
+			lng = gmaps.geocode(l)[0]['geometry']['location']['lng']
+			loc = CampaignLocation(l,lat,lng,None)
 			campObj.campaigns_relation_2.append(loc)
 			db_session.commit()
 
