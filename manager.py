@@ -5,6 +5,7 @@ import googlemaps
 from werkzeug.exceptions import abort
 from database import db_session, User, Campaign, Role,CampaignLocation,CampaignCanvasser, CampaignManager, Questionnaire
 from gmap import key
+import json
 
 gmaps = googlemaps.Client(key = key)
 
@@ -69,10 +70,11 @@ def createCampaign():
 			campObj.campaigns_relation_1.append(cObject)
 		####################################################ADD Location to database
 		locations = request.form.getlist('flaskLocation')
-		print(locations)
+
 		for l  in locations:
-			print(gmaps.geocode(l))
-			loc = CampaignLocation(l,None,None,None)
+			lat = gmaps.geocode(l)[0]['geometry']['location']['lat']
+			lng = gmaps.geocode(l)[0]['geometry']['location']['lng']
+			loc = CampaignLocation(l,lat,lng,None)
 			campObj.campaigns_relation_2.append(loc)
 			db_session.commit()
 
