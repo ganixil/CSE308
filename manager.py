@@ -282,7 +282,7 @@ for ele in cam.campaigns_relation:
 	campaigns_relation.remove(ele)
 	}
 '''
-=======
+
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for
 )
