@@ -2,7 +2,8 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for
 )
 from werkzeug.exceptions import abort
-from database import db_session, User, Campaign, Role,CampaignLocation,CampaignCanvasser, CampaignManager, Questionnaire
+from database import db_session, User, Campaign, Role,CampaignLocation,CampaignCanvasser, CampaignManager, Questionnaire, Assignment
+from sqlalchemy.sql.expression import func
 from gmap import key
 import googlemaps
 
@@ -316,10 +317,14 @@ def createCanvasAssignment():
 			# if not enough dates/canvassers display warning
 
 		for i in range(len(mappedAssignments)):
-
-			for j in range
+			id = db_session.query(func.max(Assignment.id))
+			for j in range(len(mappedAssignments[i].assignment)):
+				assignObj = Assignment(id, mappedAssignments[i].date, mappedAssignments[i].assignment[j][0], mappedAssignments[i].assignment[j][1], mappedAssignments[i].canEmail, j)
+				db_session.add(assignObj)
+				db_session.commit()
+				id = id + 1
 		# if enough: todo delete now unavailable dates from the database
-	return render_template('manager_html/create_canvas_assignment.html');
+	return render_template('manager_html/create_canvas_assignment.html')
 
 
 

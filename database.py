@@ -153,8 +153,8 @@ class CanAva(Base):
         self.title = title
         self.theDate = theDate  
 
-class assignment(Base):
-    __tablename__='assignments'
+class Assignment(Base):
+    __tablename__='assignment'
     id = Column(Integer, primary_key = True)
     theDate = Column(Date)
     x = Column(Float)
