@@ -11,16 +11,16 @@ import googlemaps
 
 class DateObject():
 	def __init__(self, date, canEmail, dateId):
-        self.date = date
-        self.canEmail = canEmail
-        self.dateId = dateId
+		self.date = date
+		self.canEmail = canEmail
+		self.dateId = dateId
 
 class assignmentMapping():
 	def __init__(self, date, canEmail, dateId, assignment):
-        self.date = date
-        self.canEmail = canEmail
-        self.dateId = dateId
-        self.assignment = assignment
+		self.date = date
+		self.canEmail = canEmail
+		self.dateId = dateId
+		self.assignment = assignment
 
 #link google map
 gmaps = googlemaps.Client(key = key)
@@ -114,16 +114,16 @@ def showCampaign():
 
 		try:
 			if request.form['submit_btn'] == 'submit_form':
-				print("POST_SUBMIT_-------------------")
+				print("POST_SUBMIT_-------------------0")
 				#Update old Campaign name
 				oldCamp = db_session.query(Campaign).filter(Campaign.campaign_name ==  request.form['scampaign_name']).first()
 				oldCamp.campaign_name = request.form['new_campaign_name']
 				db_session.commit()
-
+				print("POST_SUBMIT_-------------------1")
 				#Remove all manager asociated with Old Campaign
 				db_session.query(CampaignManager).filter(CampaignManager.campaign_id == oldCamp.id).delete()
 				db_session.commit()
-				
+				print("POST_SUBMIT_-------------------2")
 				#Add new managers to Old campaign
 				newManagers = request.form.getlist('flaskManager')
 				for m in newManagers:
@@ -133,7 +133,7 @@ def showCampaign():
 					role.roles_relation.append(mObject)
 					oldCamp.campaigns_relation.append(mObject)
 					db_session.commit()
-				
+				print("POST_SUBMIT_-------------------2")
 				#Remove all canvasser asociated with Old Campaign
 				db_session.query(CampaignCanvasser).filter(CampaignCanvasser.campaign_id == oldCamp.id).delete()
 				db_session.commit()
@@ -149,10 +149,43 @@ def showCampaign():
 					db_session.commit()
 
 
+				#Update new start and enddate, talking, duration
+				startdate = request.form['start_date']
+				enddate = request.form['end_date']
+				talking = request.form['talking']
+				duration = request.form['duration']
+
+				oldCamp.startDate = startdate
+				oldCamp.endDate = enddate
+				oldCamp.talking = talking
+				oldCamp.duration = duration
+
+
+				#Remove all location associated with campaign
+				db_session.query(CampaignLocation).filter(CampaignLocation.campaign_id == oldCamp.id).delete()
 				db_session.commit()
 
+				#Add new locations to old oldCampaign
+				locations = request.form.getlist('flaskLocation')
+
+				for l in locations:
+					loc = CampaignLocation(l,None,None,None)
+					oldCamp.campaigns_relation_2.append(loc)
+					db_session.commit()
+				
+				#Remove all questions
+				db_session.query(Questionnaire).filter(Questionnaire.campaign_id == oldCamp.id).delete()
+				db_session.commit()
+
+				#Add new questions
+				questions = request.form.getlist('flaskQuestion')
+				for q in questions:
+					ques = Questionnaire(q)
+					oldCamp.campaigns_relation_3.append(ques)
+					db_session.commit()
 
 
+				db_session.commit()
 
 				campaignObject = db_session.query(Campaign)
 				return render_template('manager_html/view_campaign.html', camp=campaignObject)
@@ -249,7 +282,6 @@ def showCampaign():
 			return render_template('manager_html/edit_campaign.html', duration= durationObj, talk=talkObj,locations=displayLocation,questions=displayQuestion, camp=campaignObject, show=campaignName, managers=allMan, canvasser=allCan, currentManagers=displayManagers, currentCanvassers=displayCanvas,start=start, end=end)
 
 
-
 ####################################################################################### CONOR's CODE#######################################################
 
 
@@ -295,8 +327,10 @@ def createCanvasAssignment():
 		while(sortComplete == 0):
 			sortComplete = 1
 			for i in range(len(dates)):
-				if(i not (len(dates)-1)):
+				if(i != (len(dates)-1)):
+
 					if(dates[i].date > dates[i+1].date):
+
 						temp = dates[i+1]
 						dates[i+1] = dates[i]
 						dates[i] = temp
@@ -317,6 +351,7 @@ def createCanvasAssignment():
 			# if not enough dates/canvassers display warning
 
 		for i in range(len(mappedAssignments)):
+
 			id = db_session.query(func.max(Assignment.id))
 			for j in range(len(mappedAssignments[i].assignment)):
 				assignObj = Assignment(id, mappedAssignments[i].date, mappedAssignments[i].assignment[j][0], mappedAssignments[i].assignment[j][1], mappedAssignments[i].canEmail, j)
@@ -325,6 +360,7 @@ def createCanvasAssignment():
 				id = id + 1
 		# if enough: todo delete now unavailable dates from the database
 	return render_template('manager_html/create_canvas_assignment.html')
+
 
 
 
@@ -359,12 +395,3 @@ def editCampaign():
 	campaignObject = db_session.query(Campaign)
 
 	return render_template('manager_html/edit_campaign.html', camp=campaignObject)
-
-
-'''
-cam =db_session.query(Campaign).filter(Campiang.campaign_name == "camp1")
-for ele in cam.campaigns_relation:
-	if (ele.campaign_id ==user1){
-	campaigns_relation.remove(ele)
-	}
-'''

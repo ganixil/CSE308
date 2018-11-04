@@ -6,6 +6,8 @@ function generate_map() {
 		}
 		var map = new google.maps.Map(document.getElementById("map"), mapOptions);
 	}
+generate_map();
+
 
 // <option value='{{show}}' selected="selected">{{show}}</option>
 function displayEdit(){

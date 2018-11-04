@@ -29,13 +29,15 @@
 		<div class="container">
 			<form id="createCampaign" method='post' action="{{url_for('manager.showCampaign')}}" style="height: 1800px">
 				<div class="box" style="height:120px; width:450px; top:160px;"><span class="label" style="font-size: 17px;">Select Campaign</span>
+					<!--             ewrweriewjrklwqerjoiewuroiqweuroiqwueruqwirueworuqwpeoruqewporopqwerpo -->
+					<!-- signal: <input name='signal' id='signal' type='text' value="a"> -->
 					<div class="content" style="margin-left:10px;" >
 						<table  cellpadding="3">
 							<tr>
 								<td nowrap="" style="width:200px"> Select Campaign: </td>
-								<td><select id="scampaign_name" value="" onchange="displayEdit()"> 
+								<td>
+									<select id="scampaign_name" name = "scampaign_name" value="" onchange="displayEdit()">
 										<option value="none" ></option>
-										
 										
 										{% for item in camp %}
 											{% if item.campaign_name == show %}
@@ -269,7 +271,7 @@
 
 		</div>
 		
-		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCGuEpRycbTYDCcS6uxiot0x0eSLkpTbiY&callback=myMap"></script>
+		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCGuEpRycbTYDCcS6uxiot0x0eSLkpTbiY"></script>
 		<script type="text/javascript" src="../../static/javascript/manager_js/edit_campaign.js"></script>
 
 
