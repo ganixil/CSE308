@@ -70,7 +70,7 @@ def createCampaign():
 		####################################################ADD Location to database
 		locations = request.form.getlist('flaskLocation')
 		for l  in locations:
-			loc = CampaignLocation(l)
+			loc = CampaignLocation(l,None,None,None)
 			campObj.campaigns_relation_2.append(loc)
 			db_session.commit()
 

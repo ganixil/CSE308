@@ -94,10 +94,16 @@ class CampaignLocation(Base):   # Association Table (Campaign + Locations)
     id = Column(Integer, primary_key = True)
     campaign_id = Column(Integer,ForeignKey('campaigns.id', onupdate="CASCADE", ondelete="CASCADE") )
     location = Column(String(80),nullable=False)
+    x = Column(Float,nullable = True)
+    y = Column(Float,nullable = True)
+    canvasser_email = Column(String(80),nullable = True)
     UniqueConstraint(campaign_id, location)
 
-    def __init__(self,  location):
-    	self.location = location
+    def __init__(self,  location, x, y, canvasser_email):
+        self.location = location
+        self.x = x
+        self.y = y
+        self.canvasser_email = canvasser_email
 
 class CampaignManager(Base):   # Association Table (Campaign + Manager)
     __tablename__ = 'campaign_Manager'
@@ -213,9 +219,9 @@ if __name__ == "__main__":
     campaign2.campaigns_relation_1.append(campCan4)
 
 
-    testL1= CampaignLocation("street1") # location1 + campaign1
-    testL2 = CampaignLocation("street2") # location2 + campaign1
-    testL3 = CampaignLocation("street3") # location2 + campaign2
+    testL1= CampaignLocation("street1",None,None,None) # location1 + campaign1
+    testL2 = CampaignLocation("street2",None,None,None) # location2 + campaign1
+    testL3 = CampaignLocation("street3",None,None,None) # location2 + campaign2
 
     campaign1.campaigns_relation_2 = [testL1, testL2]
     campaign2.campaigns_relation_2.append(testL3)
