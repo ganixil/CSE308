@@ -244,24 +244,15 @@
 									<select name = "duration">
 
 
-										{%  for num in range(1,7) %}
-											<option value="5">5 minutes</option>
-											<option value="10">10 minutes</option>
-											<option value="15">15 minutes</option>
-											<option value="20">20 minutes</option>
-											<option value="25">25 minutes</option>
-											<option value="30">30 minutes</option>
+										{%  for num in range(1,7) %} 
+											{% if num*5 == duration %}
+												<option value="{{num*5}}" selected='selected'>{{num*5}} minutes</option>
 
-										{% endfor %}
-
-										<!-- {% for item in camp %}
-											{% if item.campaign_name == show %}
-												<option value='{{item.campaign_name}}' selected="selected"> {{item.campaign_name}}</option>
 											{% else %}
-												<option value='{{item.campaign_name}}'> {{item.campaign_name}}</option>
+												<option value="{{num*5}}">{{num*5}} minutes</option>
 											{% endif %}
+
 										{% endfor %}
- -->
 
 									</select>
 								</td>
