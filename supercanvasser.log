@@ -5,3 +5,14 @@ INFO:root:server cert and key set successfully
 INFO:root:run app
 WARNING:werkzeug: * Debugger is active!
 INFO:werkzeug: * Debugger PIN: 594-841-257
+INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 16:46:55] "GET /manager/create_campaign HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 16:46:55] "GET /static/css/manager.css HTTP/1.1" 200 -
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): maps.googleapis.com:443
+DEBUG:urllib3.connectionpool:https://maps.googleapis.com:443 "GET /maps/api/geocode/json?address=Stony+Brook&key=AIzaSyCGuEpRycbTYDCcS6uxiot0x0eSLkpTbiY HTTP/1.1" 200 473
+DEBUG:urllib3.connectionpool:https://maps.googleapis.com:443 "GET /maps/api/geocode/json?address=Stony+Brook&key=AIzaSyCGuEpRycbTYDCcS6uxiot0x0eSLkpTbiY HTTP/1.1" 200 473
+DEBUG:urllib3.connectionpool:https://maps.googleapis.com:443 "GET /maps/api/geocode/json?address=New+York+City&key=AIzaSyCGuEpRycbTYDCcS6uxiot0x0eSLkpTbiY HTTP/1.1" 200 430
+DEBUG:urllib3.connectionpool:https://maps.googleapis.com:443 "GET /maps/api/geocode/json?address=New+York+City&key=AIzaSyCGuEpRycbTYDCcS6uxiot0x0eSLkpTbiY HTTP/1.1" 200 430
+DEBUG:urllib3.connectionpool:https://maps.googleapis.com:443 "GET /maps/api/geocode/json?address=Jersery+City&key=AIzaSyCGuEpRycbTYDCcS6uxiot0x0eSLkpTbiY HTTP/1.1" 200 451
+DEBUG:urllib3.connectionpool:https://maps.googleapis.com:443 "GET /maps/api/geocode/json?address=Jersery+City&key=AIzaSyCGuEpRycbTYDCcS6uxiot0x0eSLkpTbiY HTTP/1.1" 200 451
+INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 16:47:48] "POST /manager/create_campaign HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 16:47:48] "GET /static/css/manager.css HTTP/1.1" 200 -
