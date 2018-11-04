@@ -194,3 +194,4 @@ function exists(text, arr ){
 	}
 	return false;
 }
+
