@@ -5,7 +5,8 @@ import logging.handlers
 # from flask.ext.uploads import UploadSet, configure_uploads, IMAGES
 
 # Logging module implementation
-logging.basicConfig(filename='supercanvasser.log',filemode='w',level = logging.DEBUG)
+
+logging.basicConfig(filename='../../log/supercanvasser.log',filemode='w',level = logging.DEBUG)
 
 # Create flask app
 logging.debug('Starting Super Canvasser')
