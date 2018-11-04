@@ -3,10 +3,26 @@ from flask import (
 )
 from werkzeug.exceptions import abort
 from database import db_session, User, Campaign, Role,CampaignLocation,CampaignCanvasser, CampaignManager, Questionnaire
+from gmap import key
+import googlemaps
 
 
 
+class DateObject():
+	def __init__(self, date, canEmail, dateId):
+        self.date = date
+        self.canEmail = canEmail
+        self.dateId = dateId
 
+class assignmentMapping():
+	def __init__(self, date, canEmail, dateId, assignment):
+        self.date = date
+        self.canEmail = canEmail
+        self.dateId = dateId
+        self.assignment = assignment
+
+#link google map
+gmaps = googlemaps.Client(key = key)
 #create the manager blueprint
 bp = Blueprint('manager', __name__, url_prefix='/manager')
 
@@ -45,11 +61,6 @@ def createCampaign():
 		talking = request.form['talking']
 		duration = request.form['duration']
 
-		#'''
-			
-
-
-		#'''
 		campObj = Campaign(campaignName, startdate, enddate, talking,int(duration))
 		db_session.add(campObj)
 
@@ -74,7 +85,9 @@ def createCampaign():
 		####################################################ADD Location to database
 		locations = request.form.getlist('flaskLocation')
 		for l  in locations:
-			loc = CampaignLocation(l,None,None,None)
+			lat = gmaps.geocode(l)[0]['geometry']['location']['lat']
+			lng = gmaps.geocode(l)[0]['geometry']['location']['lng']
+			loc = CampaignLocation(l,lat,lng,None)
 			campObj.campaigns_relation_2.append(loc)
 			db_session.commit()
 
@@ -268,13 +281,76 @@ def showCampaign():
 			return render_template('manager_html/edit_campaign.html', duration= durationObj, talk=talkObj,locations=displayLocation,questions=displayQuestion, camp=campaignObject, show=campaignName, managers=allMan, canvasser=allCan, currentManagers=displayManagers, currentCanvassers=displayCanvas,start=start, end=end)
 
 
-
 ####################################################################################### CONOR's CODE#######################################################
 
 
-@bp.route('/create_canvas_assignment')
+@bp.route('/create_canvas_assignment', methods=('GET', 'POST'))
 def createCanvasAssignment():
-	result = 1;
+	if request.method == 'POST':
+		# flag for marking the assignment the campaign as possible
+		assignmentPossible = False
+		# get headquarters for starting location for routing algorithm
+		globalVars = db_session.query(GlobalVariables).first()
+		hq = (globalVars.hqX, globalVars.hqY)
+		campName = request.form['name'] #for getting the campaign name
+		# get campaign data
+		campObj = db_session.query(Campaign).filter(Campaign.campaign_name == campName)
+		# get campaign location data
+		dbLocations = db_session.query(CampaignLocation).filter(CampaignLocation.campaign_id == campObj.id)
+		locations = []
+		# add the headquarters to the location set
+		locations.append(hq)
+		# add all campaign locations to the locations set
+		for i in range(len(dbLocations)):
+			locations.append((dbLocations[i].x, dbLocations[i].y))
+		# make assignments with the routing alorithm
+		assignments = makeAssign(locations)
+		# get the campaign's canvassers
+		canvassers = campObj.campaigns_relation_1
+		ids = []
+		dates = []
+		# get the start and end dates of the campaign
+		startDate = campObj.startDate
+		endDate = campObj.endDate
+		# collect the available dates of each canvasser in the campaign
+		for i in range(len(canvassers)):
+			cEmail = canvassers[i].user_email # need to modify DB
+			canDates = db_session.query(CanAva).filter(CanAva.email == cEmail).all()
+			for j in range(len(canDates)):
+				# filter out dates not in the campaign range
+				if(canDates.theDate > startDate and canDates.theDate < endDate):
+					dates.append(DateObject(canDates.theDate, canDates.email, canDates.id))
+					#ids.append(canvassers.user_id)
+		# sort dates by earliest available using bubble sort
+		sortComplete = 0
+		while(sortComplete == 0):
+			sortComplete = 1
+			for i in range(len(dates)):
+				if(i not (len(dates)-1)):
+					if(dates[i].date > dates[i+1].date):
+						temp = dates[i+1]
+						dates[i+1] = dates[i]
+						dates[i] = temp
+						sortComplete = 0
+
+		# assign assignments to dates
+		mappedAssignments = []
+		while(len(dates) > 0 and len(assignments > 0)):
+			dTemp = dates.pop(0)
+			aTemp = assignments.pop(0)
+			mappedAssignments.append(assignmentMapping(dTemp.date, dTemp.canEmail, dTemp.dateId, aTemp))
+		# if no more assingments then this mapping is possible
+		if(len(assignments) == 0):
+			assignmentPossible = True
+
+		if(assignmentPossible == False):
+			return 'not possible'
+			# if not enough dates/canvassers display warning
+
+		for i in range(len(mappedAssignments)):
+
+			for j in range
+		# if enough: todo delete now unavailable dates from the database
 	return render_template('manager_html/create_canvas_assignment.html');
 
 
@@ -310,12 +386,3 @@ def editCampaign():
 	campaignObject = db_session.query(Campaign)
 
 	return render_template('manager_html/edit_campaign.html', camp=campaignObject)
-
-
-'''
-cam =db_session.query(Campaign).filter(Campiang.campaign_name == "camp1")
-for ele in cam.campaigns_relation:
-	if (ele.campaign_id ==user1){
-	campaigns_relation.remove(ele)
-	}
-'''

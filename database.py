@@ -129,27 +129,45 @@ class GlobalVariables(Base):
     id = Column(Integer, primary_key=True)
     workDayLength = Column(Integer, default = 1, nullable =False)
     averageSpeed = Column(Integer, default = 1, nullable = False)
+    hqX = Column(Float)
+    hqY = Column(Float)
 
-    def __init__(self, workDayLength, averageSpeed):
+    def __init__(self, workDayLength, averageSpeed, hqX, hqY):
         self.workDayLength = workDayLength
         self.averageSpeed = averageSpeed
-
+        self.hqX = hqX
+        self.hqY = hqY
 
 class CanAva(Base):
     __tablename__='canvas_availability'   
     id = Column(Integer,primary_key = True)
-    title = Column(String(80),nullable = False)
-    start = Column(String(80),nullable = False)
-    end = Column(String(80),nullable = False)
-    allDay = Column(String(80),nullable = False)
+    #title = Column(String(80),nullable = False)
+    #start = Column(String(80),nullable = False)
+    #end = Column(String(80),nullable = False)
+    #allDay = Column(String(80),nullable = False)
+    theDate = Column(Date)
+
     email=Column(String(80), nullable=False) # User's email
 
-    def __init__(self,title,start,end,allDay,email):
+    def __init__(self,title, theDate):
         self.title = title
-        self.start = start
-        self.end = end
-        self.allDay = allDay
-        self.email = email   
+        self.theDate = theDate  
+
+class assignment(Base):
+    __tablename__='assignments'
+    id = Column(Integer, primary_key = True)
+    theDate = Column(Date)
+    x = Column(Float)
+    y = Column(Float)
+    email = Column(String(80))
+    order = Column(Integer)
+    def __init__(self, id, theDate, x, y, email, order):
+        self.id = id
+        self.theDate = theDate
+        self.x = x
+        self.y = y
+        self.email = email
+        self.order = order
 
 
 # For populating the database for testing purposes.
