@@ -9,7 +9,6 @@ function generate_map() {
 }
 
 
-generate_map();
 function displayEdit(){
 	var a = document.getElementById("scampaign_name");
 	//alert(a.value)

@@ -81,29 +81,7 @@ def createCampaign():
 
 	return render_template('manager_html/view_campaign.html', camp=campaignObject)
 
-#function to render the manager page and set the manager page url
-@bp.route('/manpage', methods=('GET', 'POST'))
-def manPage():
-	campaignObject = db_session.query(Campaign)
-	return render_template('manager_html/view_campaign.html', camp=campaignObject)
-	
-@bp.route('/view_campaign')
-def viewCampaign():
-	campaignObject = db_session.query(Campaign)
-	return render_template('manager_html/view_campaign.html', camp=campaignObject)
 
-#UPDATE THIS ROUTE STATEMENT
-@bp.route('/view_campaign_result')
-def viewCampaignResult():
-	result = 1
-	return render_template('manager_html/view_campaign_result.html')
-
-
-@bp.route('/edit_campaign')
-def editCampaign():
-	campaignObject = db_session.query(Campaign)
-
-	return render_template('manager_html/edit_campaign.html', camp=campaignObject)
 
 @bp.route('/show_campaign',methods=('POST','GET'))
 def showCampaign():
@@ -155,14 +133,14 @@ def showCampaign():
 				return render_template('manager_html/view_campaign.html', camp=campaignObject)
 				
 		except:
+			#Display all information after creating a campaign in EDIT CAMPAIGN
 			managerObject = db_session.query(Role).filter(Role.role =='manager')
 			canvasObject  = db_session.query(Role).filter(Role.role == 'canvasser')
+			
+
 			campaignName = request.form['new_campaign_name']
 			campaignObject = db_session.query(Campaign)
 
-			currentManagers = db_session.query(CampaignManager)
-			currentCanvassers = db_session.query(CampaignCanvasser)
-			roleList = db_session.query(Role)
 			campId = None
 			start=None
 			end=None
@@ -173,7 +151,11 @@ def showCampaign():
 					start = camp.startDate
 					end= camp.endDate
 					break
-			#############################################
+			
+			roleList = db_session.query(Role)
+			
+			#############################################   Display All Current Manager in table
+			currentManagers = db_session.query(CampaignManager)
 			managerId = []
 			for man in currentManagers:
 				if man.campaign_id == campId:
@@ -185,7 +167,8 @@ def showCampaign():
 					nameObj = db_session.query(User).filter(User.email== r.email).first();
 					displayManagers.append(nameObj.name)
 
-			############################################
+			############################################	 Display All Current Canvasser in table 
+			currentCanvassers = db_session.query(CampaignCanvasser)
 			canvasId = []
 			for can in currentCanvassers:
 				if can.campaign_id == campId:
@@ -198,10 +181,25 @@ def showCampaign():
 					nameObj = db_session.query(User).filter(User.email== r.email).first();
 					displayCanvas.append(nameObj.name)
 				
+			############################################	 Display All Manager in selector
+			allMan = []
+			roleList = db_session.query(Role).filter(Role.role =='manager')
 
-			
+			for r in roleList:
+				userObj = db_session.query(User).filter(User.email == r.email).first()
+				allMan.append(userObj.name)
 
-			return render_template('manager_html/edit_campaign.html', camp=campaignObject, show = campaignName, managers=displayManagers, canvasser=displayCanvas, currentManagers=displayManagers, currentCanvassers=displayCanvas,start=start, end=end)
+			############################################	 Display All Canvasser in selector		
+			allCan = []
+			roleList = db_session.query(Role).filter(Role.role == 'canvasser')
+
+			for r in roleList:
+				userObj = db_session.query(User).filter(User.email == r.email).first()
+				allCan.append(userObj.name)
+
+
+
+			return render_template('manager_html/edit_campaign.html', camp=campaignObject, show=campaignName, managers=allMan, canvasser=allCan, currentManagers=displayManagers, currentCanvassers=displayCanvas,start=start, end=end)
 
 
 
@@ -223,6 +221,29 @@ def viewCanvasAssignment():
 	result = 1;
 	return render_template('manager_html/view_canvas_assignment.html');
 
+#function to render the manager page and set the manager page url
+@bp.route('/manpage', methods=('GET', 'POST'))
+def manPage():
+	campaignObject = db_session.query(Campaign)
+	return render_template('manager_html/view_campaign.html', camp=campaignObject)
+	
+@bp.route('/view_campaign')
+def viewCampaign():
+	campaignObject = db_session.query(Campaign)
+	return render_template('manager_html/view_campaign.html', camp=campaignObject)
+
+#UPDATE THIS ROUTE STATEMENT
+@bp.route('/view_campaign_result')
+def viewCampaignResult():
+	result = 1
+	return render_template('manager_html/view_campaign_result.html')
+
+
+@bp.route('/edit_campaign')
+def editCampaign():
+	campaignObject = db_session.query(Campaign)
+
+	return render_template('manager_html/edit_campaign.html', camp=campaignObject)
 
 
 '''
