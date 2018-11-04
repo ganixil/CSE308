@@ -228,7 +228,7 @@ if __name__ == "__main__":
     campaign1.campaigns_relation_2 = [testL1, testL2]
     campaign2.campaigns_relation_2.append(testL3)
 
-    glo = GlobalVariables(1, 1)
+    glo = GlobalVariables(1, 1,1,1)
     db_session.add(glo)
     
     db_session.commit()

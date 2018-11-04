@@ -10,16 +10,16 @@ import googlemaps
 
 class DateObject():
 	def __init__(self, date, canEmail, dateId):
-        self.date = date
-        self.canEmail = canEmail
-        self.dateId = dateId
+		self.date = date
+		self.canEmail = canEmail
+		self.dateId = dateId
 
 class assignmentMapping():
 	def __init__(self, date, canEmail, dateId, assignment):
-        self.date = date
-        self.canEmail = canEmail
-        self.dateId = dateId
-        self.assignment = assignment
+		self.date = date
+		self.canEmail = canEmail
+		self.dateId = dateId
+		self.assignment = assignment
 
 #link google map
 gmaps = googlemaps.Client(key = key)
@@ -294,7 +294,7 @@ def createCanvasAssignment():
 		while(sortComplete == 0):
 			sortComplete = 1
 			for i in range(len(dates)):
-				if(i not (len(dates)-1)):
+				if(i != (len(dates)-1)):
 					if(dates[i].dateObj > dates[i+1].dateObj):
 						temp = dates[i+1]
 						dates[i+1] = dates[i]
