@@ -1,159 +1,221 @@
-{% extends "profile.html" %}
-{% block head %}
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    
-    <link rel="icon" href="../../static/image/logo.png">
+{% extends "header.html" %}
 
-    <title>Super Canvasser Admin</title>
+{% block header %}
+<!--Customer Part-->
+    <link rel="stylesheet" href="/static/css/bs_css/dataTables.bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/js_css/jquery.dataTables.min.css"> 
+    <script src="/static/css/js_css/select2.css"></script>  
+    <script src="/static/js/jquery.dataTables.min.js"></script>
+    <script src="/static/js/dataTables.bootstrap4.min.js"></script>
+    <script src="/static/js/select2.js"></script>
 
-    <!-- Bootstrap core CSS -->
-    <link href="../../static/css/bs_css/bootstrap.min.css" rel="stylesheet">
-    
-
-    <!-- JQuery & Javascript implementation -->
-    <script src="../../static/jquery/jquery.js"></script>
-    <script src="../../static/jquery/jquery-ui.min.js"></script>
-    <link rel="stylesheet" href="../../static/jquery/jquery-ui.min.css">
-    <script src="../../static/javascript/admin_script/admin.js"></script>
-
-    <!-- JQuery implementation -->
-    <script src="../../static/jquery/jquery.js"></script>
-    <script src="../../static/jquery/jquery-ui.min.js"></script>
-
-    <!-- Custom styles for this login page -->
-    <link href="../../static/css/admin.css" rel="stylesheet">
+    <link href="/static/css/admin.css" rel="stylesheet">
+    <script src="/static/js/admin_script/admin.js"></script>
 {% endblock %}
 
-{% block div %}
-    <!-- this is the nav bar and the title on top -->
-    <nav class="navbar navbar-light bg-light">
-      <a class="navbar-brand" href="#">
-        <img src="../../static/image/logo.png" width="30" height="30" alt="">
-        Super Canvasser
-      </a>
-      <form class = "form-inline">
-        <button class="btn btn-primary" type="button">Go To Manager</button>
-        <button class="btn btn-outline-success" type="button" style="margin-left: 10px;" ><a href="{{url_for('auth.login')}}">Log out</a></button>
+<!----------------------BODY PART---------------------------------------------->
+{% block body %}
+<div id="tabs-collapsible" >
+  <ul class="nav nav-tabs">
+    <li ><a style =" background-size: 100%; background-image: url(/static/image/header.png)" id ="home"  class ="active" href="#tabs-v-1" > Home </a></li>
+    <li ><a style =" background-size: 100%; background-image: url(/static/image/header.png)" id="users" href="#tabs-v-2"> Users </a></li>
+    <li ><a style =" background-size: 100%; background-image: url(/static/image/header.png) ;display:none" id ="edit"  href="#tabs-v-3" > Add/Edit User </a></li>
+  </ul>
+<!--------------Home Tab -------------------------------------------------->
+  <div id="tabs-v-1" class="tab-pane">
+    <div class="col-sm" id="portrait">   
+      <img class ="bg" src="/static/image/admin_back.jpg"/>
+    </div>
+    <p style = "padding-top: 20px; font-size: 20px">
+      <span class = "welcome"> Welcome, {{ session['info']['name'] }} </span> <br> <br>This is Super Canvasser Company System  User Management.  You can manipulate users information,system global settings and edit personal profile
+    </p>
+  <!--------------Show Current Gloabl Varaibles------------------>
+    <div class="alert alert-info" role="alert" >
+      <h5 class="alert-heading" style="color: black;">Current Settings on Super Canvasser :</h5>
+      <p style="text-align: center; color: black;">
+        <label for="avgworkday" ><strong>Average Work Day Length:</strong>
+          <label id = "day_value" > <mark> {{ session['params'][0] }} </mark> </label>
+            <label style ="padding-left: 5px">  Days</label>
+        </label>
+      </p>
+      <p style="text-align: center; color: black;">
+        <label for="avgworkday"> <strong>Average Canvasser Movement Speed:</strong>
+        <label id = "speed_value" > <mark>  {{ (session['params'])[1] }} </mark> </label>
+        <label style = "padding-left: 5px">  Miles/Hour</label>
+        </label>
+      </p>
+    </div>
+  <!--------------Form For Gloabl Varaibles------------------>
+    <form id="global" method="post" action ="{{ url_for('admin.adminPage', u_name = session['info']['name'])}}">
+        <div class="form-group">
+          <label for="avgworkday"  name ="workday_title"> Average Work Day Length: </label>
+          <select class="form-control" id="avgworkday" type="workday" name = "workday">
+              <option value="1" {% if (session['params'])[0]|int == 1 %} selected="selected" {% endif %}>1 hours</option>
+              <option value="2" {% if (session['params'])[0]|int == 2 %} selected="selected" {% endif%}>2 hours</option>
+              <option value="3" {% if (session['params'])[0]|int == 3 %} selected="selected"{% endif %}>3 hours</option>
+              <option value="4" {%if (session['params'])[0]|int == 4 %} selected="selected" {% endif %}>4 hours</option>
+              <option value="5" {%if (session['params'])[0]|int == 5 %} selected="selected"  {% endif %}>5 hours</option>
+              <option value="6" {%if (session['params'])[0]|int == 6 %} selected="selected"  {% endif %}>6 hours</option>
+              <option value="7" {%if (session['params'])[0]|int == 7 %} selected="selected"  {% endif %}>7 hours</option>
+              <option value="8" {%if (session['params'])[0]|int == 8 %} selected="selected"  {% endif %}>8 hours</option>
+              <option value="9" {%if (session['params'])[0]|int == 9 %} selected="selected"  {% endif %}>9 hours</option>
+              <option value="10" {%if (session['params'])[0]|int == 10 %} selected="selected"  {% endif %}>10 hours</option> 
+              <option value="11" {%if (session['params'])[0]|int == 11 %} selected="selected"  {% endif %}>11 hours</option>
+              <option value="12" {%if (session['params'])[0]|int == 12 %} selected="selected"  {% endif %}>12 hours</option>
+              </select>
+          </div>
+              <div class="form-group">
+                <label for="avgmovspeed" ame ="workspeed_title">Average Canvasser Movement Speed: </label>
+                  <select class="form-control" id="avgmovspeed" type="movspeed" name="movspeed">
+                    <option value="1" {% if (session['params'])[1]|int == 1 %} selected="selected" {% endif %}>1 mile/hour</option>
+                    <option value="2" {% if (session['params'])[1]|int == 2 %} selected="selected" {% endif %}>2 miles/hour</option>
+                    <option value="3" {% if (session['params'])[1]|int == 3 %} selected="selected" {% endif %}>3 miles/hour</option>
+                    <option value="4" {% if (session['params'])[1]|int == 4 %} selected="selected" {% endif %}>4 miles/hour</option>
+                    <option value="5" {% if (session['params'])[1]|int == 5 %} selected="selected" {% endif %}>5 miles/hour</option>
+                  </select>
+              </div>
+              <button type="submit" class="btn btn-primary" id ="globalButton" >Change </button>
       </form>
-    </nav>
+  </div>
 
-    <!-- main functional parts -->
-    
-    <div id="tabs-collapsible">
-        <ul>
-            <li><a href="#tabs-v-1" class="active">Admin Porfolio</a></li>
-            <li><a href="#tabs-v-2">Users</a></li>
-            <li><a href="#tabs-v-3">Edit Profile</a></li>
-        </ul>
-        <div id="tabs-v-1" class="tab-pane">
-        <h3 id="name" > <strong>Welcome System Adminstrator: </strong> {{u_name}}  </h3>
-            <div class="col-sm" id="portrait">
-            <img src="../../static/image/placeholder.png" width="200" height="160"/>
-            </div>
-            <p>
-             Hi, You are the <strong>System Adminstrator </strong>
-             You can <u>add/delete/edit/</u> Users of <strong>Super Canvasser</strong>
-             You can <u>edit global parameter of <strong>Super Canvasser</strong>
-            </p>
+  <!-------------------User Tab---------------------->
+  <div id="tabs-v-2" class="tab-pane">
+    <div class="row voffset2">
+       <div class="col col-xs-6 text-left">
+        <button type="button" id="add" class="btn btn-sm btn-create" style =" background-size: 100%; background-image: url(/static/image/header.png)"> <i class="fa fa-plus-circle" style="margin-right:5px"> </i> Create New User</button>
+      </div>
+    </div>
+    <hr>
 
-            <div class="alert alert-info" role="alert"> 
-                <p style="text-align: center; color: black;">
-                    <label for="avgworkday" ><strong>Current Average Work Day Length:</strong>
-                         <label id = "day_value" > {{ gblvar_session.workDayLength }} </label>
-                         <label style ="padding-left: 5px">  Days</label>
-                    </label>
-                </p>
-                <p style="text-align: center; color: black;">
-                    <label for="avgworkday"> <strong>Average Canvasser Movement Speed:</strong>
-                        <label id = "speed_value">  {{ gblvar_session.averageSpeed}} </label>
-                        <label style = "padding-left: 5px">  Miles/Hour</label>
-                    </label>
-                </p>
-            </div>
+  <!-------------The Table Part For Users----------->
+  <div class="table-responsive">
+   <table id = "user-table" cellspacing="0" width="100%" class="table table-striped table-bordered table-hover" data-cache = "false">
+  <!------------Table Headers------------------->
+      <thead class="thead-light">
+          <tr>
+            <th  data-field ="name" class="column-header col-name"  style="text-align:center">Name
+              <i class = "fa fa-sort-up float-right " aria-hidden="true"> </i>
+            </th>
+            <th  data-field = "email" class="column-header col-email" style="text-align:center">Email
+               <i class = "fa fa-sort-up float-right " aria-hidden="true"> </i>
+            </th>
+             <th  data-field = "roles" class="column-header col-roles"  style="text-align:center">Roles
+              <i class = "fa fa-sort-up float-right " aria-hidden="true"> </i>
+             </th>
+              <th  data-field = "avatar" class="column-header col-avatar" style="text-align:center">Avatar
+               <i class = "fa fa-sort-up float-right " aria-hidden="true"> </i>
+             </th>
+             <th> <i class="fa fa-cog" aria-hidden="true"></i></th>
+         </tr>
+      </thead>
+  <!---Add User Table-->
+      {% for instance in session['users'] %}
+        <tr >  
+          <td class="list-buttons-column"  style="text-align:center"> {{ session['users'][instance].name }}  </td>
+          <td class="list-buttons-column" style="text-align:center">{{ session['users'][instance].email}}  </td>
+          <td class="list-buttons-column" style="text-align:center"> {{ (session['users'][instance].roles)|join(', '|safe) }}</td>
+          <td class="list-buttons-column" style="text-align:center"> {{ session['users'][instance].avatar }} </td>
+          <td align="center">
+           <!--  onclick ="editTable(this);"  -->
+            <button  type ="button" id ="edit-btn" class="btn btn-default btn-xs"> <i class="fa fa-pencil"></i> edit</button>
+            <form method ="post" action="{{url_for('admin.delete',u_email=session['users'][instance].email)}} ">
+                <button href="#" id = "table-delete" type ="submit" class="btn btn-danger btn-xs"> <i class="fa fa-trash"></i> del </button>
+             </form>
+          </td>
 
-            <form id="global" method="post">
-                <div class="form-group">
-                    <label for="avgworkday"  name ="workday_title"> Average Work Day Length: </label>
-                        <select class="form-control" id="avgworkday" type="workday" name = "workday">
-                            <option value="1" {% if gblvar_session.workDayLength == 1 %} selected="selected" {% endif %}>1 hours</option>
-                            <option value="2" {% if gblvar_session.workDayLength == 2 %} selected="selected" {% endif%}>2 hours</option>
-                            <option value="3" {% if gblvar_session.workDayLength == 3 %} selected="selected"{% endif %}>3 hours</option>
-                            <option value="4" {%if gblvar_session.workDayLength == 4 %} selected="selected" {% endif %}>4 hours</option>
-                            <option value="5" {%if gblvar_session.workDayLength == 5 %} selected="selected"  {% endif %}>5 hours</option>
-                            <option value="5" {%if gblvar_session.workDayLength == 6 %} selected="selected"  {% endif %}>6 hours</option>
-                            <option value="5" {%if gblvar_session.workDayLength == 7 %} selected="selected"  {% endif %}>7 hours</option>
-                            <option value="5" {%if gblvar_session.workDayLength == 8 %} selected="selected"  {% endif %}>8 hours</option>
-                            <option value="5" {%if gblvar_session.workDayLength == 9 %} selected="selected"  {% endif %}>9 hours</option>
-                            <option value="5" {%if gblvar_session.workDayLength == 10 %} selected="selected"  {% endif %}>10 hours</option>
-                            <option value="5" {%if gblvar_session.workDayLength == 11 %} selected="selected"  {% endif %}>11 hours</option>
-                            <option value="5" {%if gblvar_session.workDayLength == 12 %} selected="selected"  {% endif %}>12 hours</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="avgmovspeed" ame ="workspeed_title">Average Canvasser Movement Speed: </label>
-                    <select class="form-control" id="avgmovspeed" type="movspeed" name="movspeed">
-                         <option value="1" {% if gblvar_session.averageSpeed == 1 %} selected="selected" {% endif %}>1 mile/hour</option>
-                         <option value="2" {% if gblvar_session.averageSpeed == 2 %} selected="selected" {% endif %}>2 miles/hour</option>
-                         <option value="3" {% if gblvar_session.averageSpeed == 3 %} selected="selected" {% endif %}>3 miles/hour</option>
-                         <option value="4" {% if gblvar_session.averageSpeed == 4 %} selected="selected" {% endif %}>4 miles/hour</option>
-                         <option value="5" {% if gblvar_session.averageSpeed == 5 %} selected="selected" {% endif %}>5 miles/hour</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-primary" id ="globalButton" >Change Global Parameters</button>
-            </form>
+      </tr>
+      {% endfor %}
+   </table>
+  </div>
+ </div>
+
+
+ <div id="tabs-v-3" class="tab-pane">
+  <div class="container">
+    <form class="form-horizontal" id='user-form' action ="{{ url_for('admin.add') }}" method="post" enctype=multipart/form-data role="form">
+    <h1 id="user-title"> Add New User </h1>
+ <!--    <hr> -->
+    <div class="row">
+    <!---------------------Avatar Part---------------------------->
+      <div class="col-md-3">
+        <div class="text-center">
+          <img id = 'avatar' class="avatar img-circle img-thumbnail" src="/static/image/profile/avatar.png" alt="avatar">
+          <h6> Change your avatar...</h6>
+          <input id = "file" name ='file' type="file" multiple accept='image/*' class="form-control">
         </div>
-    <!-- User view-->
-        <div id="tabs-v-2" class="tab-pane">
-            <div class="table-responsive">
-            <table class="table table-striped table-bordered table-hover model-list">
-            <thead>
-                <tr>
-                        <th class="col-md-1" style="width: 80px;">&nbsp;</th>
-                        <th class="column-header col-first_name">
-                                <a href="#" title="Sort by First Name">Name</a>
-                        </th>
-                        <th class="column-header col-last_name">
-                            <a href="#" title="Sort by Last Name">Password</a> 
-                        </th>
-                        <th class="column-header col-email">
-                            <a href="#" title="Sort by Email">Email</a>
-                        </th>
-                </tr>
-            </thead>
-            {% for instance in usr_session %}
-            <tr>  
-            
-                    <td class="list-buttons-column">
-                        <form method = "post" action="{{ url_for('admin.delete', email= instance.email)}}">
-                            <input type='image' src="../../static/image/delete.svg" alt="Submit Form">
-                       </form>
-                     <form  method="post" action="{{ url_for('admin.editUser')}}">
-                            <input type='image'  src="../../static/image/pencil.svg" alt='Submit Form'>
-                            
-                      
-                        
-                    </td>
-                    
-                    <td class="list-buttons-column">
-                        <input name='name' type='text' value='{{instance.name}}'>
-                    </td>
-                    <td class="list-buttons-column">
-                        <input name='password' type='text' value='{{'Secret Password'}}'>
-                    </td>
-                    <td class="list-buttons-column">
-                        <input name='email' type='text' value='{{instance.email}}'>
-                        <input hidden name='realEmail' type='text' value='{{instance.email}}'>
-                    </td>
-                    </form>
-            </tr>
-                {% endfor %}
-            </table>
+      </div> 
+  <!-- Basic Info---------------->
+      <div class="col-md-9 personal-info">
+       <h3>Basic Info</h3>
+  <!-------------------------Name Part--------------------->
+          <div class="form-group">
+            <label class="col-lg-3 control-label" for = "fullname" > Name (Fullname) </label>
+            <div class="col-lg-8">
+              <input id ="name" name ="name" class="form-control" type="text" placeholder ="Name (Fullname)" required autofocus>
+            </div>
+          </div>
+      <!---------------------------Email Part--------------------->
+          <div class="form-group">
+            <label class="col-lg-3 control-label" for ="email"> Email Address </label>
+            <div class="col-lg-8">
+              <input class="form-control" id ="email" type="email" name ="email" placeholder = "Email Address" required autofocus>
+            </div>
+          </div>
+      <!---------------------------password Part--------------------->
+          <div class="form-group">
+            <label class="col-md-3 control-label" for="password" > Password </label>
+            <div class="col-md-8">
+              <input class="form-control" id = "password" name = "password" type="password" placeholder = "password" required>
+              <i id ="toggle-password" class = "fa fa-fw fa-eye-slash field-icon col-md-8"></i>
+            </div>
+          </div>
+      <!-------------------------confirm password Part--------------------->
+        <div class="form-group">
+            <label class="col-md-3 control-label" for="confirm-password" >Confirm Password </label>
+            <div class="col-md-8">
+              <input class="form-control" id = "confirm-password" name = "confirm-password" type="password" placeholder="Confirm Password" required>
+              <i id ="toggle-confirm-password" class = "fa fa-fw fa-eye-slash field-icon col-md-8"></i>
             </div>
         </div>
-     <div id="tabs-v-3" class="tab-pane">
-{% endblock %}
-{% block footer %}
-</div> 
+  <!----------------Roles Setting------------->
+    <div class="form-group">
+       <h6>Set Roles</h6>
+     <label class="checkbox-inline btn  btn-outline-secondary ">
+      <input type="checkbox" name ="admin" class ="checkbox-primary" id="check-admin" value="admin">Admin
+    </label>
+    <label class="checkbox-inline btn  btn-outline-secondary">
+      <input type="checkbox" class ="checkbox-primary" name ="manager" id  ="check-manager" value="manager"><span class="label-text">Manager</span>
+    </label>
+
+   <label class="checkbox-inline btn  btn-outline-secondary">
+      <input type="checkbox" class ="checkbox-primary" name ="canvasser" id  ="check-canvasser" value="canvasser"><span class="label-text">Canvasser</span>
+    </label>
+  </div>
+  <!--------------------------Choice Part--------------------->
+       <hr> 
+       <div class="form-group">
+            <label class="col-md-4 control-label" ></label>  
+            <div class="col-md-8">
+             <button class="btn btn-success" id= "submit" name = "submit" type="submit"> <i class="fa fa-check-circle"></i> Saved </button>
+              <button id ="cancel" class="btn btn-danger"><i class="fa fas fa-times"></i> Cancel </button>
+              <button type ="reset" id ="reset" class="btn btn-danger"><i class="fa fa-minus-square"></i> Reset</button>
+            </div>
+        </div>
+       </div>
+    </div>
+    </form>
+  </div>
 </div>
-{% endblock %}
+</div>
+  <script>
+    {% with errors = get_flashed_messages() %}
+      {% if errors %}
+        {% for msg in errors %}
+             document.getElementById('users').style.display = "block";
+             alert('{{ msg }}');
+        {% endfor %}
+     {% endif %}
+  {% endwith %}
+</script>
+
+{%  endblock %}

@@ -4,4 +4,10 @@ INFO:root:app created successfully
 INFO:root:server cert and key set successfully
 INFO:root:run app
 WARNING:werkzeug: * Debugger is active!
-INFO:werkzeug: * Debugger PIN: 594-841-257
+INFO:werkzeug: * Debugger PIN: 146-581-794
+INFO:werkzeug: * Running on https://127.0.0.1:5000/ (Press CTRL+C to quit)
+INFO:werkzeug:127.0.0.1 - - [03/Nov/2018 23:20:28] "GET / HTTP/1.1" 302 -
+INFO:werkzeug:127.0.0.1 - - [03/Nov/2018 23:20:28] "GET /auth/login HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Nov/2018 23:20:28] "GET /static/css/signin.css HTTP/1.1" 404 -
+INFO:werkzeug:127.0.0.1 - - [03/Nov/2018 23:20:28] "GET /static/css/bs_css/bootstrap.min.css HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [03/Nov/2018 23:20:28] "GET /static/image/title_logo.png HTTP/1.1" 200 -
