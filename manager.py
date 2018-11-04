@@ -289,7 +289,7 @@ def createCanvasAssignment():
 			sortComplete = 1
 			for i in range(len(dates)):
 				if(i not (len(dates)-1)):
-					if(dates[i].dateObj > dates[i+1].dateObj):
+					if(dates[i].date > dates[i+1].date):
 						temp = dates[i+1]
 						dates[i+1] = dates[i]
 						dates[i] = temp
@@ -305,8 +305,13 @@ def createCanvasAssignment():
 		if(len(assignments) == 0):
 			assignmentPossible = True
 
-		# if not enough dates/canvassers display warning
+		if(assignmentPossible == False):
+			return 'not possible'
+			# if not enough dates/canvassers display warning
 
+		for i in range(len(mappedAssignments)):
+
+			for j in range
 		# if enough: todo delete now unavailable dates from the database
 	return render_template('manager_html/create_canvas_assignment.html');
 
