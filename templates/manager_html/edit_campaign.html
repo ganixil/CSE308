@@ -27,7 +27,7 @@
 		</div>
 
 		<div class="container">
-			<form id="createCampaign" method='post' action="{{url_for('manager.showCampaign')}}">
+			<form id="createCampaign" method='post' action="{{url_for('manager.showCampaign')}}" style="height: 1800px">
 				<div class="box" style="height:120px; width:450px; top:160px;"><span class="label" style="font-size: 17px;">Select Campaign</span>
 					<div class="content" style="margin-left:10px;" >
 						<table  cellpadding="3">
@@ -152,6 +152,62 @@
                         </table>
 					</div>
 				</div>
+				<div class="box" style="height:140px; width:450px; margin-top:40px;"><span class="label" style="font-size: 17px;">Questionaires</span>
+					<div class="content" style="margin-left:10px;" >
+						<table  cellpadding="3">
+							<tr>
+								<td nowrap="" style="width:200px"> Enter Questions: </td>
+								<td>
+								<input id="questions" type="" name="questions">
+								</td>
+							</tr>
+							<tr>
+								<td></td>
+								<td>
+									<button class="submit-location" type="button" onclick="addQuestionToTable()">Add Question</button>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div id='questionTable' style="overflow-y: scroll" onmousemove="a()">
+			            <table id="insertQuestions" cellpadding="3" >
+							<tr><th nowrap="" style="width:200px">Questions</th></tr>
+						</table>
+					</div>
+			</div>
+			<div class="box" style="height:120px; width:450px; top:160px;"><span class="label" style="font-size: 17px;">Set Talking Points</span>
+					<div class="content" style="margin-left:10px;" >
+						<table  cellpadding="3">
+							<tr><span class="label" style="font-size: 17px;">What the Canvasser should say during the visit</span></tr>
+							<tr>
+								<textarea name="talking" style="width: 300px;height: 50px;margin-top: 2px;"></textarea>
+							</tr>
+							
+						</table>
+					</div>
+			</div>
+
+			<div class="box" style="height:90px; width:450px; top:160px;"><span class="label" style="font-size: 17px;">Duration of Canvas</span>
+					<div class="content" style="margin-left:10px;" >
+						<table  cellpadding="3">
+							<tr>
+								<td nowrap="" style="width:200px"> Set Duration: </td>
+								<td>
+									<select name = "duration">
+										<option value="5">5 minutes</option>
+										<option value="10">10 minutes</option>
+										<option value="15">15 minutes</option>
+										<option value="20">20 minutes</option>
+										<option value="25">25 minutes</option>
+										<option value="30">30 minutes</option>
+									</select>
+								</td>
+							</tr>
+						</table>
+					</div>
+			</div>
+
+
 				<button class="submit" name='submit_btn' value="submit_form">Update Campaign</button>
 			</form>
 
