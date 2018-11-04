@@ -1,11 +1,12 @@
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for
 )
+import googlemaps
 from werkzeug.exceptions import abort
 from database import db_session, User, Campaign, Role,CampaignLocation,CampaignCanvasser, CampaignManager, Questionnaire
+from gmap import key
 
-
-
+gmaps = googlemaps.Client(key = key)
 
 #create the manager blueprint
 bp = Blueprint('manager', __name__, url_prefix='/manager')
@@ -69,6 +70,7 @@ def createCampaign():
 		####################################################ADD Location to database
 		locations = request.form.getlist('flaskLocation')
 		for l  in locations:
+			print(gmaps.geocode(l))
 			loc = CampaignLocation(l,None,None,None)
 			campObj.campaigns_relation_2.append(loc)
 			db_session.commit()
