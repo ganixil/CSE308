@@ -153,6 +153,22 @@ class CanAva(Base):
         self.title = title
         self.theDate = theDate  
 
+class assignment(Base):
+    __tablename__='assignments'
+    id = Column(Integer, primary_key = True)
+    theDate = Column(Date)
+    x = Column(Float)
+    y = Column(Float)
+    email = Column(String(80))
+    order = Column(Integer)
+    def __init__(self, id, theDate, x, y, email, order):
+        self.id = id
+        self.theDate = theDate
+        self.x = x
+        self.y = y
+        self.email = email
+        self.order = order
+
 
 # For populating the database for testing purposes.
 if __name__ == "__main__":

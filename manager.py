@@ -113,16 +113,16 @@ def showCampaign():
 
 		try:
 			if request.form['submit_btn'] == 'submit_form':
-				print("POST_SUBMIT_-------------------")
+				print("POST_SUBMIT_-------------------0")
 				#Update old Campaign name
 				oldCamp = db_session.query(Campaign).filter(Campaign.campaign_name ==  request.form['scampaign_name']).first()
 				oldCamp.campaign_name = request.form['new_campaign_name']
 				db_session.commit()
-
+				print("POST_SUBMIT_-------------------1")
 				#Remove all manager asociated with Old Campaign
 				db_session.query(CampaignManager).filter(CampaignManager.campaign_id == oldCamp.id).delete()
 				db_session.commit()
-				
+				print("POST_SUBMIT_-------------------2")
 				#Add new managers to Old campaign
 				newManagers = request.form.getlist('flaskManager')
 				for m in newManagers:
@@ -132,7 +132,7 @@ def showCampaign():
 					role.roles_relation.append(mObject)
 					oldCamp.campaigns_relation.append(mObject)
 					db_session.commit()
-				
+				print("POST_SUBMIT_-------------------2")
 				#Remove all canvasser asociated with Old Campaign
 				db_session.query(CampaignCanvasser).filter(CampaignCanvasser.campaign_id == oldCamp.id).delete()
 				db_session.commit()
@@ -148,10 +148,43 @@ def showCampaign():
 					db_session.commit()
 
 
+				#Update new start and enddate, talking, duration
+				startdate = request.form['start_date']
+				enddate = request.form['end_date']
+				talking = request.form['talking']
+				duration = request.form['duration']
+
+				oldCamp.startDate = startdate
+				oldCamp.endDate = enddate
+				oldCamp.talking = talking
+				oldCamp.duration = duration
+
+
+				#Remove all location associated with campaign
+				db_session.query(CampaignLocation).filter(CampaignLocation.campaign_id == oldCamp.id).delete()
 				db_session.commit()
 
+				#Add new locations to old oldCampaign
+				locations = request.form.getlist('flaskLocation')
+
+				for l in locations:
+					loc = CampaignLocation(l,None,None,None)
+					oldCamp.campaigns_relation_2.append(loc)
+					db_session.commit()
+				
+				#Remove all questions
+				db_session.query(Questionnaire).filter(Questionnaire.campaign_id == oldCamp.id).delete()
+				db_session.commit()
+
+				#Add new questions
+				questions = request.form.getlist('flaskQuestion')
+				for q in questions:
+					ques = Questionnaire(q)
+					oldCamp.campaigns_relation_3.append(ques)
+					db_session.commit()
 
 
+				db_session.commit()
 
 				campaignObject = db_session.query(Campaign)
 				return render_template('manager_html/view_campaign.html', camp=campaignObject)
@@ -248,7 +281,6 @@ def showCampaign():
 			return render_template('manager_html/edit_campaign.html', duration= durationObj, talk=talkObj,locations=displayLocation,questions=displayQuestion, camp=campaignObject, show=campaignName, managers=allMan, canvasser=allCan, currentManagers=displayManagers, currentCanvassers=displayCanvas,start=start, end=end)
 
 
-
 ####################################################################################### CONOR's CODE#######################################################
 
 
@@ -295,7 +327,9 @@ def createCanvasAssignment():
 			sortComplete = 1
 			for i in range(len(dates)):
 				if(i != (len(dates)-1)):
-					if(dates[i].dateObj > dates[i+1].dateObj):
+
+					if(dates[i].date > dates[i+1].date):
+
 						temp = dates[i+1]
 						dates[i+1] = dates[i]
 						dates[i] = temp
@@ -311,14 +345,16 @@ def createCanvasAssignment():
 		if(len(assignments) == 0):
 			assignmentPossible = True
 
-		# if not enough dates/canvassers display warning
+		if(assignmentPossible == False):
+			return 'not possible'
+			# if not enough dates/canvassers display warning
 
-		# if enough: todo delete now unavailable dates from the database
-	return render_template('manager_html/create_canvas_assignment.html');
+		for i in range(len(mappedAssignments)):
 
-
-
-
+			for j in range:
+				pass
+				
+	return render_template('manager_html/create_canvas_assignment.html')
 
 
 @bp.route('/view_canvas_assignment')
@@ -349,12 +385,3 @@ def editCampaign():
 	campaignObject = db_session.query(Campaign)
 
 	return render_template('manager_html/edit_campaign.html', camp=campaignObject)
-
-
-'''
-cam =db_session.query(Campaign).filter(Campiang.campaign_name == "camp1")
-for ele in cam.campaigns_relation:
-	if (ele.campaign_id ==user1){
-	campaigns_relation.remove(ele)
-	}
-'''
