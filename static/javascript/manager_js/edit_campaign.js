@@ -11,12 +11,7 @@ function generate_map() {
 function displayEdit(){
 	var a = document.getElementById("scampaign_name");
 	document.getElementById("new_campaign_name").value = a.value; 
-
-	document.getElementById('signal').value = 'cbcs';
-
-
-	alert("hewruiewryitrew");
-	//document.getElementById("createCampaign").submit();
+	document.getElementById("createCampaign").submit();
 
 }
 function a(){

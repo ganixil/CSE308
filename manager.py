@@ -10,16 +10,16 @@ import googlemaps
 
 class DateObject():
 	def __init__(self, date, canEmail, dateId):
-        self.date = date
-        self.canEmail = canEmail
-        self.dateId = dateId
+		self.date = date
+		self.canEmail = canEmail
+		self.dateId = dateId
 
 class assignmentMapping():
 	def __init__(self, date, canEmail, dateId, assignment):
-        self.date = date
-        self.canEmail = canEmail
-        self.dateId = dateId
-        self.assignment = assignment
+		self.date = date
+		self.canEmail = canEmail
+		self.dateId = dateId
+		self.assignment = assignment
 
 #link google map
 gmaps = googlemaps.Client(key = key)
@@ -326,7 +326,7 @@ def createCanvasAssignment():
 		while(sortComplete == 0):
 			sortComplete = 1
 			for i in range(len(dates)):
-				if(i not (len(dates)-1)):
+				if(i != (len(dates)-1)):
 					if(dates[i].date > dates[i+1].date):
 						temp = dates[i+1]
 						dates[i+1] = dates[i]
@@ -349,13 +349,10 @@ def createCanvasAssignment():
 
 		for i in range(len(mappedAssignments)):
 
-			for j in range
-		# if enough: todo delete now unavailable dates from the database
-	return render_template('manager_html/create_canvas_assignment.html');
-
-
-
-
+			for j in range:
+				pass
+				
+	return render_template('manager_html/create_canvas_assignment.html')
 
 
 @bp.route('/view_canvas_assignment')
