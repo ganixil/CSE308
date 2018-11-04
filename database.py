@@ -128,7 +128,7 @@ class GlobalVariables(Base):
     __tablename__ = 'globals'
     id = Column(Integer, primary_key=True)
     workDayLength = Column(Integer, default = 1, nullable =False)
-    averageSpeed = Column(Integer, default = 1, nullable = False)
+    averageSpeed = Column(Float, default = 1, nullable = False)
     hqX = Column(Float)
     hqY = Column(Float)
 
