@@ -295,6 +295,7 @@ def showCampaign():
 def createCanvasAssignment():
 	if request.method == 'POST':
 		# flag for marking the assignment the campaign as possible
+		print("In here create canvas")
 		assignmentPossible = False
 		# get headquarters for starting location for routing algorithm
 		globalVars = db_session.query(GlobalVariables).first()
@@ -310,6 +311,12 @@ def createCanvasAssignment():
 		# add all campaign locations to the locations set
 		for i in range(len(dbLocations)):
 			locations.append((dbLocations[i].x, dbLocations[i].y))
+
+
+		####################################
+		
+		print("Locations = ", locations)
+		###################################	
 		# make assignments with the routing alorithm
 		assignments = makeAssign(locations)
 		# get the campaign's canvassers
