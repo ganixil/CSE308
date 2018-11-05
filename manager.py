@@ -299,7 +299,7 @@ def createCanvasAssignment():
 		# get headquarters for starting location for routing algorithm
 		globalVars = db_session.query(GlobalVariables).first()
 		hq = (globalVars.hqX, globalVars.hqY)
-		campName = request.form['name'] #for getting the campaign name
+		campName = request.form['campaign_name'] #for getting the campaign name
 		# get campaign data
 		campObj = db_session.query(Campaign).filter(Campaign.campaign_name == campName)
 		# get campaign location data
