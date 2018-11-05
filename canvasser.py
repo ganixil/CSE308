@@ -19,6 +19,7 @@ def update_ava():
 	# Fetching info from the calendar implemented in canvasser
 	# Using the javascript->html->jinja2->python interactions
 	title = request.args.get('title')
+	# format the date string so it can be used to make a Python date object
 	start = request.args.get('start')
 	dateStrings = start.split()
 	dateString = dateStrings[3] + " " + dateStrings[1] + " " + dateStrings[2]
@@ -27,9 +28,6 @@ def update_ava():
 
 	end = request.args.get('end')
 	allDay = request.args.get('allDay')
-
-
-
 	ava = CanAva(title,dateObj,user_email)
 	db_session.add(ava)
 	logging.info("updating availability for email "+user_email+" with "+title+""+start+""+end)
