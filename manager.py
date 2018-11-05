@@ -169,7 +169,9 @@ def showCampaign():
 				locations = request.form.getlist('flaskLocation')
 
 				for l in locations:
-					loc = CampaignLocation(l,None,None,None)
+					lat = gmaps.geocode(l)[0]['geometry']['location']['lat']
+					lng = gmaps.geocode(l)[0]['geometry']['location']['lng']
+					loc = CampaignLocation(l,lat,lng,None)
 					oldCamp.campaigns_relation_2.append(loc)
 					db_session.commit()
 				
