@@ -22,7 +22,7 @@ def update_ava():
 	start = request.args.get('start')
 	dateStrings = start.split()
 	dateString = dateStrings[3] + " " + dateStrings[1] + " " + dateStrings[2]
-	struc = time.strptime('2015 Nov 10', '%Y %b %d')
+	struc = time.strptime(dateString, '%Y %b %d')
 	dateObj = datetime.date(struc.tm_year, struc.tm_mon, struc.tm_mday)
 
 	end = request.args.get('end')
