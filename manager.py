@@ -299,7 +299,7 @@ def createCanvasAssignment():
 		# get headquarters for starting location for routing algorithm
 		globalVars = db_session.query(GlobalVariables).first()
 		hq = (globalVars.hqX, globalVars.hqY)
-		campName = request.form['name'] #for getting the campaign name
+		campName = request.form['campaign_name'] #for getting the campaign name
 		# get campaign data
 		campObj = db_session.query(Campaign).filter(Campaign.campaign_name == campName)
 		# get campaign location data
@@ -356,20 +356,23 @@ def createCanvasAssignment():
 			return 'not possible'
 			# if not enough dates/canvassers display warning
 
+		# add assignments to database
 		for i in range(len(mappedAssignments)):
-
-			id = db_session.query(func.max(Assignment.id))
+			#id = db_session.query(func.max(Assignment.id))
 			for j in range(len(mappedAssignments[i].assignment)):
-				assignObj = Assignment(id, mappedAssignments[i].date, mappedAssignments[i].assignment[j][0], mappedAssignments[i].assignment[j][1], mappedAssignments[i].canEmail, j)
+				assignObj = Assignment(mappedAssignments[i].date, mappedAssignments[i].assignment[j][0], mappedAssignments[i].assignment[j][1], mappedAssignments[i].canEmail, j, campObj.id)
 				db_session.add(assignObj)
 				db_session.commit()
-				id = id + 1
-		# if enough: todo delete now unavailable dates from the database
-	return render_template('manager_html/create_canvas_assignment.html')
 
+				#id = id + 1
+		# remove taken dates out of available in the database
+		for i in range(len(mappedAssignments)):
+			dateDelete = db_session.query(CanAva).filter(CanAva.id == mappedAssignments[i].dateId)
+			db_session.delete(dateDelete)
+		
 
-
-
+	campObj= db_session.query(Campaign)
+	return render_template('manager_html/create_canvas_assignment.html',camp=campObj)
 
 
 
