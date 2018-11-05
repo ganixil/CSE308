@@ -138,14 +138,23 @@ function addLocationToTable(){
 	
     var geocoder = new google.maps.Geocoder();
     geocoder.geocode({'address':b},function(results,status){
-    	var marker = new google.maps.Marker({
-      	position: new google.maps.LatLng(results[0].geometry.location.lat(),results[0].geometry.location.lng()),
-      	map: mapOptions,
-    	});
-    	map.setCenter(marker.getPosition())
+    	// var marker = new google.maps.Marker({
+	    //   	position: new google.maps.LatLng(results[0].geometry.location.lat(),results[0].geometry.location.lng()),
+	    //   	map: mapOptions,
+    	// });
+    	// map.setCenter(marker.getPosition())
+    	// if(status == google.maps.GeocoderStatus.OK){
+	    // 	var lat = results[0].geometry.location.lat();
+	    // 	var long = results[0].geometry.location.lng();
+	    // 	alert("Lat is " + lat);
+	    // 	alert("Long is " + long);
+    	// }	
+
     });
     var map = new google.maps.Map(document.getElementById("map"), mapOptions);
     
+
+
 
 	if(b != "null"){
 		var ob = document.getElementsByName("flaskLocation");
