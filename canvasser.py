@@ -55,6 +55,7 @@ def canPage(u_email):
 			'end':str(instance.theDate),
 			'allDay':True
 			})
+
 	canvasEvents = json.dumps(avails)
 	logging.debug("fetching info availability from database for "+u_email)
 	return render_template('canvasser_html/canvas.html',avails=canvasEvents)
