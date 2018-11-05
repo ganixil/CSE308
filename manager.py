@@ -99,7 +99,7 @@ def createCampaign():
 
 		db_session.commit()
 
-		
+		#######################Code optimizing task and assign to canvasser##########
 
 
 
