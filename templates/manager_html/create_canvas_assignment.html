@@ -21,7 +21,7 @@
 	            </div>
             </div>
             <div class="signOut" onclick="location.href='{{ url_for('auth.login') }}'"><span class="outText">Sign Out</span> </div>
-            <form id='assignForm'style='left:-30px;top: 400px;width: 500px; height:200px; border:none' action="{{url_for('manager.createCanvasAssignment')}}">
+            <form method='post' id='assignForm'style='left:-30px;top: 400px;width: 500px; height:200px; border:none' action="{{url_for('manager.createCanvasAssignment')}}">
             	Select Campaign:
 	            <select id="campaign_name" name = "campaign_name" value="" style='height:40px; width: 300px; font-size: 17px' onchange="displayEdit()">
 					<option value="none" ></option>
