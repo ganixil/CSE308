@@ -149,9 +149,10 @@ class CanAva(Base):
 
     email=Column(String(80), nullable=False) # User's email
 
-    def __init__(self,title, theDate):
+    def __init__(self,title, theDate,email):
         self.title = title
         self.theDate = theDate  
+        self.email = email
 
 class Assignment(Base):
     __tablename__='assignment'
@@ -162,7 +163,8 @@ class Assignment(Base):
     email = Column(String(80))
     order = Column(Integer)
     def __init__(self, theDate, x, y, email, order):
-        #self.id = id
+
+
         self.theDate = theDate
         self.x = x
         self.y = y

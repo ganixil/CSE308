@@ -52,8 +52,6 @@ def createCampaign():
 
 	campaignObject = db_session.query(Campaign)
 	if request.method == 'POST':
-		
-
 
 		################################################Create a campaign 
 		campaignName = request.form['campaign_name']
@@ -99,8 +97,12 @@ def createCampaign():
 			campObj.campaigns_relation_3.append(ques)
 			db_session.commit()
 
-
 		db_session.commit()
+
+		
+
+
+
 	else:
 		return render_template('manager_html/create_campaign.html', managers=manager_name, canvasser=canvasser_name)
 
@@ -190,6 +192,8 @@ def showCampaign():
 				db_session.commit()
 
 				campaignObject = db_session.query(Campaign)
+
+
 				return render_template('manager_html/view_campaign.html', camp=campaignObject)
 				
 		except:
@@ -310,23 +314,19 @@ def createCanvasAssignment():
 		assignments = makeAssign(locations)
 		# get the campaign's canvassers
 		canvassers = campObj.campaigns_relation_1
-		canEmails = []
-		for i in range(len[canvassers]):
-			roleObj = db_session.query(Role).filter(Role.id == canvassers[i].user_id)
-			canEmails.append(roleObj.email)
 		ids = []
 		dates = []
 		# get the start and end dates of the campaign
 		startDate = campObj.startDate
 		endDate = campObj.endDate
 		# collect the available dates of each canvasser in the campaign
-		for i in range(len(canEmails)):
-			cEmail = canEmails[i] # need to modify DB
+		for i in range(len(canvassers)):
+			cEmail = canvassers[i].user_email # need to modify DB
 			canDates = db_session.query(CanAva).filter(CanAva.email == cEmail).all()
 			for j in range(len(canDates)):
 				# filter out dates not in the campaign range
 				if(canDates.theDate > startDate and canDates.theDate < endDate):
-					dates.append(DateObject(canDates[j].theDate, canDates[j].email, canDates[j].id))
+					dates.append(DateObject(canDates.theDate, canDates.email, canDates.id))
 					#ids.append(canvassers.user_id)
 		# sort dates by earliest available using bubble sort
 		sortComplete = 0
@@ -351,9 +351,10 @@ def createCanvasAssignment():
 		# if no more assingments then this mapping is possible
 		if(len(assignments) == 0):
 			assignmentPossible = True
-		# if not enough dates/canvassers display warning
+
 		if(assignmentPossible == False):
 			return 'not possible'
+			# if not enough dates/canvassers display warning
 
 		# add assignments to database
 		for i in range(len(mappedAssignments)):
@@ -362,6 +363,7 @@ def createCanvasAssignment():
 				assignObj = Assignment(mappedAssignments[i].date, mappedAssignments[i].assignment[j][0], mappedAssignments[i].assignment[j][1], mappedAssignments[i].canEmail, j)
 				db_session.add(assignObj)
 				db_session.commit()
+<<<<<<< HEAD
 				#id = id + 1
 		# remove taken dates out of available in the database
 		for i in range(len(mappedAssignments)):
@@ -371,6 +373,17 @@ def createCanvasAssignment():
 
 	campaignObject = db_session.query(Campaign)
 	return render_template('manager_html/view_campaign.html', camp=campaignObject)
+=======
+				id = id + 1
+		# if enough: todo delete now unavailable dates from the database
+	return render_template('manager_html/create_canvas_assignment.html')
+
+
+
+
+
+
+>>>>>>> cf66c6e12661b39d7c2ac7d1cfd2fd72ebb3d658
 
 @bp.route('/view_canvas_assignment')
 def viewCanvasAssignment():

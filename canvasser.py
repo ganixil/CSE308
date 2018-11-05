@@ -30,7 +30,7 @@ def update_ava():
 
 
 
-	ava = CanAva(title,date,user_email)
+	ava = CanAva(title,start,user_email)
 	db_session.add(ava)
 	logging.info("updating availability for email "+user_email+" with "+title+""+start+""+end)
 	db_session.commit()

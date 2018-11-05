@@ -3,8 +3,6 @@
 	<head>
 		<link rel="stylesheet" type="text/css" href="../../static/css/manager.css">
 		
-		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBu-916DdpKAjTmJNIgngS6HL_kDIKU0aU&callback=myMap"></script>
-		<script type="text/javascript" src="../../static/javascript/manager_js/create_campaign.js"></script>
 		
 	</head>
     
@@ -23,8 +21,21 @@
 	            </div>
             </div>
             <div class="signOut" onclick="location.href='{{ url_for('auth.login') }}'"><span class="outText">Sign Out</span> </div>
+            <form id='assignForm'style='left:-30px;top: 400px;width: 500px; height:200px; border:none' action="{{url_for('manager.createCanvasAssignment')}}">
+            	Select Campaign:
+	            <select id="campaign_name" name = "campaign_name" value="" style='height:40px; width: 300px; font-size: 17px' onchange="displayEdit()">
+					<option value="none" ></option>
+					
+					{% for item in camp %}
+						<option value='{{item.campaign_name}}'> {{item.campaign_name}}</option>
+					{% endfor %}
+				</select>
+
+				<button class="submit" name='submitAssign' value="submitAssign" style='left:40px' onclick='assign()'>Create Assignment</button>
+			</form>
 		</div>
-			
 		
+		
+		<!-- <script type="text/javascript" src="../../static/javascript/manager_js/create_campaign.js"></script> -->
 	</body>
 </html>
