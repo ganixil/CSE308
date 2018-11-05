@@ -58,5 +58,21 @@ function toggle_c_ps(){
 }
 
 
+function file_change(){
+	 var file = document.getElementById('file').files[0];
+	  var avatar= document.getElementById("avatar");
+	 if (file){
+	 	 var reader = new FileReader(); 
+	 	 reader.onload = function(e){
+	 	   avatar.src = e.target.result;
+	 	 }
+	 	 reader.readAsDataURL(file);
+	 	 alert("Upload Successfully");
+	}else{
+		 avatar.src = "/static/image/profile/avatar.png"
+	}
+}
+
+
 
 
