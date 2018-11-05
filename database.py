@@ -161,8 +161,8 @@ class Assignment(Base):
     y = Column(Float)
     email = Column(String(80))
     order = Column(Integer)
-    def __init__(self, id, theDate, x, y, email, order):
-        self.id = id
+    def __init__(self, theDate, x, y, email, order):
+        #self.id = id
         self.theDate = theDate
         self.x = x
         self.y = y

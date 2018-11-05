@@ -355,21 +355,22 @@ def createCanvasAssignment():
 		if(assignmentPossible == False):
 			return 'not possible'
 
+		# add assignments to database
 		for i in range(len(mappedAssignments)):
-
-			id = db_session.query(func.max(Assignment.id))
+			#id = db_session.query(func.max(Assignment.id))
 			for j in range(len(mappedAssignments[i].assignment)):
-				assignObj = Assignment(id, mappedAssignments[i].date, mappedAssignments[i].assignment[j][0], mappedAssignments[i].assignment[j][1], mappedAssignments[i].canEmail, j)
+				assignObj = Assignment(mappedAssignments[i].date, mappedAssignments[i].assignment[j][0], mappedAssignments[i].assignment[j][1], mappedAssignments[i].canEmail, j)
 				db_session.add(assignObj)
 				db_session.commit()
-				id = id + 1
-
+				#id = id + 1
+		# remove taken dates out of available in the database
 		for i in range(len(mappedAssignments)):
 			dateDelete = db_session.query(CanAva).filter(CanAva.id == mappedAssignments[i].dateId)
 			db_session.delete(dateDelete)
 		
 
-	return render_template('manager_html/create_canvas_assignment.html')
+	campaignObject = db_session.query(Campaign)
+	return render_template('manager_html/view_campaign.html', camp=campaignObject)
 
 @bp.route('/view_canvas_assignment')
 def viewCanvasAssignment():

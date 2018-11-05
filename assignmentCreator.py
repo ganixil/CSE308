@@ -2,7 +2,7 @@ from __future__ import print_function
 from six.moves import xrange
 from ortools.constraint_solver import pywrapcp
 from ortools.constraint_solver import routing_enums_pb2
-from database import db_session, GlobalVariables,
+from database import db_session, GlobalVariables
 
 #speed = 20
 #dayLength = 40
