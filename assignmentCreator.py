@@ -11,25 +11,25 @@ from database import db_session, GlobalVariables
 # Problem Data Definition #
 ###########################
 def create_data_model(_locations):
-    """Stores the data for the problem"""
+    # store problem data here
     data = {}
-    # Multiply coordinates in block units by the dimensions of an average city block, 114m x 80m,
-    # to get location coordinates.
+    # convert latitude and longitude degrees to miles
     data["locations"] = [(l[0] * 69, l[1] * 69) for l in _locations]
 
-    #data["locations"] = [(l[0] * 114, l[1] * 80) for l in _locations]
+    
     data["num_locations"] = len(data["locations"])
     data["num_vehicles"] = 1
+    # specifiy starting location
     data["depot"] = 0
     return data
 #######################
 # Problem Constraints #
 #######################
 def manhattan_distance(position_1, position_2):
-    """Computes the Manhattan distance between two points"""
+    # Computes the Manhattan distance between two points
     return (abs(position_1[0] - position_2[0]) + abs(position_1[1] - position_2[1]))
 def create_distance_callback(data):
-    """Creates callback to return distance between points."""
+    # Creates callback to return distance between points
     _distances = {}
     for from_node in xrange(data["num_locations"]):
         _distances[from_node] = {}
@@ -40,23 +40,22 @@ def create_distance_callback(data):
                 _distances[from_node][to_node] = (manhattan_distance(data["locations"][from_node], data["locations"][to_node]))
 
     def distance_callback(from_node, to_node):
-        """Returns the manhattan distance between the two nodes"""
+        # Returns the manhattan distance between the two nodes
         return _distances[from_node][to_node]
     
     return distance_callback
 def add_distance_dimension(routing, distance_callback):
-    """Add Global Span constraint"""
+    # Add Global Span constraint
     distance = 'Distance'
     maximum_distance = 3000  # Maximum distance per vehicle.
     routing.AddDimension(distance_callback, 0, maximum_distance, True, distance)
     distance_dimension = routing.GetDimensionOrDie(distance)
     # Try to minimize the max distance among vehicles.
     distance_dimension.SetGlobalSpanCostCoefficient(100)
-###########
-# Printer #
-###########
+
+# printing function used for testing
 def print_solution(data, routing, assignment):
-    """Print routes on console."""
+    # Print route on console
     total_distance = 0
     for vehicle_id in xrange(data["num_vehicles"]):
         index = routing.Start(vehicle_id)
@@ -73,6 +72,7 @@ def print_solution(data, routing, assignment):
         total_distance += distance
     print('Total distance of all routes: {}m'.format(total_distance))
 
+# assignment creation function
 def makeAssign(locations, duration):
     
     assignmentCollection = []
@@ -101,42 +101,31 @@ def makeAssign(locations, duration):
         #vehicle_id = data["num_vehicles"][0]
         locs = []
         index = routing.Start(0)
-        #print(len(locations))
+        # inspect the solution to the location order
         while not routing.IsEnd(index):
-            #print(routing.IndexToNode(index))
             if(routing.IndexToNode(index) != 0):
-                #print(routing.IndexToNode(index))
                 locs.append(routing.IndexToNode(index))
+            # if day length is exceeded don't add another location to the assignment
             if(time >= dayLength):
                 break
             previous_index = index
             index = assignment.Value(routing.NextVar(index))
-            
-            
+            # get distance between two locations
             distance = routing.GetArcCostForVehicle(previous_index, index, vehicle_id)
-            print('distance')
-            print(distance)
+            # calculate total time used for that day so far
             time = time + (distance/speed) + duration
-            print('time')
-            print(time)
-            #print(time)
-            
+        
+        # remove used locations from the data set before the next mapping iteration
         locElements = []
-        #print(locs)
-        #print(locations)
-        #print(len(locs))
         for x in range(len(locs)):
             locElements.append(locations[locs[x]])
         assignmentCollection.append(locElements)
-        for x in range(len(locElements)):
-            
+        for x in range(len(locElements)): 
             locations.remove(locElements[x])
     
-    #print_solution(data, routing, assignment)
     return assignmentCollection
-########
-# Main #
-########
+
+# main function used for testing
 def main():
     locations = \
               [(4,4),
