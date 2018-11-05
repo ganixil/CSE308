@@ -125,8 +125,28 @@ function addCanvasserToTable(){
 
 }
 function addLocationToTable(){
+
 	var a = document.getElementById("address");
 	var b = a.value;
+
+
+    var mapOptions = new google.maps.Map(document.getElementById('map'), {
+      zoom: 10,
+      center: new google.maps.LatLng(51.5, 40.12),
+      mapTypeId: google.maps.MapTypeId.HYBRID
+    });
+	
+    var geocoder = new google.maps.Geocoder();
+    geocoder.geocode({'address':b},function(results,status){
+    	var marker = new google.maps.Marker({
+      	position: new google.maps.LatLng(results[0].geometry.location.lat(),results[0].geometry.location.lng()),
+      	map: mapOptions,
+    	});
+    	map.setCenter(marker.getPosition())
+    });
+    var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+    
+
 	if(b != "null"){
 		var ob = document.getElementsByName("flaskLocation");
 		if(ob.length == 0){
