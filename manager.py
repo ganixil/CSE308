@@ -363,7 +363,7 @@ def createCanvasAssignment():
 				assignObj = Assignment(mappedAssignments[i].date, mappedAssignments[i].assignment[j][0], mappedAssignments[i].assignment[j][1], mappedAssignments[i].canEmail, j)
 				db_session.add(assignObj)
 				db_session.commit()
-<<<<<<< HEAD
+
 				#id = id + 1
 		# remove taken dates out of available in the database
 		for i in range(len(mappedAssignments)):
@@ -373,17 +373,7 @@ def createCanvasAssignment():
 
 	campaignObject = db_session.query(Campaign)
 	return render_template('manager_html/view_campaign.html', camp=campaignObject)
-=======
-				id = id + 1
-		# if enough: todo delete now unavailable dates from the database
-	return render_template('manager_html/create_canvas_assignment.html')
 
-
-
-
-
-
->>>>>>> cf66c6e12661b39d7c2ac7d1cfd2fd72ebb3d658
 
 @bp.route('/view_canvas_assignment')
 def viewCanvasAssignment():
