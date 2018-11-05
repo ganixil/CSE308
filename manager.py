@@ -361,12 +361,6 @@ def createCanvasAssignment():
 		# if enough: todo delete now unavailable dates from the database
 	return render_template('manager_html/create_canvas_assignment.html')
 
-
-
-
-
-
-
 @bp.route('/view_canvas_assignment')
 def viewCanvasAssignment():
 	result = 1;
