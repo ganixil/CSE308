@@ -169,7 +169,9 @@ def showCampaign():
 				locations = request.form.getlist('flaskLocation')
 
 				for l in locations:
-					loc = CampaignLocation(l,None,None,None)
+					lat = gmaps.geocode(l)[0]['geometry']['location']['lat']
+					lng = gmaps.geocode(l)[0]['geometry']['location']['lng']
+					loc = CampaignLocation(l,lat,lng,None)
 					oldCamp.campaigns_relation_2.append(loc)
 					db_session.commit()
 				
@@ -308,19 +310,23 @@ def createCanvasAssignment():
 		assignments = makeAssign(locations)
 		# get the campaign's canvassers
 		canvassers = campObj.campaigns_relation_1
+		canEmails = []
+		for i in range(len[canvassers]):
+			roleObj = db_session.query(Role).filter(Role.id == canvassers[i].user_id)
+			canEmails.append(roleObj.email)
 		ids = []
 		dates = []
 		# get the start and end dates of the campaign
 		startDate = campObj.startDate
 		endDate = campObj.endDate
 		# collect the available dates of each canvasser in the campaign
-		for i in range(len(canvassers)):
-			cEmail = canvassers[i].user_email # need to modify DB
+		for i in range(len(canEmails)):
+			cEmail = canEmails[i] # need to modify DB
 			canDates = db_session.query(CanAva).filter(CanAva.email == cEmail).all()
 			for j in range(len(canDates)):
 				# filter out dates not in the campaign range
 				if(canDates.theDate > startDate and canDates.theDate < endDate):
-					dates.append(DateObject(canDates.theDate, canDates.email, canDates.id))
+					dates.append(DateObject(canDates[j].theDate, canDates[j].email, canDates[j].id))
 					#ids.append(canvassers.user_id)
 		# sort dates by earliest available using bubble sort
 		sortComplete = 0
@@ -345,10 +351,9 @@ def createCanvasAssignment():
 		# if no more assingments then this mapping is possible
 		if(len(assignments) == 0):
 			assignmentPossible = True
-
+		# if not enough dates/canvassers display warning
 		if(assignmentPossible == False):
 			return 'not possible'
-			# if not enough dates/canvassers display warning
 
 		for i in range(len(mappedAssignments)):
 
@@ -358,7 +363,12 @@ def createCanvasAssignment():
 				db_session.add(assignObj)
 				db_session.commit()
 				id = id + 1
-		# if enough: todo delete now unavailable dates from the database
+
+		for i in range(len(mappedAssignments)):
+			dateDelete = db_session.query(CanAva).filter(CanAva.id == mappedAssignments[i].dateId)
+			db_session.delete(dateDelete)
+		
+
 	return render_template('manager_html/create_canvas_assignment.html')
 
 @bp.route('/view_canvas_assignment')
