@@ -2,10 +2,12 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for
 )
 from werkzeug.exceptions import abort
-from database import db_session, User, Campaign, Role,CampaignLocation,CampaignCanvasser, CampaignManager, Questionnaire, Assignment, GlobalVariables
+from database import db_session, User, Campaign, Role,CampaignLocation,CampaignCanvasser, CampaignManager, Questionnaire, Assignment, GlobalVariables, CanAva
 from sqlalchemy.sql.expression import func
 from gmap import key
 import googlemaps
+from assignmentCreator import makeAssign
+import datetime
 
 
 
@@ -302,9 +304,9 @@ def createCanvasAssignment():
 		hq = (globalVars.hqX, globalVars.hqY)
 		campName = request.form['campaign_name'] #for getting the campaign name
 		# get campaign data
-		campObj = db_session.query(Campaign).filter(Campaign.campaign_name == campName)
+		campObj = db_session.query(Campaign).filter(Campaign.campaign_name == campName).first()
 		# get campaign location data
-		dbLocations = db_session.query(CampaignLocation).filter(CampaignLocation.campaign_id == campObj.id)
+		dbLocations = db_session.query(CampaignLocation).filter(CampaignLocation.campaign_id == campObj.id).all()
 		locations = []
 		# add the headquarters to the location set
 		locations.append(hq)
@@ -318,24 +320,42 @@ def createCanvasAssignment():
 		print("Locations = ", locations)
 		###################################	
 		# make assignments with the routing alorithm
-		assignments = makeAssign(locations)
+		assignments = makeAssign(locations, campObj.duration)
+		print('ASSIGNMENTS HERE')
+		print(assignments)
 		# get the campaign's canvassers
 		canvassers = campObj.campaigns_relation_1
+		#nameObj = db_session.query(User).filter(User.name == m).first()
+		#role = db_session.query(Role).filter(Role.role == 'manager',  Role.email == nameObj.email).first()
 		ids = []
 		dates = []
 		# get the start and end dates of the campaign
 		startDate = campObj.startDate
 		endDate = campObj.endDate
-		# collect the available dates of each canvasser in the campaign
+		startDate = datetime.date(int(startDate[0:4]), int(startDate[5:7]), int(startDate[8:]))
+		endDate = datetime.date(int(endDate[0:4]), int(endDate[5:7]), int(endDate[8:]))
+		emails = []
 		for i in range(len(canvassers)):
-			cEmail = canvassers[i].user_email # need to modify DB
+			roleObj = db_session.query(Role).filter(Role.id == canvassers[i].user_id).first()
+			emails.append(roleObj.email)
+		# collect the available dates of each canvasser in the campaign
+
+		for i in range(len(emails)):
+			cEmail = emails[i] # need to modify DB
+			print('email')
+			print(cEmail)
 			canDates = db_session.query(CanAva).filter(CanAva.email == cEmail).all()
+			print('dates available')
+			print(canDates)
 			for j in range(len(canDates)):
 				# filter out dates not in the campaign range
-				if(canDates.theDate > startDate and canDates.theDate < endDate):
-					dates.append(DateObject(canDates.theDate, canDates.email, canDates.id))
+				if(canDates[j].theDate >= startDate and canDates[j].theDate <= endDate):
+					dates.append(DateObject(canDates[j].theDate, canDates[j].email, canDates[j].id))
 					#ids.append(canvassers.user_id)
 		# sort dates by earliest available using bubble sort
+		print('date testing')
+		for i in range(len(dates)):
+			print(dates[i].date)
 		sortComplete = 0
 		while(sortComplete == 0):
 			sortComplete = 1
@@ -348,13 +368,25 @@ def createCanvasAssignment():
 						dates[i+1] = dates[i]
 						dates[i] = temp
 						sortComplete = 0
-
+		print('date testing2')
+		for i in range(len(dates)):
+			print(dates[i].date)
 		# assign assignments to dates
 		mappedAssignments = []
-		while(len(dates) > 0 and len(assignments > 0)):
+		#print(dates)
+		#print(assignments)
+		while(len(dates) > 0 and len(assignments) > 0):
+			print('hi')
 			dTemp = dates.pop(0)
+			#print('date testing 3')
+			#print(dTemp.date)
 			aTemp = assignments.pop(0)
+			print('assignment')
+			print(assignments)
 			mappedAssignments.append(assignmentMapping(dTemp.date, dTemp.canEmail, dTemp.dateId, aTemp))
+		print('date testing 4')
+		for i in range(len(mappedAssignments)):
+			print(mappedAssignments[i].date)
 		# if no more assingments then this mapping is possible
 		if(len(assignments) == 0):
 			assignmentPossible = True
@@ -374,8 +406,9 @@ def createCanvasAssignment():
 				#id = id + 1
 		# remove taken dates out of available in the database
 		for i in range(len(mappedAssignments)):
-			dateDelete = db_session.query(CanAva).filter(CanAva.id == mappedAssignments[i].dateId)
+			dateDelete = db_session.query(CanAva).filter(CanAva.id == mappedAssignments[i].dateId).first()
 			db_session.delete(dateDelete)
+			db_session.commit()
 		
 
 	campObj= db_session.query(Campaign)
