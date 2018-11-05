@@ -1,5 +1,6 @@
 var map;
 var geocoder;
+var exit = 0;
 function generate_map() {
 		var mapOptions = {
 		    center: new google.maps.LatLng(51.5, 40.12),
@@ -132,51 +133,52 @@ function addLocationToTable(){
 	var b = a.value;
 
     geocoder = new google.maps.Geocoder();
-    geocoder.geocode({'address':b},function(results,status){
-
     
-
-
+    var exit = false;
+    geocoder.geocode({'address':b},function(results,status){
     	if(status == 'OK'){
     		map.setCenter(results[0].geometry.location);
 	    	var marker = new google.maps.Marker({
             	map: map,
             	position: results[0].geometry.location
         	});
+
+
+	    	if(b != "null"){
+				var ob = document.getElementsByName("flaskLocation");
+				if(ob.length == 0){
+					var node = document.getElementById("insertLocation");
+					var trNode = document.createElement("input");
+					trNode.setAttribute("name","flaskLocation");
+					trNode.setAttribute("type", "text");
+					trNode.setAttribute("class", "dis");
+					trNode.setAttribute("value", b)	
+					node.appendChild(trNode);	
+				}else{
+					var bool = exists(b, ob);
+					if(bool ==false){
+						var node = document.getElementById("insertLocation");
+						var trNode = document.createElement("input");
+						trNode.setAttribute("name", "flaskLocation");
+						trNode.setAttribute("type", "text");
+						trNode.setAttribute("class", "dis");
+						trNode.setAttribute("value", b)
+						node.appendChild(trNode);
+						
+					}
+				}
+				a.selectedIndex = -1;	
+			}
 	    }else {
+	    	exit = true;
         	alert('There is no such place on Earth: ');
+        	
       	}
     });
      
+   
 
-
-
-	if(b != "null"){
-		var ob = document.getElementsByName("flaskLocation");
-		if(ob.length == 0){
-			var node = document.getElementById("insertLocation");
-			var trNode = document.createElement("input");
-			trNode.setAttribute("name","flaskLocation");
-			trNode.setAttribute("type", "text");
-			trNode.setAttribute("class", "dis");
-			trNode.setAttribute("value", b)	
-			node.appendChild(trNode);	
-		}
-		else{
-			var bool = exists(b, ob);
-			if(bool ==false){
-				var node = document.getElementById("insertLocation");
-				var trNode = document.createElement("input");
-				trNode.setAttribute("name", "flaskLocation");
-				trNode.setAttribute("type", "text");
-				trNode.setAttribute("class", "dis");
-				trNode.setAttribute("value", b)
-				node.appendChild(trNode);
-				
-			}
-		}
-	a.selectedIndex = -1;	
-	}
+	
 }
 
 function addQuestionToTable(){
