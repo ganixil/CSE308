@@ -162,7 +162,8 @@ class Assignment(Base):
     y = Column(Float)
     email = Column(String(80))
     order = Column(Integer)
-    def __init__(self, theDate, x, y, email, order):
+    campaign_id = Column(Integer)
+    def __init__(self, theDate, x, y, email, order, campaign_id):
 
 
         self.theDate = theDate
@@ -170,6 +171,7 @@ class Assignment(Base):
         self.y = y
         self.email = email
         self.order = order
+        self.campaign_id = campaign_id
 
 
 # For populating the database for testing purposes.

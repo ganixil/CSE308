@@ -360,7 +360,7 @@ def createCanvasAssignment():
 		for i in range(len(mappedAssignments)):
 			#id = db_session.query(func.max(Assignment.id))
 			for j in range(len(mappedAssignments[i].assignment)):
-				assignObj = Assignment(mappedAssignments[i].date, mappedAssignments[i].assignment[j][0], mappedAssignments[i].assignment[j][1], mappedAssignments[i].canEmail, j)
+				assignObj = Assignment(mappedAssignments[i].date, mappedAssignments[i].assignment[j][0], mappedAssignments[i].assignment[j][1], mappedAssignments[i].canEmail, j, campObj.id)
 				db_session.add(assignObj)
 				db_session.commit()
 
