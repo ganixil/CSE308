@@ -4,34 +4,5 @@ INFO:root:app created successfully
 INFO:root:server cert and key set successfully
 INFO:root:run app
 WARNING:werkzeug: * Debugger is active!
-INFO:werkzeug: * Debugger PIN: 594-841-257
-INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 19:28:10] "GET / HTTP/1.1" 302 -
-INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 19:28:10] "GET /auth/home/0 HTTP/1.1" 200 -
-INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 19:28:10] "GET /static/css/bs_css/bootstrap.min.css HTTP/1.1" 200 -
-INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 19:28:10] "GET /static/css/js_css/jquery-ui.min.css HTTP/1.1" 200 -
-INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 19:28:10] "GET / HTTP/1.1" 302 -
-INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 19:28:10] "GET /auth/home/0 HTTP/1.1" 200 -
-INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 19:28:11] "GET /static/js/jquery.min.js HTTP/1.1" 404 -
-INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 19:28:11] "GET /static/css/bs_css/font-awesome.css HTTP/1.1" 200 -
-INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 19:28:11] "GET /static/css/bs_css/bootstrap.min.css HTTP/1.1" 200 -
-INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 19:28:11] "GET /static/css/js_css/jquery-ui.min.css HTTP/1.1" 200 -
-INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 19:28:11] "GET /static/css/bs_css/font-awesome.min.css HTTP/1.1" 200 -
-INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 19:28:11] "GET /static/css/home.css HTTP/1.1" 200 -
-INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 19:28:11] "GET /static/js/bootstrap.min.js HTTP/1.1" 404 -
-INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 19:28:11] "GET /static/javascript/home.js HTTP/1.1" 200 -
-INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 19:28:11] "GET /static/image/logo.png HTTP/1.1" 200 -
-INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 19:28:11] "GET /static/image/profile/avatar.png HTTP/1.1" 200 -
-INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 19:28:11] "GET /static/js/bootstrap.min.js HTTP/1.1" 404 -
-INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 19:28:11] "GET /static/image/title_logo.png HTTP/1.1" 200 -
-INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 19:28:11] "GET /static/image/home.jpg HTTP/1.1" 200 -
-INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 19:28:14] "POST /auth/home/login HTTP/1.1" 302 -
-INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 19:28:14] "GET /manager/manpage?u_name=User1 HTTP/1.1" 200 -
-INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 19:28:14] "GET /static/css/manager.css HTTP/1.1" 200 -
-INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 19:28:14] "GET /static/javascript/manager_js/create_campaign.js HTTP/1.1" 200 -
-INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 19:28:14] "GET /static/image/index1.jpg HTTP/1.1" 200 -
-INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 19:28:15] "GET /manager/edit_campaign HTTP/1.1" 200 -
-INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 19:28:15] "GET /static/css/manager.css HTTP/1.1" 200 -
-INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 19:28:15] "GET /static/javascript/manager_js/edit_campaign.js HTTP/1.1" 200 -
-INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 19:28:19] "GET /manager/create_campaign HTTP/1.1" 200 -
-INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 19:28:19] "GET /static/css/manager.css HTTP/1.1" 200 -
-INFO:werkzeug:127.0.0.1 - - [04/Nov/2018 19:28:19] "GET /static/javascript/manager_js/create_campaign.js HTTP/1.1" 200 -
+INFO:werkzeug: * Debugger PIN: 715-223-168
+
