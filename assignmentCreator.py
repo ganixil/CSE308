@@ -15,7 +15,8 @@ def create_data_model(_locations):
     data = {}
     # Multiply coordinates in block units by the dimensions of an average city block, 114m x 80m,
     # to get location coordinates.
-    data["locations"] = _locations
+    data["locations"] = [(l[0] * 69, l[1] * 69) for l in _locations]
+
     #data["locations"] = [(l[0] * 114, l[1] * 80) for l in _locations]
     data["num_locations"] = len(data["locations"])
     data["num_vehicles"] = 1
@@ -113,7 +114,11 @@ def makeAssign(locations, duration):
             
             
             distance = routing.GetArcCostForVehicle(previous_index, index, vehicle_id)
+            print('distance')
+            print(distance)
             time = time + (distance/speed) + duration
+            print('time')
+            print(time)
             #print(time)
             
         locElements = []
