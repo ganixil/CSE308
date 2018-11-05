@@ -1,4 +1,3 @@
-var table = $('#user-table').DataTable();
 $(document).ready(function(){    // Instantiate UI tabs vertical
      $( "#tabs-collapsible" ).tabs({
             collapsible: true
@@ -29,31 +28,32 @@ $(document).ready(function(){    // Instantiate UI tabs vertical
      });
         
      $("#globalButton").click(function()
-    	{
-    	var current_day = $("#day_value").text();
-    	var choice_day = $("#avgworkday option:selected").val();
+        {
+        var current_day = $("#day_value").text();
+        var choice_day = $("#avgworkday option:selected").val();
 
-    	var current_speed = $("#speed_value").text();
-    	var choice_speed = $("#avgmovspeed option:selected").val();
+        var current_speed = $("#speed_value").text();
+        var choice_speed = $("#avgmovspeed option:selected").val();
 
-    	if( ((choice_day).trim() == (current_day).trim())  && ((choice_speed).trim()==(current_speed).trim()) ){
+        if( ((choice_day).trim() == (current_day).trim())  && ((choice_speed).trim()==(current_speed).trim()) ){
             alert("You did not change anything !");
             return false
-    	}
-    	else{
-    		alert("Update The System Settings Successfully!");
-    	}
+        }
+        else{
+            alert("Update The System Settings Successfully!");
+        }
 
     });
 
 //Work For Tab#2-------------Users Table
+  var table = $('#user-table').DataTable();
     $("#add").click(function(){  //Add One New User
         $("#edit").show();
         $("#edit").trigger('click');
-        var url = $('#user-form').attr("action");
-        url = "/admin/add";
+        var url = "/admin/add";
         $("#user-form").prop("action", url); 
         $("#user-title").text("Add New User");
+        $("#reset").prop( "disabled", false);
         $("#reset" ).trigger( "click" );
         $('#password').prop( "disabled", false );
         $('#toggle-password').prop( "disabled", false );
@@ -62,9 +62,10 @@ $(document).ready(function(){    // Instantiate UI tabs vertical
 
     });
 
-    $("#edit-btn").click(function(){  //Add One New User
+    $(".edit").click(function(){  //Add One New User
         $("#edit").show();
         $("#edit").trigger('click');
+        $("#reset").prop( "disabled", true);
         $("#user-title").text("Edit Selected User");
         var index = this.closest('tr').rowIndex;
         var name = $('#user-table tr:eq('+index+') td:eq(0)').text();
@@ -72,7 +73,7 @@ $(document).ready(function(){    // Instantiate UI tabs vertical
 
         var email = $('#user-table tr:eq('+index+') td:eq(1)').text();
         $('#email').prop("value", email.trim());
-        url = "/admin/edit/"+ email;
+        var url = "/admin/edit/"+ email;
 
         $("#user-form").prop("action", url); 
         $('#password').prop('disabled', true);
@@ -100,8 +101,8 @@ $(document).ready(function(){    // Instantiate UI tabs vertical
         } 
     }
      var avatar= $('#user-table tr:eq('+index+') td:eq(3)').text();
-     if(avatar.trim() =="None"){
-        document.getElementById('avatar').src="/static/image/profile/avatar.png";
+     if(avatar.trim() =="" || avatar.trim()=="None"){
+         $('#avatar').prop('src',"/static/image/profile/avatar.png");
      }
     else{
         var im = avatar.trim();
@@ -115,7 +116,8 @@ $(document).ready(function(){    // Instantiate UI tabs vertical
  
     $("#cancel").click(function(){  // Go back to user table
         $("#users").trigger('click');
-        $("#edit").hide();   
+        $("#edit").hide();  
+         return false; 
     });
     
 //Hide or show password
@@ -162,11 +164,14 @@ $(document).ready(function(){    // Instantiate UI tabs vertical
          if(this.files && this.files[0]){
               var reader = new FileReader(); 
                 reader.onload = function(e){
-                    $('#avatar').attr('src', e.target.result);
+                    $('#avatar').prop('src', e.target.result);
                 }
                reader.readAsDataURL(this.files[0]);
-                alert("Upload Successfully");
+                  alert("Upload Successfully");
              }
+        else{
+             $('#avatar').prop('src', "/static/image/profile/avatar.png");
+        }
     });
 
 

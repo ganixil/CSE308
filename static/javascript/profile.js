@@ -45,6 +45,7 @@ $(document).ready(function(){    // Instantiate UI tabs vertical
                reader.readAsDataURL(this.files[0]);
                 alert("Upload Successfully");
              }
+            
     });
 
     $("#submit-info").click(function(){

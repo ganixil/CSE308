@@ -11,8 +11,8 @@
     <link rel="stylesheet" href="/static/css/bs_css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="/static/css/bs_css/font-awesome.css">
 
-    <script src="/static/js/jquery.min.js"></script>
-    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/jquery/jquery.min.js"></script>
+    <script src="/static/javascript/bootstrap.min.js"></script>
 
     <!----Customize CSS and JS files--->
      <link href="/static/css/home.css" rel="stylesheet">
@@ -62,7 +62,7 @@
         <div class="text-center">
           <img id ="avatar" class="avatar img-circle img-thumbnail" src="/static/image/profile/avatar.png" alt="avatar">
           <h6>Choose your avatar...</h6>
-          <input id = "file" name ="file" type="file" multiple accept="image/*" class="form-control">
+          <input id = "file" name ="file" type="file" multiple accept="image/*" class="form-control" onchange=" file_change()">
         </div>
       </div> 
  <!---------------Core Part for signup------------>

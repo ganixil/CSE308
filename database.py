@@ -121,9 +121,6 @@ class CampaignCanvasser(Base):   # Association Table (Campaign + User)
     UniqueConstraint(campaign_id, user_id) # one canvasser + one campaign 
 
 
-
-
-
 class GlobalVariables(Base):
     __tablename__ = 'globals'
     id = Column(Integer, primary_key=True)
