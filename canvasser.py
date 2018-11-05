@@ -23,14 +23,14 @@ def update_ava():
 	dateStrings = start.split()
 	dateString = dateStrings[3] + " " + dateStrings[1] + " " + dateStrings[2]
 	struc = time.strptime('2015 Nov 10', '%Y %b %d')
-	x = datetime.date(a.tm_year, a.tm_mon, a.tm_mday)
+	dateObj = datetime.date(struc.tm_year, struc.tm_mon, struc.tm_mday)
 
 	end = request.args.get('end')
 	allDay = request.args.get('allDay')
 
 
 
-	ava = CanAva(title,start,user_email)
+	ava = CanAva(title,dateObj,user_email)
 	db_session.add(ava)
 	logging.info("updating availability for email "+user_email+" with "+title+""+start+""+end)
 	db_session.commit()

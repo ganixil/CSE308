@@ -364,12 +364,17 @@ def createCanvasAssignment():
 				db_session.add(assignObj)
 				db_session.commit()
 
-				id = id + 1
-	else:
-		campObj = db_session.query(Campaign)
-		return render_template('manager_html/create_canvas_assignment.html', camp = campObj)
-	
-	return render_template('manager_html/create_canvas_assignment.html')
+				#id = id + 1
+		# remove taken dates out of available in the database
+		for i in range(len(mappedAssignments)):
+			dateDelete = db_session.query(CanAva).filter(CanAva.id == mappedAssignments[i].dateId)
+			db_session.delete(dateDelete)
+		
+
+	campObj= db_session.query(Campaign)
+	return render_template('manager_html/create_canvas_assignment.html',camp=campObj)
+
+
 
 @bp.route('/view_canvas_assignment')
 def viewCanvasAssignment():
