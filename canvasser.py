@@ -50,10 +50,10 @@ def canPage(u_email):
 	avails =[]
 	for instance in events:
 		avails.append({
-			'title':instance.title,
-			'start':instance.start,
-			'end':instance.end,
-			'allDay':instance.allDay
+			'title':"Free",
+			'start':str(instance.theDate),
+			'end':str(instance.theDate),
+			'allDay':True
 			})
 	canvasEvents = json.dumps(avails)
 	logging.debug("fetching info availability from database for "+u_email)
