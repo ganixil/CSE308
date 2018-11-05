@@ -302,11 +302,6 @@ def createCanvasAssignment():
 		for i in range(len(dbLocations)):
 			locations.append((dbLocations[i].x, dbLocations[i].y))
 
-
-		####################################
-		
-		#print("Locations = ", locations)
-		###################################	
 		# make assignments with the routing alorithm
 		assignments = makeAssign(locations, campObj.duration)
 		# get the campaign's canvassers
