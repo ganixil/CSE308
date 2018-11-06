@@ -48,10 +48,12 @@ $(document).ready(function() {
 
 			var startRaw = cEvents[i]["start"];
 			var start = new Date(Date.parse(startRaw));
+			console.log(start)
 			cEvents[i]["start"] = start;
 
 			var endRaw = cEvents[i]["end"];
 			var end = new Date(Date.parse(endRaw));
+			console.log(end)
 			cEvents[i]["end"] = end;
 
 			//for some reason all day doesnt work
