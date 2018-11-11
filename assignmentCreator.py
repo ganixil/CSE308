@@ -143,7 +143,7 @@ def main():
                (2,0), (8,0),
                (6,1), (3,0),
                (5,2), (7,2)]
-    assn = makeAssign(locations)
+    assn = makeAssign(locations, 5)
     print(assn)
 if __name__ == '__main__':
     main()

@@ -175,10 +175,7 @@ function addLocationToTable(){
         	
       	}
     });
-     
-   
-
-	
+     	
 }
 
 function addQuestionToTable(){
@@ -208,7 +205,7 @@ function addQuestionToTable(){
 				
 			}
 		}
-	a.selectedIndex = -1;	
+	a.value = "";	
 	}
 }
 
