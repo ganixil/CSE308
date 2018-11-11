@@ -47,7 +47,7 @@ def create_distance_callback(data):
 def add_distance_dimension(routing, distance_callback):
     # Add Global Span constraint
     distance = 'Distance'
-    maximum_distance = 999999999  # Maximum distance per vehicle.
+    maximum_distance = 3000  # Maximum distance per vehicle.
     routing.AddDimension(distance_callback, 0, maximum_distance, True, distance)
     distance_dimension = routing.GetDimensionOrDie(distance)
     # Try to minimize the max distance among vehicles.
@@ -96,6 +96,7 @@ def makeAssign(locations, duration):
         search_parameters.first_solution_strategy = (routing_enums_pb2.FirstSolutionStrategy.PATH_CHEAPEST_ARC) # pylint: disable=no-member
         # Solve the problem.
         assignment = routing.SolveWithParameters(search_parameters)
+
         time = 0
         distance = 0
         #vehicle_id = data["num_vehicles"][0]
@@ -132,7 +133,7 @@ def main():
                (2,0), (8,0),
                (6,1), (3,0),
                (5,2), (7,2)]
-    assn = makeAssign(locations, 5)
+    assn = makeAssign(locations, duration)
     print(assn)
 if __name__ == '__main__':
     main()

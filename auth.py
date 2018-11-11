@@ -68,7 +68,7 @@ def signup():
             new_user.users_relation.append(role)
         db_session.commit() 
         print ("new user-----> %s" %new_user)
-        flash("Already created one new account Successfully!!")
+        flash("Create one new account Successfully!!")
     return redirect(url_for('auth.home',index = 1))
 
 @bp.route('/home/login',  methods=('GET', 'POST'))

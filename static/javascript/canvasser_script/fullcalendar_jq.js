@@ -70,7 +70,7 @@ $(document).ready(function() {
 		var calendar =  $('#calendar').fullCalendar({
 			header: {
 				left: 'title',
-				center: 'agendaDay,agendaWeek,month',
+				center: 'agendaDay,agendaWeek,month, listMonth',
 				right: 'prev,next today'
 			},
 			editable: true,
@@ -113,7 +113,8 @@ $(document).ready(function() {
 					start: start,
 					end: end,
 					allDay: allDay
-				},function(data){
+				},
+				function(data){
 
 				}
 				)
