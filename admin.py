@@ -44,13 +44,13 @@ def adminPage(u_name):
         movspeed = request.form['movspeed']
         params = GlobalVariables.query.first()
         commmit = False
-        if (int(workday) != session['params'][0]):
-            session['params'][0] = int(workday)
+        if ((int(workday)*60) != session['params'][0]):
+            session['params'][0] = int(workday)*60
             commmit = True
             params.workDayLength = int(workday)*60
-        if (int(movspeed) != session['params'][1]):
+        if ((int(movspeed)/60)!= session['params'][1]):
             commmit = True
-            session['params'][1] = int(movspeed)
+            session['params'][1] = int(movspeed)/60
             params.averageSpeed = int(movspeed)/60
         if commmit:
             db_session.commit()

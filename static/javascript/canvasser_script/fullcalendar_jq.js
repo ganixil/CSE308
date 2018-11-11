@@ -48,10 +48,12 @@ $(document).ready(function() {
 
 			var startRaw = cEvents[i]["start"];
 			var start = new Date(Date.parse(startRaw));
+			start.setHours(start.getHours()+5);
 			cEvents[i]["start"] = start;
 
 			var endRaw = cEvents[i]["end"];
 			var end = new Date(Date.parse(endRaw));
+			end.setHours(end.getHours()+5);
 			cEvents[i]["end"] = end;
 
 			//for some reason all day doesnt work
@@ -91,11 +93,11 @@ $(document).ready(function() {
 			allDaySlot: false,
 			selectHelper: true,
 			select: function(start, end, allDay) {
-				var title = prompt('Canvas Event Title:');
-				if (title) {
+				window.alert("Free at this date")
+				if (true) {
 					calendar.fullCalendar('renderEvent',
 						{
-							title: title,
+							title: "Free",
 							start: start,
 							end: end,
 							allDay: allDay
@@ -107,7 +109,7 @@ $(document).ready(function() {
 				calendar.fullCalendar('unselect');
 				$.getJSON($SCRIPT_ROOT + '/canvasser/update_ava',
 				{
-					title: title,
+					title: "Free",
 					start: start,
 					end: end,
 					allDay: allDay

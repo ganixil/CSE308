@@ -4,13 +4,15 @@
 <!--Customer Part-->
     <link rel="stylesheet" href="/static/css/bs_css/dataTables.bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/js_css/jquery.dataTables.min.css"> 
-    <script src="/static/css/js_css/select2.css"></script>  
-    <script src="/static/js/jquery.dataTables.min.js"></script>
-    <script src="/static/js/dataTables.bootstrap4.min.js"></script>
-    <script src="/static/js/select2.js"></script>
+    <script src="/static/css/bs_css/select2.css"></script>  
+    
+    <script src="/static/jquery/jquery.dataTables.min.js"></script>
+
+    <script src="/static/javascript/bs_js/dataTables.bootstrap4.min.js"></script>
+    <script src="/static/javascript/bs_js/select2.js"></script>
 
     <link href="/static/css/admin.css" rel="stylesheet">
-    <script src="/static/js/admin_script/admin.js"></script>
+    <script src="/static/javascript/admin_script/admin.js"></script>
 {% endblock %}
 
 <!----------------------BODY PART---------------------------------------------->
@@ -35,13 +37,13 @@
       <p style="text-align: center; color: black;">
         <label for="avgworkday" ><strong>Average Work Day Length:</strong>
           <label id = "day_value" > <mark> {{ session['params'][0] }} </mark> </label>
-            <label style ="padding-left: 5px">  Days</label>
+            <label style ="padding-left: 5px"> Minutes </label>
         </label>
       </p>
       <p style="text-align: center; color: black;">
         <label for="avgworkday"> <strong>Average Canvasser Movement Speed:</strong>
         <label id = "speed_value" > <mark>  {{ (session['params'])[1] }} </mark> </label>
-        <label style = "padding-left: 5px">  Miles/Hour</label>
+        <label style = "padding-left: 5px">  Miles/minute</label>
         </label>
       </p>
     </div>
@@ -50,28 +52,28 @@
         <div class="form-group">
           <label for="avgworkday"  name ="workday_title"> Average Work Day Length: </label>
           <select class="form-control" id="avgworkday" type="workday" name = "workday">
-              <option value="1" {% if (session['params'])[0]|int == 1 %} selected="selected" {% endif %}>1 hours</option>
-              <option value="2" {% if (session['params'])[0]|int == 2 %} selected="selected" {% endif%}>2 hours</option>
-              <option value="3" {% if (session['params'])[0]|int == 3 %} selected="selected"{% endif %}>3 hours</option>
-              <option value="4" {%if (session['params'])[0]|int == 4 %} selected="selected" {% endif %}>4 hours</option>
-              <option value="5" {%if (session['params'])[0]|int == 5 %} selected="selected"  {% endif %}>5 hours</option>
-              <option value="6" {%if (session['params'])[0]|int == 6 %} selected="selected"  {% endif %}>6 hours</option>
-              <option value="7" {%if (session['params'])[0]|int == 7 %} selected="selected"  {% endif %}>7 hours</option>
-              <option value="8" {%if (session['params'])[0]|int == 8 %} selected="selected"  {% endif %}>8 hours</option>
-              <option value="9" {%if (session['params'])[0]|int == 9 %} selected="selected"  {% endif %}>9 hours</option>
-              <option value="10" {%if (session['params'])[0]|int == 10 %} selected="selected"  {% endif %}>10 hours</option> 
-              <option value="11" {%if (session['params'])[0]|int == 11 %} selected="selected"  {% endif %}>11 hours</option>
-              <option value="12" {%if (session['params'])[0]|int == 12 %} selected="selected"  {% endif %}>12 hours</option>
+              <option value="1" {% if (session['params'])[0]|int == 60 %} selected="selected" {% endif %}>1 hours</option>
+              <option value="2" {% if (session['params'])[0]|int == 120 %} selected="selected" {% endif%}>2 hours</option>
+              <option value="3" {% if (session['params'])[0]|int == 180 %} selected="selected"{% endif %}>3 hours</option>
+              <option value="4" {%if (session['params'])[0]|int == 240 %} selected="selected" {% endif %}>4 hours</option>
+              <option value="5" {%if (session['params'])[0]|int == 300 %} selected="selected"  {% endif %}>5 hours</option>
+              <option value="6" {%if (session['params'])[0]|int == 360%} selected="selected"  {% endif %}>6 hours</option>
+              <option value="7" {%if (session['params'])[0]|int == 420 %} selected="selected"  {% endif %}>7 hours</option>
+              <option value="8" {%if (session['params'])[0]|int == 480 %} selected="selected"  {% endif %}>8 hours</option>
+              <option value="9" {%if (session['params'])[0]|int == 540 %} selected="selected"  {% endif %}>9 hours</option>
+              <option value="10" {%if (session['params'])[0]|int == 600 %} selected="selected"  {% endif %}>10 hours</option> 
+              <option value="11" {%if (session['params'])[0]|int == 660 %} selected="selected"  {% endif %}>11 hours</option>
+              <option value="12" {%if (session['params'])[0]|int == 720 %} selected="selected"  {% endif %}>12 hours</option>
               </select>
           </div>
               <div class="form-group">
                 <label for="avgmovspeed" ame ="workspeed_title">Average Canvasser Movement Speed: </label>
                   <select class="form-control" id="avgmovspeed" type="movspeed" name="movspeed">
-                    <option value="1" {% if (session['params'])[1]|int == 1 %} selected="selected" {% endif %}>1 mile/hour</option>
-                    <option value="2" {% if (session['params'])[1]|int == 2 %} selected="selected" {% endif %}>2 miles/hour</option>
-                    <option value="3" {% if (session['params'])[1]|int == 3 %} selected="selected" {% endif %}>3 miles/hour</option>
-                    <option value="4" {% if (session['params'])[1]|int == 4 %} selected="selected" {% endif %}>4 miles/hour</option>
-                    <option value="5" {% if (session['params'])[1]|int == 5 %} selected="selected" {% endif %}>5 miles/hour</option>
+                    <option value="1" {% if (session['params'])[1] == (1/60) %} selected="selected" {% endif %}>1 mile/hour</option>
+                    <option value="2" {% if (session['params'])[1] == (2/60) %} selected="selected" {% endif %}>2 miles/hour</option>
+                    <option value="3" {% if (session['params'])[1] == (3/60) %} selected="selected" {% endif %}>3 miles/hour</option>
+                    <option value="4" {% if (session['params'])[1] == (4/60) %} selected="selected" {% endif %}>4 miles/hour</option>
+                    <option value="5" {% if (session['params'])[1] == (5/60) %} selected="selected" {% endif %}>5 miles/hour</option>
                   </select>
               </div>
               <button type="submit" class="btn btn-primary" id ="globalButton" >Change </button>
@@ -117,7 +119,7 @@
           <td class="list-buttons-column" style="text-align:center"> {{ session['users'][instance].avatar }} </td>
           <td align="center">
            <!--  onclick ="editTable(this);"  -->
-            <button  type ="button" id ="edit-btn" class="btn btn-default btn-xs"> <i class="fa fa-pencil"></i> edit</button>
+            <button  type ="button" class="btn btn-default btn-xs edit"> <i class="fa fa-pencil"></i> edit</button>
             <form method ="post" action="{{url_for('admin.delete',u_email=session['users'][instance].email)}} ">
                 <button href="#" id = "table-delete" type ="submit" class="btn btn-danger btn-xs"> <i class="fa fa-trash"></i> del </button>
              </form>
