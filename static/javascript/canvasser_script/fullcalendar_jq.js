@@ -48,12 +48,12 @@ $(document).ready(function() {
 
 			var startRaw = cEvents[i]["start"];
 			var start = new Date(Date.parse(startRaw));
-			console.log(start)
+			start.setHours(start.getHours()+5);
 			cEvents[i]["start"] = start;
 
 			var endRaw = cEvents[i]["end"];
 			var end = new Date(Date.parse(endRaw));
-			console.log(end)
+			end.setHours(end.getHours()+5);
 			cEvents[i]["end"] = end;
 
 			//for some reason all day doesnt work
