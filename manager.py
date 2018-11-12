@@ -69,8 +69,6 @@ def viewCampaignDetail():
 	elif (name == "Canvassers"):
 		return render_template('manager_html/view_campaign.html', camp=camp, name = campaign_name,camp_list = camp[campaign_name][2], index =2)
 	elif (name == "Locations"):
-		for ele in  camp[campaign_name][3]:
-			print("%s\n" %ele)
 		return render_template('manager_html/view_campaign.html', camp=camp, name = campaign_name, camp_list = camp[campaign_name][3], index =3)
 	elif (name == "Questions"):
 		return render_template('manager_html/view_campaign.html', camp=camp, name = campaign_name, camp_list = camp[campaign_name][4], index =4)
@@ -80,8 +78,8 @@ def viewCampaignDetail():
 
 @bp.route('/create_campaign', methods=['GET','POST'])
 def createCampaign():
-	print("Enter Edit Campaign \n")
-	return render_template('manager_html/edit_campaign.html', camp=camp, name = None, camp_list = [], index = 0)
+	print("Enter Create Campaign \n")
+	return render_template('manager_html/create_campaign.html', camp=camp, name = None, camp_list = [], index = 5)
 
 @bp.route('/edit_campaign', methods=['GET','POST'])
 def editCampaign():

@@ -24,27 +24,28 @@
 <div class="wrapper">
     <nav id="sidebar">
         <div class="sidebar-header">
-            <h3>Tools</h3>
+            <h3 style ="color: black; text-align: center;">{{session['info']['name']}}</h3>
         </div>
 
         <ul class="list-unstyled components">
             <p>Campaign Managment</p>
-            <li class="active">
+            <hr/>
+            <li {% if index <5 %} class="active" {% endif %}>
                 <a href="{{ url_for('manager.viewCampaign') }}" >View Campaigns</a>
             </li>
-            <li>
+            <li  {% if index == 5 %} class="active" {% endif %}>
                 <a href="{{ url_for('manager.createCampaign')}}" >Create Campaigns</a>
             </li>
-            <li>
+            <li id ="edit_cam">
                 <a href="{{ url_for('manager.editCampaign') }}">Edit Campaigns</a>
             </li>
-            <li>
+            <li id ="view_ass">
                 <a href="{{ url_for('manager.viewAssignment') }}">View Assignments</a>
             </li>
-            <li>
+            <li id ="edit_ass">
                 <a href="{{ url_for('manager.editAssignment') }}">Edit Assignments</a>
             </li>
-            <li>
+            <li id ="view_result">
                 <a href="{{ url_for('manager.viewResult') }}">View Results</a>
             </li>
         </ul>

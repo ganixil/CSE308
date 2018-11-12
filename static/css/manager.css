@@ -7,23 +7,23 @@
 body {
      font-family: Arial, Helvetica, sans-serif;
     background: #fafafa;
+    background-color:#e2e9ee;
 
 }
 
 p {
     font-family: 'Poppins', sans-serif;
     font-size: 1.1em;
-    font-weight: 300;
+    font-weight: 500;
     line-height: 1.7em;
-    color: #999;
+    color: black !important;
 }
 
 .navbar {
-    padding: 15px 10px;
-    background: #fff;
+    background-color:  #89B4E0 !important ;
     border: none;
     border-radius: 0;
-    margin-bottom: 40px;
+    margin-bottom: 10px;
     box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
 }
 
@@ -66,7 +66,7 @@ p {
 }
 
 #sidebar .sidebar-header {
-    padding: 20px;
+    padding: 10px;
     background: #6d7fcc;
 }
 
@@ -94,6 +94,9 @@ p {
     color: #fff;
 }
 
+.col{
+   text-align:center;
+}
 
 ul ul a {
     font-size: 0.9em !important;
@@ -145,6 +148,29 @@ ul ul a {
     margin: 5px auto;
 }
 
+#title{
+    font-style: italic;
+    margin-right: 30px;
+}
+
+#show_man #show_can #show_loc #show_que{
+  font-size: 18px;
+}
+
+.active_nav{
+   background-color: #89B4DF !important;
+   font-size: 22px !important;
+}
+
+#show_man:hover #show_can:hover #show_loc:hover #show_que:hover{
+  font-size: 22px;
+  background-color: #89B4DF !important;
+}
+
+.col{
+  font-size: 18px;
+  text-align:center;
+}
 
 /* ---------------------------------------------------
     MEDIAQUERIES
@@ -179,3 +205,4 @@ ul ul a {
     }
 
 }
+
