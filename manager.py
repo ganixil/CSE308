@@ -76,8 +76,8 @@ def viewCampaignDetail():
 		return render_template('manager_html/view_campaign.html', camp=camp, name = None, camp_list =[], index = 0)
 
 
-@bp.route('/create_campaign', methods=['GET','POST'])
-def createCampaign():
+@bp.route('/create_campaign/<u_email>', methods=['GET','POST'])
+def createCampaign(u_email):
 	print("Enter Create Campaign \n")
 	return render_template('manager_html/create_campaign.html', camp=camp, name = None, camp_list = [], index = 5)
 
