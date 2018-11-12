@@ -1,3 +1,4 @@
+var reset = 0;
 $(document).ready(function(){    // Instantiate UI tabs vertical
      $( "#tabs-collapsible" ).tabs({
             collapsible: true
@@ -54,6 +55,7 @@ $(document).ready(function(){    // Instantiate UI tabs vertical
         $("#user-form").prop("action", url); 
         $("#user-title").text("Add New User");
         $("#reset").prop( "disabled", false);
+        $("#reset").trigger("click");
         $("#reset" ).trigger( "click" );
         $('#password').prop( "disabled", false );
         $('#toggle-password').prop( "disabled", false );
@@ -101,7 +103,7 @@ $(document).ready(function(){    // Instantiate UI tabs vertical
         } 
     }
      var avatar= $('#user-table tr:eq('+index+') td:eq(3)').text();
-     if(avatar.trim() =="" || avatar.trim()=="None"){
+     if(avatar.trim()=='None'){
          $('#avatar').prop('src',"/static/image/profile/avatar.png");
      }
     else{
@@ -161,6 +163,7 @@ $(document).ready(function(){    // Instantiate UI tabs vertical
 
 //  Dynamic update the image  if there's any file selected.  
     $('#file').change(function(){
+        if(reset == 0){
          if(this.files && this.files[0]){
               var reader = new FileReader(); 
                 reader.onload = function(e){
@@ -172,7 +175,18 @@ $(document).ready(function(){    // Instantiate UI tabs vertical
         else{
              $('#avatar').prop('src', "/static/image/profile/avatar.png");
         }
+    }
+    else{
+         $('#avatar').prop('src', "/static/image/profile/avatar.png");
+            reset = 0;
+    }
     });
+
+    
+   $("#reset").click(function(){
+        reset = 1;
+        $("#file").trigger("change");
+   });
 
 
 });

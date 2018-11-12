@@ -1,8 +1,9 @@
-from flask import (Blueprint, flash, g, redirect, render_template, request, url_for, session)
+from flask import (Blueprint, flash, g, redirect, render_template, request, url_for, session, current_app)
 from werkzeug.exceptions import abort
 from database import db_session, User, GlobalVariables, Role
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
+import os
 
 # Create the admin blueprint
 bp = Blueprint('admin', __name__, url_prefix='/admin')
@@ -74,29 +75,24 @@ def delete(u_email):
         if deletedUser is not None:
             db_session.delete(deletedUser)
             db_session.commit() 
+            flash("Delete Successfully","info")
     return redirect(url_for('admin.adminPage',u_name=session['info']['name']))
         
 # Function for handling adding
 @bp.route('/add', methods=('GET', 'POST'))
 def add():
-    print("Enter the add funcion")
+    file = None
+    filename = None
     if request.method == "POST":
         name = request.form['name']
         email = request.form['email']
         password = request.form['password']
         confirm_password = request.form['confirm-password']
-        file = None
-        filename = None
         if 'file' in request.files:
             file = request.files['file']
         admin = request.form.get('admin')
         manager = request.form.get('manager')
         canvasser = request.form.get('canvasser')
-        print('roles---->')
-        print(admin)
-        print(manager)
-        print(canvasser)
-        print("-----------> over here")
         if not (admin == "admin" or manager == "manager" or canvasser == "canvasser"):
             flash("Fail to add, You must set at least one position for this user!!", "error")
             return redirect(url_for("admin.adminPage", u_name = session['info']['name']))
@@ -112,6 +108,7 @@ def add():
             return redirect(url_for("admin.adminPage", u_name = session['info']['name']))
         else:  # Everything already matches
             if file and file.filename != '' and allowed_file(file.filename):
+                app = current_app._get_current_object()
                 filename = secure_filename(file.filename)
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             ps = generate_password_hash(password)
@@ -137,8 +134,8 @@ def edit(u_email):
     file = None
     filename = None
     if request.method == "POST":
-        print("Enter post for editing user")
         user = User.query.filter(User.email == u_email).first()
+        print(user)
         filename = user.avatar
         name = request.form['name']
         email = request.form['email']
@@ -155,11 +152,13 @@ def edit(u_email):
             return redirect(url_for("admin.adminPage", u_name = session['info']['name']))
         if file and file.filename != ''and allowed_file(file.filename):
             filename = secure_filename(file.filename)
+            app = current_app._get_current_object()
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         # Match everthing
         user.name = name
         user.email = email
         user.avatar = filename
+        db_session.commit()
         role_relation = user.users_relation
         roles = []
         others = []
@@ -180,5 +179,4 @@ def edit(u_email):
                 user.users_relation.append(role)
         db_session.commit()
         flash("Saved Successfully","info")
-        print("Pass here")
     return redirect(url_for('admin.adminPage', u_name = session['info']['name']))
