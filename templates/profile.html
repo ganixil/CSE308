@@ -31,7 +31,7 @@
           <ul class="navbar-nav ml-auto">
       <!----------Handle for HomePage-------->
           <li class="nav-item">
-              <a {% if session['info']['account'] == 'admin' %} href = "{{ url_for('admin.adminPage', u_name=session['info']['name']) }}"{% elif session['info']['account'] == 'manager' %} href = "{{ url_for('manager.manPage', u_name=session['info']['name']) }}"{% elif session['info']['account'] == 'canvasser' %} href = "{{ url_for('canvasser.canPage', u_email=session['info']['email']) }}" {% endif %} > <button class="btn btn-outline-dark" type="button" align="middle"  style="margin-left: 20px"> Home </button> </a>
+              <a {% if session['info']['account'] == 'admin' %} href = "{{ url_for('admin.adminPage', u_name=session['info']['name']) }}"{% elif session['info']['account'] == 'manager' %} href = "{{ url_for('manager.manPage', u_name=session['info']['name']) }}"{% elif session['info']['account'] == 'canvasser' %} href = "{{ url_for('canvasser.canPage', u_email=session['info']['email']) }}" {% endif %} > <button class="btn btn-outline-dark" type="button" align="middle"  style="margin-left: 20px; font-size:18px;"> Home </button> </a>
           </li>
         </ul>
     </div>
@@ -44,7 +44,7 @@
     <!---------------------Avatar Part---------------------------->
       <div class="col-md-3">
         <div class="text-center">
-         {{ session['info']['avatar'] }}
+         <p>{{ session['info']['name'] }}<p>
           <img id = 'profile-avatar' class="avatar img-circle img-thumbnail" {% if (session and session['info']['avatar']) and (session and session['info']['avatar']) !='None' %} src="/static/image/profile/{{ session['info']['avatar'] }}" {% else %}  src="/static/image/profile/avatar.png" {% endif %} alt="avatar">
           <h6>Choose your avatar...</h6>
           <input id = "file" name ='file' type="file" multiple accept='image/*' class="form-control">

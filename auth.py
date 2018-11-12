@@ -78,9 +78,8 @@ def login():
         session.clear()
     if request.method == 'POST':
         session.clear()
-        print('Enter Post for login')
         info={}  # THe dict to store all user info
-        choice = request.form.get('toggle')  # Get user login account type
+        choice = request.form.get('toggle')  # Get user login account type: admin is the default choice
         email = request.form['login-email']
         password = request.form['login-password']
         remember= request.form.get('remember-me')
@@ -94,11 +93,14 @@ def login():
             if role_table is None :
                 flash("This user does not exist, please enter the correct one!")
                 return redirect(url_for('auth.home',index = 2))
+            ################ Get Role Obejects For Login User
             for ele in role_table:
-                roles.append(ele.role)
+                roles.append(ele.role)  ########## eg: roles=[canvasser, admin, manager]
+            ########### Check if the choice exists in roles
             if choice not in roles:
                 flash("This user does not exist, please enter the correct one!")
                 return redirect(url_for('auth.home',index = 2))
+            ############# Check passwords #################
             if(not check_password_hash(user.password, password)):
                 flash("Incorrect password. Please enter the correct one !")
                 return redirect(url_for('auth.home',index = 2))
@@ -108,22 +110,23 @@ def login():
             info['password'] = password
             info['name'] = user.name
             info['roles']= roles
-            info['role'] = choice
-            info['account'] = choice  # Will be used for switching account
-            info['avatar'] = user.avatar
-            session['info'] = info
+            info['role'] = choice   ############# Login Acccout Type
+            info['account'] = choice  ############# For working on switching pages later
+            info['avatar'] = user.avatar    ############# Store User's avatar image file
+
+            session['info'] = info  ############ Store all logging user's info
+            ##################### Work on 'Remember Me session' ########################3333333333333
             if remember:
                 session['remember'] = True
+            ##################### Query Global Parameters ###################
             params_table = GlobalVariables.query.first()
-            session['params'] = [params_table.workDayLength, params_table.averageSpeed]
+            session['params'] = [params_table.workDayLength, params_table.averageSpeed]  ## minutes ; miles/minutes
             if choice == 'admin':
                 return redirect(url_for('admin.adminPage',u_name=user.name))
             elif(choice == 'manager'):
                 return redirect(url_for('manager.manPage',u_name=user.name))
             elif(choice == 'canvasser'):
-                canvasserUser = Role.query.filter(Role.email == user.email, Role.role == choice).first()
-                session['canvasserUserId'] = canvasserUser.id
-                return redirect(url_for('canvasser.canPage',u_email=user.email))
+                return redirect(url_for('canvasser.canPage',u_name=user.name))
     return redirect(url_for('auth.home',index = 2))
 
 

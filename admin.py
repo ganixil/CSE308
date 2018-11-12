@@ -24,39 +24,45 @@ def unique_user(old_email, new_email):
 @bp.route('/adminPage/<u_name>/', methods=('GET', 'POST'))
 def adminPage(u_name):
     if 'info' not in session:
-        return render_template('index.html', error = None)
+        ############## Need Login Firstly, it seldom happens
+        return redirect(url_for('auth.home',index = 1))
+    ################# After logging, retrieve all data fro user interface###################
     user_table = db_session.query(User).order_by(User.email).filter(User.email != session['info']['email'])
-    users={}  # Dic to store other users info 
-    if 'info' in session:
-        session['info']['account'] = 'admin'
+    # Dic to store other users info: Key = email ; Value = all info of this email(name, avatar, roles)
+    users={}
+    session['info']['account'] = 'admin'
+    ############### Retrieve all data for each user ######################
     for ele in user_table:
         instance={}
         instance['name'] = ele.name
-        instance['email'] = ele.email
         instance['avatar'] = ele.avatar
         instance['roles']=[]
-        for role_table in ele.users_relation:
-            instance['roles'].append(role_table.role)
+        for role_ele in ele.users_relation:
+            instance['roles'].append(role_ele.role)
         users[ele.email]= instance
-        print("one other user %s ----> %s" %(ele.email, users[ele.email]))
+        print("User: %s ----> %s" %(ele.email, users[ele.email]))
+    ################ Work For Changing GLoabl Parameters############################
     if request.method == 'POST':  
-        workday = request.form['workday']
-        movspeed = request.form['movspeed']
+        workday = int(request.form['workday'])##### Integer in hour
+        movspeed = int(request.form['movspeed'])  ############ Interger in miles/hour
         params = GlobalVariables.query.first()
         commmit = False
-        if ((int(workday)*60) != session['params'][0]):
-            session['params'][0] = int(workday)*60
+        workday = workday *60   ########### Covert hour to minutes
+        if workday != session['params'][0]:         ######### Store it to DB in minutes
+            session['params'][0] = workday
             commmit = True
-            params.workDayLength = int(workday)*60
-        if ((int(movspeed)/60)!= session['params'][1]):
+            params.workDayLength = workday
+
+        movspeed = movspeed / 60  ############ Convert miles/hour to miles/ minute
+        if movspeed != session['params'][1]:
             commmit = True
-            session['params'][1] = int(movspeed)/60
-            params.averageSpeed = int(movspeed)/60
+            session['params'][1] = movspeed
+            params.averageSpeed = movspeed
+        ############### If changes made, commit it to DB ###########################
         if commmit:
             db_session.commit()
+    ################## For keeping all users info into Session
     session['users'] = users
-    for ele in users:
-        print(ele) 
     return render_template('admin_html/admin.html')
 
 

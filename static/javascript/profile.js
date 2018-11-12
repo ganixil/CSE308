@@ -1,3 +1,4 @@
+var reset = 0;
 $(document).ready(function(){    // Instantiate UI tabs vertical
  
 // Hide or show password
@@ -37,6 +38,7 @@ $(document).ready(function(){    // Instantiate UI tabs vertical
 
   // Dynamic update the image  if there's any file selected.  
     $('#file').change(function(){
+        if(reset == 0){
          if(this.files && this.files[0]){
               var reader = new FileReader();
                 reader.onload = function(e){
@@ -45,7 +47,11 @@ $(document).ready(function(){    // Instantiate UI tabs vertical
                reader.readAsDataURL(this.files[0]);
                 alert("Upload Successfully");
              }
-            
+        }
+        else{
+            $('#profile-avatar').attr('src', '/static/image/profile/avatar.png');
+              reset = 0;
+        }       
     });
 
     $("#submit-info").click(function(){
@@ -58,6 +64,10 @@ $(document).ready(function(){    // Instantiate UI tabs vertical
          }
     });
 
+   $("#reset").click(function(){
+        reset = 1;
+        $("#file").trigger("change");
+   });
 
   window.setTimeout(function() {
     $("#error").fadeTo(1000, 0).slideUp(1000, function(){

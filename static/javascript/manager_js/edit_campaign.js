@@ -1,15 +1,14 @@
-var map;
-var geocoder;
-var exit = 0;
 function generate_map() {
 		var mapOptions = {
 		    center: new google.maps.LatLng(51.5, 40.12),
 		    zoom: 10,
 		    mapTypeId: google.maps.MapTypeId.HYBRID
 		}
-		map = new google.maps.Map(document.getElementById("map"), mapOptions);
+		var map = new google.maps.Map(document.getElementById("map"), mapOptions);
 	}
 generate_map();
+
+
 // <option value='{{show}}' selected="selected">{{show}}</option>
 function displayEdit(){
 	var a = document.getElementById("scampaign_name");
@@ -128,54 +127,34 @@ function addCanvasserToTable(){
 
 }
 function addLocationToTable(){
-
 	var a = document.getElementById("address");
 	var b = a.value;
-
-    geocoder = new google.maps.Geocoder();
-    
-    var exit = false;
-    geocoder.geocode({'address':b},function(results,status){
-    	if(status == 'OK'){
-    		map.setCenter(results[0].geometry.location);
-	    	var marker = new google.maps.Marker({
-            	map: map,
-            	position: results[0].geometry.location
-        	});
-
-
-	    	if(b != "null"){
-				var ob = document.getElementsByName("flaskLocation");
-				if(ob.length == 0){
-					var node = document.getElementById("insertLocation");
-					var trNode = document.createElement("input");
-					trNode.setAttribute("name","flaskLocation");
-					trNode.setAttribute("type", "text");
-					trNode.setAttribute("class", "dis");
-					trNode.setAttribute("value", b)	
-					node.appendChild(trNode);	
-				}else{
-					var bool = exists(b, ob);
-					if(bool ==false){
-						var node = document.getElementById("insertLocation");
-						var trNode = document.createElement("input");
-						trNode.setAttribute("name", "flaskLocation");
-						trNode.setAttribute("type", "text");
-						trNode.setAttribute("class", "dis");
-						trNode.setAttribute("value", b)
-						node.appendChild(trNode);
-						
-					}
-				}
-				a.selectedIndex = -1;	
+	if(b != "null"){
+		var ob = document.getElementsByName("flaskLocation");
+		if(ob.length == 0){
+			var node = document.getElementById("insertLocation");
+			var trNode = document.createElement("input");
+			trNode.setAttribute("name","flaskLocation");
+			trNode.setAttribute("type", "text");
+			trNode.setAttribute("class", "dis");
+			trNode.setAttribute("value", b)	
+			node.appendChild(trNode);	
+		}
+		else{
+			var bool = exists(b, ob);
+			if(bool ==false){
+				var node = document.getElementById("insertLocation");
+				var trNode = document.createElement("input");
+				trNode.setAttribute("name", "flaskLocation");
+				trNode.setAttribute("type", "text");
+				trNode.setAttribute("class", "dis");
+				trNode.setAttribute("value", b)
+				node.appendChild(trNode);
+				
 			}
-	    }else {
-	    	exit = true;
-        	alert('There is no such place on Earth: ');
-        	
-      	}
-    });
-     	
+		}
+	a.selectedIndex = -1;	
+	}
 }
 
 function addQuestionToTable(){
@@ -205,7 +184,7 @@ function addQuestionToTable(){
 				
 			}
 		}
-	a.value = "";	
+	a.selectedIndex = -1;	
 	}
 }
 
@@ -217,3 +196,4 @@ function exists(text, arr ){
 	}
 	return false;
 }
+

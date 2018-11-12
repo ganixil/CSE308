@@ -3,7 +3,7 @@ var geocoder;
 var exit = 0;
 function generate_map() {
 		var mapOptions = {
-		    center: new google.maps.LatLng(40.758896, -73.985130),
+		    center: new google.maps.LatLng(51.5, 40.12),
 		    zoom: 10,
 		    mapTypeId: google.maps.MapTypeId.HYBRID
 		}
@@ -175,7 +175,10 @@ function addLocationToTable(){
         	
       	}
     });
-     	
+     
+   
+
+	
 }
 
 function addQuestionToTable(){
@@ -205,7 +208,7 @@ function addQuestionToTable(){
 				
 			}
 		}
-	a.value = "";	
+	a.selectedIndex = -1;	
 	}
 }
 

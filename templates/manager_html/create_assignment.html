@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../../static/css/manager.css">
+		
+		
+	</head>
+    
+	<body>
+		<div class="container" > 
+			<div style="width: 1500px;background-color:white;opacity: .7"><span class="title" > Create Canvas Assignment</span> </div>
+			<div class="nav"></div>
+            <div class="float">
+            	<div class="stay" style="position:fixed">
+	                <div class="n" onclick="location.href='{{ url_for('manager.createCampaign') }}'"><span class="link">Create Campaign<span></div>
+	                <div class="n" onclick="location.href='{{ url_for('manager.editCampaign') }}'"><span class="link">Edit Campaign</span></div>
+	                <div class="n" onclick="location.href='{{ url_for('manager.viewCampaign') }}'"><span class="link">View Campaign</span></div>
+	                <div class="n" onclick="location.href='{{ url_for('manager.viewCampaignResult') }}'"><span class="link">View Campaign Result</span></div>
+	                <div class="n" onclick="location.href='{{ url_for('manager.viewCanvasAssignment') }}'"><span class="link">View Canvas Assignment</span></div>
+	                <div class="onPage" onclick="location.href='{{ url_for('manager.createCanvasAssignment') }}'"><span class="link">Create Canvas Assignment</span></div>
+	            </div>
+            </div>
+            <div class="signOut" onclick="location.href='{{ url_for('auth.login') }}'"><span class="outText">Sign Out</span> </div>
+            <form method='post' id='assignForm'style='left:-30px;top: 400px;width: 500px; height:200px; border:none' action="{{url_for('manager.createCanvasAssignment')}}">
+            	Select Campaign:
+	            <select id="campaign_name" name = "campaign_name" value="" style='height:40px; width: 300px; font-size: 17px' onchange="displayEdit()">
+					<option value="none" ></option>
+					
+					{% for item in camp %}
+						<option value='{{item.campaign_name}}'> {{item.campaign_name}}</option>
+					{% endfor %}
+				</select>
+
+				<button class="submit" name='submitAssign' value="submitAssign" style='left:40px' onclick='assign()'>Create Assignment</button>
+			</form>
+		</div>
+		
+		
+		<!-- <script type="text/javascript" src="../../static/javascript/manager_js/create_campaign.js"></script> -->
+	</body>
+</html>

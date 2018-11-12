@@ -21,7 +21,7 @@
    </head>
 
 <body style ="background-image: url('/static/image/home.jpg')">
-  <script>
+<script>
     {% with errors = get_flashed_messages() %}
       {% if errors %}
         {% for msg in errors %}
@@ -30,16 +30,16 @@
      {% endif %}
   {% endwith %}
   </script>
-  <!----------------Navigation Part------------------------>
+<!----------------Navigation Part------------------------>
 <nav class="navbar navbar-light navbar-expand-lg bg-light py-md-0">
   <a class="navbar-brand" href="#"><img src="/static/image/logo.png"  class="logo" height="40">  Super Canvasser</a>
   <div class="collapse navbar-collapse" id="navbar">
     <ul class="navbar-nav ml-auto">
       <li class="nav-item" style ="padding-right: 6px;">
-        <button class="btn" type="button" id="login-btn" onclick="login_fun()">Log In</button> 
+        <button class="btn btn-lg" type="button" id="login-btn" onclick="login_fun()">Log In</button> 
       </li>
       <li class="nav-item">
-        <button class="btn" type="button" id="signup-btn" onclick="signup_fun()">Sign Up</button>
+        <button class="btn btn-lg" type="button" id="signup-btn" onclick="signup_fun()">Sign Up</button>
       </li>
     </ul>
   </div>
@@ -118,13 +118,14 @@
 </form>
 </div>
 
-<!-----------Log In modal------------------->
+<!-------------------------------------Log In modal------------------->
 <div id="login-modal" class="modal" {% if index|int == 2 %} style="display: block;" {% else %} style="display: none;" {% endif %}>
   <span onclick="window.location.href='{{ url_for('auth.home', index = 0) }}'" class="close" title="Close">&times;</span>
     <img class="title-logo" src="/static/image/title_logo.png"/>
   <!---------------Login Form----------->
   <form class="form-signin" method="post" id ="login-form" action = "{{ url_for('auth.login') }}">
       <h2 class="form-signin-heading">Sign In</h2>
+      <br/>
     <!-- Select Role Account to LogIn---->
      <div class="form-check  form-check-inline">
         <label class="toggle">
