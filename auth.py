@@ -111,11 +111,11 @@ def login():
             info['name'] = user.name
             info['roles']= roles
             info['role'] = choice   ############# Login Acccout Type
-            info['account'] = choice  ############# For working on switching pages later
+            info['account'] = choice  ############# For Backing to Homepage when manipulating profile
             info['avatar'] = user.avatar    ############# Store User's avatar image file
 
             session['info'] = info  ############ Store all logging user's info
-            ##################### Work on 'Remember Me session' ########################3333333333333
+            ##################### Work on 'Remember Me session' ########################
             if remember:
                 session['remember'] = True
             ##################### Query Global Parameters ###################
@@ -140,6 +140,7 @@ def logout():
 @bp.route("/profile/<u_email>", methods=('GET', 'POST'))
 def profile(u_email):
     result = None
+    file = None
     filename = session['info']['avatar']
     if request.method == "POST":
         print("Enter Post for profile")
@@ -147,7 +148,6 @@ def profile(u_email):
         email = request.form['email']
         password = request.form['password']
         confirm_password = request.form['confirm-password']
-        file = None
         if 'file' in request.files:
             file = request.files['file']
         if password != confirm_password:
@@ -157,9 +157,8 @@ def profile(u_email):
             result = 'Error, This email already is used, please change to other one or just keep the origin!!!'
             return render_template('profile.html', u_email= u_email, result = result)
         app = current_app._get_current_object()
-        if file and file.filename != '' and allowed_file(filename):
+        if file and file.filename != '' and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            print('filename %s' %(filename))
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         # All info are valid
         user = User.query.filter(User.email == u_email).first()
@@ -177,8 +176,7 @@ def profile(u_email):
             ps = generate_password_hash(password)
             user.password = ps
             session['info']['password'] = password
-        print(filename)
-        print(session['info']['avatar'])
+
         if (filename is not None) and (filename != session['info']['avatar']):
             user.avatar = filename
             session['info']['avatar'] = filename
@@ -192,19 +190,15 @@ def profile(u_email):
 
 @bp.route("/profile/homepage")
 def back():
-    print("enter back route")
     if session:
         if session['info']['account'] == 'admin':
             return redirect(url_for('admin.adminPage',u_name=session['info']['name']))
         elif(session['info']['account'] == 'manager'):
             return redirect(url_for('manager.manPage',u_name=session['info']['name']))
         elif(session['info']['account'] == 'canvasser'):
-            canvasserUser = Role.query.filter(Role.email == user.email, Role.role == session['account']).first()
-            session['canvasserUserId'] = canvasserUser.id
-            return redirect(url_for('canvasser.canPage',u_email= session['info']['email']))
-    else:
-        error="Need to login"
-        return render_template('index.html', error = error)
+            return redirect(url_for('canvasser.canPage',u_name=session['info']['name']))
+
+    return redirect(url_for('auth.home',index = 0))
 
 
 

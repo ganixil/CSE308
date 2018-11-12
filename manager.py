@@ -2,396 +2,103 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for
 )
 from werkzeug.exceptions import abort
-from database import db_session, User, Campaign, Role,CampaignLocation,CampaignCanvasser, CampaignManager, Questionnaire, Assignment, GlobalVariables, CanAva
-from sqlalchemy.sql.expression import func
-from gmap import key
-import googlemaps
-from assignmentCreator import makeAssign
-import datetime
-from assignmentModeling import DateObject, assignmentMapping
+from database import db_session, User, Campaign, Role,CampaignLocation,CampaignCanvasser, CampaignManager, Questionnaire
+import logging
 
 
-
-
-#link google map
-gmaps = googlemaps.Client(key = key)
 #create the manager blueprint
 bp = Blueprint('manager', __name__, url_prefix='/manager')
 
-@bp.route('/create_campaign', methods=['GET','POST'])
-def createCampaign():
-	managerObject = db_session.query(Role).filter(Role.role =='manager')
-
-	manager_email =[]
-	for m in managerObject:
-		manager_email.append(m.email)
-
-	manager_name = []
-	for e in manager_email:
-		manager_name.append(db_session.query(User).filter(User.email==e).first().name)
-
-
-	canvasObject  = db_session.query(Role).filter(Role.role == 'canvasser')
-
-	canvasser_email=[]
-	for c in canvasObject:
-		canvasser_email.append(c.email)
-
-	canvasser_name = []
-	for e in canvasser_email:
-		canvasser_name.append(db_session.query(User).filter(User.email==e).first().name)
-
-	campaignObject = db_session.query(Campaign)
-	if request.method == 'POST':
-
-		################################################Create a campaign 
-		campaignName = request.form['campaign_name']
-		startdate = request.form['start_date']
-		enddate = request.form['end_date']
-		talking = request.form['talking']
-		duration = request.form['duration']
-
-		campObj = Campaign(campaignName, startdate, enddate, talking,int(duration))
-		db_session.add(campObj)
-
-		####################################################ADD Manager to database
-		managers = request.form.getlist('flaskManager')
-		
-		for m in managers:
-			nameObj = db_session.query(User).filter(User.name == m).first()
-			role = db_session.query(Role).filter(Role.role == 'manager',  Role.email == nameObj.email).first()
-			mObject = CampaignManager()
-			role.roles_relation.append(mObject)
-			campObj.campaigns_relation.append(mObject)
-		####################################################ADD Canvasser to database
-		canvassers = request.form.getlist('flaskCanvasser')
-
-		for c in canvassers:
-			nameObj = db_session.query(User).filter(User.name == c).first()
-			role = db_session.query(Role).filter(Role.role == 'canvasser',  Role.email == nameObj.email).first()
-			cObject = CampaignCanvasser()
-			role.roles_relation_1.append(cObject)
-			campObj.campaigns_relation_1.append(cObject)
-		####################################################ADD Location to database
-		locations = request.form.getlist('flaskLocation')
-		for l  in locations:
-			lat = gmaps.geocode(l)[0]['geometry']['location']['lat']
-			lng = gmaps.geocode(l)[0]['geometry']['location']['lng']
-			loc = CampaignLocation(l,lat,lng,None)
-			campObj.campaigns_relation_2.append(loc)
-			db_session.commit()
-
-		####################################################ADD question to database
-		questions = request.form.getlist('flaskQuestion')
-		for q in questions:
-			ques = Questionnaire(q)
-			campObj.campaigns_relation_3.append(ques)
-			db_session.commit()
-
-		db_session.commit()
-
-		
-
-
-
-	else:
-		return render_template('manager_html/create_campaign.html', managers=manager_name, canvasser=canvasser_name)
-
-	return render_template('manager_html/view_campaign.html', camp=campaignObject)
-
-
-
-@bp.route('/show_campaign',methods=('POST','GET'))
-def showCampaign():
-	if request.method == "POST":
-
-		try:
-			if request.form['submit_btn'] == 'submit_form':
-				print("POST_SUBMIT_-------------------0")
-				#Update old Campaign name
-				oldCamp = db_session.query(Campaign).filter(Campaign.campaign_name ==  request.form['scampaign_name']).first()
-				oldCamp.campaign_name = request.form['new_campaign_name']
-				db_session.commit()
-				print("POST_SUBMIT_-------------------1")
-				#Remove all manager asociated with Old Campaign
-				db_session.query(CampaignManager).filter(CampaignManager.campaign_id == oldCamp.id).delete()
-				db_session.commit()
-				print("POST_SUBMIT_-------------------2")
-				#Add new managers to Old campaign
-				newManagers = request.form.getlist('flaskManager')
-				for m in newManagers:
-					nameObj = db_session.query(User).filter(User.name == m).first();
-					role = db_session.query(Role).filter(Role.role == 'manager',  Role.email== nameObj.email).first()
-					mObject = CampaignManager()
-					role.roles_relation.append(mObject)
-					oldCamp.campaigns_relation.append(mObject)
-					db_session.commit()
-				print("POST_SUBMIT_-------------------2")
-				#Remove all canvasser asociated with Old Campaign
-				db_session.query(CampaignCanvasser).filter(CampaignCanvasser.campaign_id == oldCamp.id).delete()
-				db_session.commit()
-
-				#Add new canvasser to Old campaign
-				newCanvassers = request.form.getlist('flaskCanvasser')
-				for c in newCanvassers:
-					nameObj = db_session.query(User).filter(User.name == c).first()
-					role = db_session.query(Role).filter(Role.role=='canvasser', Role.email == nameObj.email).first()
-					cObject = CampaignCanvasser()
-					role.roles_relation_1.append(cObject)
-					oldCamp.campaigns_relation_1.append(cObject)
-					db_session.commit()
-
-
-				#Update new start and enddate, talking, duration
-				startdate = request.form['start_date']
-				enddate = request.form['end_date']
-				talking = request.form['talking']
-				duration = request.form['duration']
-
-				oldCamp.startDate = startdate
-				oldCamp.endDate = enddate
-				oldCamp.talking = talking
-				oldCamp.duration = duration
-
-
-				#Remove all location associated with campaign
-				db_session.query(CampaignLocation).filter(CampaignLocation.campaign_id == oldCamp.id).delete()
-				db_session.commit()
-
-				#Add new locations to old oldCampaign
-				locations = request.form.getlist('flaskLocation')
-
-				for l in locations:
-					lat = gmaps.geocode(l)[0]['geometry']['location']['lat']
-					lng = gmaps.geocode(l)[0]['geometry']['location']['lng']
-					loc = CampaignLocation(l,lat,lng,None)
-					oldCamp.campaigns_relation_2.append(loc)
-					db_session.commit()
-				
-				#Remove all questions
-				db_session.query(Questionnaire).filter(Questionnaire.campaign_id == oldCamp.id).delete()
-				db_session.commit()
-
-				#Add new questions
-				questions = request.form.getlist('flaskQuestion')
-				for q in questions:
-					ques = Questionnaire(q)
-					oldCamp.campaigns_relation_3.append(ques)
-					db_session.commit()
-
-
-				db_session.commit()
-
-				campaignObject = db_session.query(Campaign)
-
-
-				return render_template('manager_html/view_campaign.html', camp=campaignObject)
-				
-		except:
-			#Display all information after creating a campaign in EDIT CAMPAIGN
-			managerObject = db_session.query(Role).filter(Role.role =='manager')
-			canvasObject  = db_session.query(Role).filter(Role.role == 'canvasser')
-			
-
-			campaignName = request.form['new_campaign_name']
-			campaignObject = db_session.query(Campaign)
-
-			campId = None
-			start=None
-			end=None
-			
-			for camp in campaignObject:
-				if camp.campaign_name == campaignName:
-					campId = camp.id
-					start = camp.startDate
-					end= camp.endDate
-					break
-			
-			roleList = db_session.query(Role)
-			
-			#############################################   Display All Current Manager in table
-			currentManagers = db_session.query(CampaignManager)
-			managerId = []
-			for man in currentManagers:
-				if man.campaign_id == campId:
-					managerId.append(man.user_id)
-			
-			displayManagers=[]
-			for r in roleList:
-				if r.id in managerId:
-					nameObj = db_session.query(User).filter(User.email== r.email).first();
-					displayManagers.append(nameObj.name)
-
-			############################################	 Display All Current Canvasser in table 
-			currentCanvassers = db_session.query(CampaignCanvasser)
-			canvasId = []
-			for can in currentCanvassers:
-				if can.campaign_id == campId:
-					canvasId.append(can.user_id)
-			
-
-			displayCanvas=[]
-			for r in roleList:
-				if r.id in canvasId:
-					nameObj = db_session.query(User).filter(User.email== r.email).first();
-					displayCanvas.append(nameObj.name)
-			
-			############################################	 Display All Manager in selector
-			allMan = []
-			roleList = db_session.query(Role).filter(Role.role =='manager')
-
-			for r in roleList:
-				userObj = db_session.query(User).filter(User.email == r.email).first()
-				allMan.append(userObj.name)
-
-			############################################	 Display All Canvasser in selector		
-			allCan = []
-			roleList = db_session.query(Role).filter(Role.role == 'canvasser')
-
-			for r in roleList:
-				userObj = db_session.query(User).filter(User.email == r.email).first()
-				allCan.append(userObj.name)
-
-			############################################	 Display All Question in table
-
-			currentQuestions = db_session.query(Questionnaire)
-			displayQuestion = []
-			for q in currentQuestions:
-				if q.campaign_id == campId:
-					displayQuestion.append(q.question)
-
-			############################################	 Display current Location in table
-			currentLocations = db_session.query(CampaignLocation)
-			displayLocation = []
-			for l in currentLocations:
-				if l.campaign_id == campId:
-					displayLocation.append(l.location)
-			print("Locations for this campaign is : ",displayLocation)
-
-
-			############################################	 Display current talking point in table
-			talkObj = db_session.query(Campaign).filter(Campaign.id == campId).first().talking
-			print("Taking----------> ", talkObj)
-
-			durationObj = db_session.query(Campaign).filter(Campaign.id == campId).first().duration
-			print("Duration is" , durationObj)
-																	       # campaign questions
-			return render_template('manager_html/edit_campaign.html', duration= durationObj, talk=talkObj,locations=displayLocation,questions=displayQuestion, camp=campaignObject, show=campaignName, managers=allMan, canvasser=allCan, currentManagers=displayManagers, currentCanvassers=displayCanvas,start=start, end=end)
-
-
-####################################################################################### CONOR's CODE#######################################################
-
-
-@bp.route('/create_canvas_assignment', methods=('GET', 'POST'))
-def createCanvasAssignment():
-	if request.method == 'POST':
-		# flag for marking the assignment the campaign as possible
-		assignmentPossible = False
-		# get headquarters for starting location for routing algorithm
-		globalVars = db_session.query(GlobalVariables).first()
-		hq = (globalVars.hqX, globalVars.hqY)
-		campName = request.form['campaign_name'] #for getting the campaign name
-		# get campaign data
-		campObj = db_session.query(Campaign).filter(Campaign.campaign_name == campName).first()
-		# get campaign location data
-		dbLocations = db_session.query(CampaignLocation).filter(CampaignLocation.campaign_id == campObj.id).all()
-		locations = []
-		# add the headquarters to the location set
-		locations.append(hq)
-		# add all campaign locations to the locations set
-		for i in range(len(dbLocations)):
-			locations.append((dbLocations[i].x, dbLocations[i].y))
-
-		# make assignments with the routing alorithm
-		assignments = makeAssign(locations, campObj.duration)
-		# get the campaign's canvassers
-		canvassers = campObj.campaigns_relation_1
-		ids = []
-		dates = []
-		# get the start and end dates of the campaign
-		startDate = campObj.startDate
-		endDate = campObj.endDate
-		startDate = datetime.date(int(startDate[0:4]), int(startDate[5:7]), int(startDate[8:]))
-		endDate = datetime.date(int(endDate[0:4]), int(endDate[5:7]), int(endDate[8:]))
-		emails = []
-		for i in range(len(canvassers)):
-			roleObj = db_session.query(Role).filter(Role.id == canvassers[i].user_id).first()
-			emails.append(roleObj.email)
-		# collect the available dates of each canvasser in the campaign
-		for i in range(len(emails)):
-			cEmail = emails[i]
-			canDates = db_session.query(CanAva).filter(CanAva.email == cEmail).all()
-			for j in range(len(canDates)):
-				# filter out dates not in the campaign range
-				if(canDates[j].theDate >= startDate and canDates[j].theDate <= endDate):
-					dates.append(DateObject(canDates[j].theDate, canDates[j].email, canDates[j].id))
-		# sort dates by earliest available using bubble sort
-		sortComplete = 0
-		while(sortComplete == 0):
-			sortComplete = 1
-			for i in range(len(dates)):
-				if(i != (len(dates)-1)):
-					if(dates[i].date > dates[i+1].date):
-						temp = dates[i+1]
-						dates[i+1] = dates[i]
-						dates[i] = temp
-						sortComplete = 0
-		# assign assignments to dates
-		mappedAssignments = []
-		while(len(dates) > 0 and len(assignments) > 0):
-			dTemp = dates.pop(0)
-			aTemp = assignments.pop(0)
-			mappedAssignments.append(assignmentMapping(dTemp.date, dTemp.canEmail, dTemp.dateId, aTemp))
-		# if no more assingments then this mapping is possible
-		if(len(assignments) == 0):
-			assignmentPossible = True
-
-		# add assignments to database
-		for i in range(len(mappedAssignments)):
-			for j in range(len(mappedAssignments[i].assignment)):
-				assignObj = Assignment(mappedAssignments[i].date, mappedAssignments[i].assignment[j][0], mappedAssignments[i].assignment[j][1], mappedAssignments[i].canEmail, j, campObj.id)
-				db_session.add(assignObj)
-				db_session.commit()
-
-		# remove taken dates out of available in the database
-		for i in range(len(mappedAssignments)):
-			dateDelete = db_session.query(CanAva).filter(CanAva.id == mappedAssignments[i].dateId).first()
-			db_session.delete(dateDelete)
-			db_session.commit()
-		# if not enough dates/canvassers display warning
-		if(assignmentPossible == False):
-			return 'not possible'
-
-	campObj= db_session.query(Campaign)
-	return render_template('manager_html/create_canvas_assignment.html',camp=campObj)
-
-
-
-@bp.route('/view_canvas_assignment')
-def viewCanvasAssignment():
-	result = 1;
-	return render_template('manager_html/view_canvas_assignment.html');
+''' Store All Campaigns Info : Key = campaign Name ; Value = Detail Info the specified Campaign'''
+camp = {}
 
 #function to render the manager page and set the manager page url
 @bp.route('/manpage', methods=('GET', 'POST'))
 def manPage():
-	campaignObject = db_session.query(Campaign)
-	return render_template('manager_html/view_campaign.html', camp=campaignObject)
+	########### View Campaign Is the First Page #########################
+	return redirect(url_for('manager.viewCampaign'))
 	
 @bp.route('/view_campaign')
 def viewCampaign():
-	campaignObject = db_session.query(Campaign)
-	return render_template('manager_html/view_campaign.html', camp=campaignObject)
+	logging.info("Enter View Campaigns of the system")
 
-#UPDATE THIS ROUTE STATEMENT
-@bp.route('/view_campaign_result')
-def viewCampaignResult():
-	result = 1
-	return render_template('manager_html/view_campaign_result.html')
+	if len(camp) !=0:   ############### Reload Campaings Info from  datebase
+		camp.clear()
+	############# Get All Campaigns Obejct from DB
+	campaigns= db_session.query(Campaign).all()
+	###### Loop for retrieving each campaign info
+	for  obj in campaigns:
+		camp_ele =[]
+		camp_ele.append(obj) # camp_ele[0] = campaign 
+
+		managers= [] #### Store all manager user objects for each campaign
+		for ele in obj.campaigns_relation:
+			manager_role = db_session.query(Role).filter(Role.id == ele.role_id).first()
+			manager_user = db_session.query(User).filter(User.email == manager_role.email).first()
+			managers.append(manager_user)
+		camp_ele.append(managers)  # camp_ele[1] = manager
+
+		canvassers = []  #### Store all canvasser user objects for each campaign
+		for ele in obj.campaigns_relation_1:
+			canvasser_role = db_session.query(Role).filter(Role.id == ele.role_id).first()
+			canvasser_user = db_session.query(User).filter(User.email == canvasser_role.email).first()
+			canvassers.append(canvasser_user)
+		camp_ele.append(canvassers) # camp_ele[2] = canvasser
+
+		locations = [] #### Store all location objects for each campaign
+		for ele in obj.campaigns_relation_2:
+			locations.append(ele)
+		camp_ele.append(locations) # camp_ele[3] = locations
+
+		questions= [] #### Store all question objects for each campaign
+		for ele in obj.campaigns_relation_3:
+			questions.append(ele)
+		camp_ele.append(questions) # camp_ele[4] = questions
+
+		camp[obj.name] = camp_ele
+	return render_template('manager_html/view_campaign.html', camp=camp, name = None, camp_list = [], index =0 )
+
+''' Selecct One Campaign, And View its Details'''
+@bp.route('/view_campaign_detail/', methods=('POST','GET'))
+def viewCampaignDetail():
+	print("Enter View Campaign Detail\n")
+	campaign_name = request.form['campaign-name']
+	name = request.form['action']  # Managers/Canvassers/Locations/Questions
+	if(name == "Managers"):
+		return render_template('manager_html/view_campaign.html', camp=camp, name = campaign_name,camp_list = camp[campaign_name][1], index =1)
+	elif (name == "Canvassers"):
+		return render_template('manager_html/view_campaign.html', camp=camp, name = campaign_name,camp_list = camp[campaign_name][2], index =2)
+	elif (name == "Locations"):
+		for ele in  camp[campaign_name][3]:
+			print("%s\n" %ele)
+		return render_template('manager_html/view_campaign.html', camp=camp, name = campaign_name, camp_list = camp[campaign_name][3], index =3)
+	elif (name == "Questions"):
+		return render_template('manager_html/view_campaign.html', camp=camp, name = campaign_name, camp_list = camp[campaign_name][4], index =4)
+	else:
+		return render_template('manager_html/view_campaign.html', camp=camp, name = None, camp_list =[], index = 0)
 
 
-@bp.route('/edit_campaign')
+@bp.route('/create_campaign', methods=['GET','POST'])
+def createCampaign():
+	print("Enter Edit Campaign \n")
+	return render_template('manager_html/edit_campaign.html', camp=camp, name = None, camp_list = [], index = 0)
+
+@bp.route('/edit_campaign', methods=['GET','POST'])
 def editCampaign():
-	campaignObject = db_session.query(Campaign)
+	print("Enter Edit Campaign \n")
+	return render_template('manager_html/edit_campaign.html', camp=camp, name = None, camp_list = [], index = 0)
 
-	return render_template('manager_html/edit_campaign.html', camp=campaignObject)
+@bp.route('/view_assignment', methods=['GET','POST'])
+def viewAssignment():
+	print("Enter View Assignment \n")
+	return render_template('manager_html/edit_campaign.html', camp=camp, name = None, camp_list = [], index = 0)
+
+@bp.route('/edit_assignment', methods=['GET','POST'])
+def editAssignment():
+	print("Enter Edit Assignment \n")
+	return render_template('manager_html/edit_assignment.html', camp=camp, name = None, camp_list = [], index = 0)
+
+@bp.route('/view_result', methods=['GET','POST'])
+def viewResult():
+	print("Enter Edit Assignment \n")
+	return render_template('manager_html/edit_assignment.html', camp=camp, name = None, camp_list = [], index = 0)
