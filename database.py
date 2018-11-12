@@ -21,16 +21,17 @@ Base.query = db_session.query_property()
 def init_db():
     Base.metadata.create_all(bind=engine)
 
+''' Database table models/object relational classes'''
 
-# Database table models/object relational classes
 class User(Base):
     __tablename__ = 'users'
 
     email = Column(String(80), primary_key=True)
     password = Column(String(255), nullable=False)
     name = Column(String(80), nullable=False)
-    avatar = Column(String(80), nullable=True)
-    users_relation = relationship('Role', backref='users')
+    avatar = Column(String(80), nullable=True, default ="None")
+    ##########  One User Can Have Multiple Roles(Canvasser, Admin, Managers)
+    users_relation = relationship('Role', backref='users', lazy = True)
 
     def __init__(self,email, password, name,avatar):
         self.email = email
@@ -39,47 +40,24 @@ class User(Base):
         self.avatar = avatar
 
     def __repr__(self):
-        return "<User(email='%s', password='%s')>" % (self.email, self.password)
+        return "<User(email='%s', password='%s', avatar='%s')>" % (self.email, self.password, self.avatar)
 
 
-class Campaign(Base):
-    __tablename__ = 'campaigns'
-    id = Column(Integer, primary_key = True)
-    campaign_name = Column(String(80), nullable = False)  # One company with a unique name
-    startDate = Column(String(30), nullable=False)
-    endDate = Column(String(30), nullable=False)
-    talking = Column(String(80), default="None", nullable= True) # defautl = None 
-    duration = Column(Integer, default = 0, nullable=True) # default = 0
-    campaigns_relation= relationship("CampaignManager", backref = "campaigns",cascade="all,save-update,delete-orphan")
-    campaigns_relation_1= relationship("CampaignCanvasser", backref = "campaigns",cascade="all,save-update,delete-orphan")
-    campaigns_relation_2= relationship("CampaignLocation", backref = "campaigns",cascade="all,save-update,delete-orphan")
-    campaigns_relation_3=relationship("Questionnaire",backref="campaigns",cascade="all,save-update,delete-orphan")
-
-    def __init__(self, campaign_name, startDate, endDate,talking,duration):
-        self.campaign_name = campaign_name
-        self.startDate = startDate
-        self.endDate = endDate
-        self.talking = talking
-        self.duration = duration
-
-class Questionnaire(Base):
-    __tablename__ = 'questionnaire'
-    id = Column(Integer, primary_key = True)
-    campaign_id = Column(Integer,ForeignKey('campaigns.id', onupdate="CASCADE", ondelete="CASCADE"))
-    question = Column(String(80),nullable = False)
-
-    def __init__(self, question):
-       self.question = question
-
-class Role(Base):  # One user can have many role : one to many
+class Role(Base): 
     __tablename__ = 'roles'
+
     id = Column(Integer, primary_key=True)
     email=Column(String(80), ForeignKey('users.email', onupdate="CASCADE", ondelete="CASCADE")) #User's email
-    role= Column(String(20), nullable=False)
-    # One role can work on multiple campaigns
-    roles_relation = relationship("CampaignManager", backref= "roles",cascade="all,save-update,delete-orphan")
-    roles_relation_1 = relationship("CampaignCanvasser", backref= "roles",cascade="all,save-update,delete-orphan")
-    UniqueConstraint(email, role)
+    role= Column(String(20), nullable=False)  ####### (canvasser, manager, admin)
+
+    ################## Only manager role has this relationship, it refers to one or multiple campaings##############
+    roles_relation = relationship("CampaignManager", backref= "roles",cascade="all,save-update,delete, delete-orphan")
+    ################## Only canvasser role has this relationship, it refers to one or multiple campaings##############
+    roles_relation_1 = relationship("CampaignCanvasser", backref= "roles",cascade="all,save-update,delete, delete-orphan")
+    ################## Only canvasser role has this relationship, it refers to one or one on its available dates ##############
+    roles_relation_2 = relationship("CanAva", backref= "roles",cascade="all,save-update,delete, delete-orphan")
+
+    UniqueConstraint(email, role)  
 
     # A collection of roles on User
     def __init__(self, role):
@@ -88,46 +66,109 @@ class Role(Base):  # One user can have many role : one to many
     def __repr__(self):
         return "<Role(email='%s',role='%s')>" % (self.email,self.role)
 
-        
+
+class Campaign(Base):
+    __tablename__ = 'campaigns'
+
+    name = Column(String(80),  primary_key = True) 
+    startDate = Column(Date, nullable=False)  ##  Formart = 2018-11-11
+    endDate = Column(Date, nullable=False)
+    talking = Column(Text, default="None", nullable= True) 
+    duration = Column(Integer, default = 0, nullable=True)
+
+    ########## One Campaign has multiple Managers##############
+    campaigns_relation= relationship("CampaignManager", backref = "campaigns",cascade="all,save-update,delete,delete-orphan")
+    ######### One Campaign has multiple Canvassers################
+    campaigns_relation_1= relationship("CampaignCanvasser", backref = "campaigns",cascade="all,save-update,delete,delete-orphan")
+    ########## One campaign has multiple Locations###################
+    campaigns_relation_2= relationship("CampaignLocation", backref = "campaigns",cascade="all,save-update,delete,delete-orphan")
+    ######### One campaign has multiple questions############
+    campaigns_relation_3=relationship("Questionnaire",backref="campaigns",cascade="all,save-update,delete,delete-orphan")
+
+    def __init__(self, name, startDate, endDate,talking,duration):
+        self.name = name
+        self.startDate = startDate
+        self.endDate = endDate
+        self.talking = talking
+        self.duration = duration
+
+    def __repr__(self):
+        return "<Campaign(name='%s', startDate='%s', endDate='%s')>" % (self.name, self.startDate, self.endDate)
+
+
+class Questionnaire(Base):
+    __tablename__ = 'questionnaires'
+
+    id = Column(Integer, primary_key = True)
+    campaign_name = Column(String(80),ForeignKey('campaigns.name', onupdate="CASCADE", ondelete="CASCADE"))
+    question = Column(String(100),nullable = False)
+
+    def __init__(self, question):
+       self.question = question
+
+    def __repr__(self):
+        return "<Questionnaire(Campaign name='%s', question='%s', endDate='%s')>" % (self.campaign_name, self.question)
+
+    
 class CampaignLocation(Base):   # Association Table (Campaign + Locations)
     __tablename__ = 'campaign_locations'
+
     id = Column(Integer, primary_key = True)
-    campaign_id = Column(Integer,ForeignKey('campaigns.id', onupdate="CASCADE", ondelete="CASCADE") )
+    campaign_name = Column(String(80),ForeignKey('campaigns.name', onupdate="CASCADE", ondelete="CASCADE") )
     location = Column(String(80),nullable=False)
-    x = Column(Float,nullable = True)
-    y = Column(Float,nullable = True)
-    canvasser_email = Column(String(80),nullable = True)
-    UniqueConstraint(campaign_id, location)
+    lat = Column(Float,nullable = False)
+    lng = Column(Float,nullable = False)
+    ############# One campaign location has one assignment  One-To-One ##############
+    location_relation=relationship("Assignment", uselist=False, backref="campaign_locations",cascade="all,save-update,delete,delete-orphan")
 
-    def __init__(self,  location, x, y, canvasser_email):
+    UniqueConstraint(campaign_name, location)
+
+    def __init__(self,  location, lat, lng):
         self.location = location
-        self.x = x
-        self.y = y
-        self.canvasser_email = canvasser_email
+        self.lat= lng
+        self.lng = lng
 
-class CampaignManager(Base):   # Association Table (Campaign + Manager)
-    __tablename__ = 'campaign_Manager'
+    def __repr__(self):
+        return "<Locations(Campaign name='%s', location='%s')>" % (self.campaign_name, self.location)
+
+
+
+class CampaignManager(Base):   # Association Table (Campaign + ManagerRole)
+    __tablename__ = 'campaign_managers'
+
     id = Column(Integer, primary_key = True)
-    campaign_id = Column(Integer,ForeignKey('campaigns.id', onupdate="CASCADE", ondelete="CASCADE") )
-    user_id = Column(Integer, ForeignKey('roles.id', onupdate="CASCADE", ondelete="CASCADE"))
-    UniqueConstraint(campaign_id, user_id) # one manager + one campaign 
+    campaign_name = Column(String(80),ForeignKey('campaigns.name', onupdate="CASCADE", ondelete="CASCADE") )
+    role_id = Column(Integer, ForeignKey('roles.id', onupdate="CASCADE", ondelete="CASCADE"))
+    UniqueConstraint(campaign_name, role_id) 
+
+    def __repr__(self):
+        return "<Managers(Campaign name='%s', role_id='%s')>" % (self.campaign_name, self.role_id)
 
 
-class CampaignCanvasser(Base):   # Association Table (Campaign + User)
-    __tablename__ = 'campaign_Canvasser'
+class CampaignCanvasser(Base):   # Association Table (Campaign + CanvasserRole)
+    __tablename__ = 'campaign_canvassers'
+
     id = Column(Integer, primary_key = True)
-    campaign_id = Column(Integer,ForeignKey('campaigns.id', onupdate="CASCADE", ondelete="CASCADE") )
-    user_id = Column(Integer, ForeignKey('roles.id', onupdate="CASCADE", ondelete="CASCADE"))
-    UniqueConstraint(campaign_id, user_id) # one canvasser + one campaign 
+    campaign_name = Column(String(80),ForeignKey('campaigns.name', onupdate="CASCADE", ondelete="CASCADE") )
+    role_id = Column(Integer, ForeignKey('roles.id', onupdate="CASCADE", ondelete="CASCADE"))
+
+    ############# One campaign canvasser has one assignment  One-To-One ##############
+    canvasser_relation=relationship("Assignment", uselist=False, backref="campaign_canvassers",cascade="all,save-update,delete,delete-orphan")
+
+    UniqueConstraint(campaign_name, role_id) # one canvasser + one campaign 
+
+    def __repr__(self):
+        return "<Canvassers(Campaign name='%s', role_id='%s')>" % (self.campaign_name, self.role_id)
 
 
 class GlobalVariables(Base):
     __tablename__ = 'globals'
+
     id = Column(Integer, primary_key=True)
     workDayLength = Column(Integer, default = 1, nullable =False)
     averageSpeed = Column(Float, default = 1, nullable = False)
-    hqX = Column(Float)
-    hqY = Column(Float)
+    hqX = Column(Float, nullable=False)
+    hqY = Column(Float, nullable =False)
 
     def __init__(self, workDayLength, averageSpeed, hqX, hqY):
         self.workDayLength = workDayLength
@@ -135,40 +176,40 @@ class GlobalVariables(Base):
         self.hqX = hqX
         self.hqY = hqY
 
+    def __repr__(self):
+        return "<GlobalVariables(workDayLength='%d', averageSpeed='%f')>" % (self.workDayLength, self.averageSpeed)
+
+
 class CanAva(Base):
-    __tablename__='canvas_availability'   
+    __tablename__='can_avas'  
+
     id = Column(Integer,primary_key = True)
-    #title = Column(String(80),nullable = False)
-    #start = Column(String(80),nullable = False)
-    #end = Column(String(80),nullable = False)
-    #allDay = Column(String(80),nullable = False)
-    theDate = Column(Date)
+    role_id = Column(Integer, ForeignKey('roles.id', onupdate="CASCADE", ondelete="CASCADE"))
+    theDate = Column(Date, nullable= False)
+    UniqueConstraint(role_id, theDate)
 
-    email=Column(String(80), nullable=False) # User's email
-
-    def __init__(self,title, theDate,email):
-        self.title = title
+    def __init__(self,theDate):
         self.theDate = theDate  
-        self.email = email
+
+    def __repr__(self):
+        return "<CanAva(role_id='%d', theDate='%s')>" % (self.role_id, self.theDate)
+
 
 class Assignment(Base):
-    __tablename__='assignment'
+    __tablename__='assignments'
+
     id = Column(Integer, primary_key = True)
-    theDate = Column(Date)
-    x = Column(Float)
-    y = Column(Float)
-    email = Column(String(80))
-    order = Column(Integer)
-    campaign_id = Column(Integer)
-    def __init__(self, theDate, x, y, email, order, campaign_id):
+    canvasser_id = Column(Integer, ForeignKey('campaign_canvassers.id', onupdate="CASCADE", ondelete="CASCADE"))
+    location_id = Column(Integer, ForeignKey('campaign_locations.id', onupdate="CASCADE", ondelete="CASCADE"))
+    theDate = Column(Date, nullable= False)
+    order = Column(Integer, nullable = False)
 
-
+    def __init__(self, theDate,order):
         self.theDate = theDate
-        self.x = x
-        self.y = y
-        self.email = email
         self.order = order
-        self.campaign_id = campaign_id
+
+    def __repr__(self):
+        return "<Assignment(location_id='%d', canvasser_id='%s', theDate='%s', order='%d')>" % (self.location_id, self.canvasser_id, self.theDate, self.order)
 
 
 # For populating the database for testing purposes.
@@ -200,16 +241,16 @@ if __name__ == "__main__":
     user4.users_relation=[role6, role7, role8] # user4 = admin +  canvasser + manager
 
 
-    campaign1 = Campaign("sell compaing1", "1/1" , "2/2","talk something","5")
-    campaign2 = Campaign("election compaing2", "1/1", "2/2","say something","5")
+    campaign1 = Campaign("sell compaing1", "2018-11-1" , "2018-11-20","talk something",5)
+    campaign2 = Campaign("election compaing2", "2018-11-5", "2018-11-25","say something",5)
     db_session.add(campaign1)
     db_session.add(campaign2)
 
 
-    campM1= CampaignManager() # (role1 + campaign1  
-    campM2= CampaignManager() # (role8 + campaign1
-    campM3= CampaignManager() # (role3 + campaign2    
-    campM4= CampaignManager() # (role5 + campaign2   
+    campM1= CampaignManager() # (role1 + campaign1 ) ---user1
+    campM2= CampaignManager() # (role8 + campaign1) ---- user4
+    campM3= CampaignManager() # (role3 + campaign2)  ---- user2
+    campM4= CampaignManager() # (role5 + campaign2)  ---- user3
 
     role1.roles_relation.append(campM1) 
     role8.roles_relation.append(campM1) 
@@ -238,14 +279,22 @@ if __name__ == "__main__":
     campaign2.campaigns_relation_1.append(campCan4)
 
 
-    testL1= CampaignLocation("street1",None,None,None) # location1 + campaign1
-    testL2 = CampaignLocation("street2",None,None,None) # location2 + campaign1
-    testL3 = CampaignLocation("street3",None,None,None) # location2 + campaign2
+    location1= CampaignLocation("Stony Brook University, Nicolls Road, Stony Brook, NY, USA",40.915089,-73.115936) # location1 + campaign1
+    location2 = CampaignLocation("39 FAWN LN N SOUTH SETAUKET NY 11720", 40.900930,-73.072380) # location2 + campaign1
+    location3 = CampaignLocation("160 Mark Tree Road, Centereach, NY",40.867069,-73.085403) # location2 + campaign1
+    campaign1.campaigns_relation_2.append(location1)
+    campaign1.campaigns_relation_2.append(location2)
+    campaign1.campaigns_relation_2.append(location3)
 
-    campaign1.campaigns_relation_2 = [testL1, testL2]
-    campaign2.campaigns_relation_2.append(testL3)
+    location4= CampaignLocation("Stony Brook University, Nicolls Road, Stony Brook, NY, USA",40.915089,-73.115936) # location1 + campaign2
+    location5 = CampaignLocation("39 FAWN LN N SOUTH SETAUKET NY 11720", 40.900930,-73.072380) # location2 + campaign2
+    location6 = CampaignLocation("160 Mark Tree Road, Centereach, NY",40.867069,-73.085403) # location2 + campaign2
+    campaign2.campaigns_relation_2.append(location4)
+    campaign2.campaigns_relation_2.append(location5)
+    campaign2.campaigns_relation_2.append(location6)
 
-    glo = GlobalVariables(1, 1,1,1)
+
+    glo = GlobalVariables(1,1,1,1)
     db_session.add(glo)
     
     db_session.commit()
