@@ -16,7 +16,6 @@ def create_data_model(_locations):
     # convert latitude and longitude degrees to miles
     data["locations"] = [(l[0] * 69, l[1] * 69) for l in _locations]
 
-    print(_locations)
     data["num_locations"] = len(data["locations"])
     data["num_vehicles"] = 1
     # specifiy starting location
@@ -47,7 +46,7 @@ def create_distance_callback(data):
 def add_distance_dimension(routing, distance_callback):
     # Add Global Span constraint
     distance = 'Distance'
-    maximum_distance = 3000  # Maximum distance per vehicle.
+    maximum_distance = 9999999  # Maximum distance per vehicle.
     routing.AddDimension(distance_callback, 0, maximum_distance, True, distance)
     distance_dimension = routing.GetDimensionOrDie(distance)
     # Try to minimize the max distance among vehicles.

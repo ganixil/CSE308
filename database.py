@@ -118,18 +118,18 @@ class CampaignLocation(Base):   # Association Table (Campaign + Locations)
     location = Column(String(80),nullable=False)
     lat = Column(Float,nullable = False)
     lng = Column(Float,nullable = False)
-    ############# One campaign location has one assignment  One-To-One ##############
-    location_relation=relationship("Assignment", uselist=False, backref="campaign_locations",cascade="all,save-update,delete-orphan")
+
+    location_relation=relationship("Assignment", backref="campaign_locations",cascade="all,save-update,delete-orphan")
 
     UniqueConstraint(campaign_name, location)
 
     def __init__(self,  location, lat, lng):
         self.location = location
-        self.lat= lng
+        self.lat= lat
         self.lng = lng
 
     def __repr__(self):
-        return "<Locations(Campaign name='%s', location='%s')>" % (self.campaign_name, self.location)
+        return "<Locations(Campaign name='%s', location='%s' lat ='%s')>" % (self.campaign_name, self.location, self.lat)
 
 
 
@@ -152,8 +152,7 @@ class CampaignCanvasser(Base):   # Association Table (Campaign + CanvasserRole)
     campaign_name = Column(String(80),ForeignKey('campaigns.name', onupdate="CASCADE", ondelete="CASCADE") )
     role_id = Column(Integer, ForeignKey('roles.id', onupdate="CASCADE", ondelete="CASCADE"))
 
-    ############# One campaign canvasser has one assignment  One-To-One ##############
-    canvasser_relation=relationship("Assignment", uselist=False, backref="campaign_canvassers",cascade="all,save-update,delete-orphan")
+    canvasser_relation=relationship("Assignment", backref="campaign_canvassers",cascade="all,save-update,delete-orphan")
 
     UniqueConstraint(campaign_name, role_id) # one canvasser + one campaign 
 
@@ -239,6 +238,17 @@ if __name__ == "__main__":
     user2.users_relation=[role2, role3] # user2 = manager + canvasser
     user3.users_relation= [role4, role5]  # user3 = canvasser+ manager
     user4.users_relation=[role6, role7, role8] # user4 = admin +  canvasser + manager
+
+    canAva_1 = CanAva('2018-11-15')
+    canAva_2 = CanAva('2018-11-16')
+    canAva_3 = CanAva('2018-11-16')
+    canAva_4 = CanAva('2018-11-17')
+
+    role4.roles_relation_2.append(canAva_1)
+    role4.roles_relation_2.append(canAva_2)
+
+    role7.roles_relation_2.append(canAva_3)
+    role7.roles_relation_2.append(canAva_4)
 
 
     campaign1 = Campaign("sell compaing1", "2018-11-1" , "2018-11-20","talk something",5)

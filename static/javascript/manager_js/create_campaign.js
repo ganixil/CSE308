@@ -1,4 +1,7 @@
 var map;
+var today = new Date();
+today.setHours(0,0,0,0);
+
 $(document).ready(function () {
 	var managers = document.getElementById('managers');
    	 multi( managers, {
@@ -95,6 +98,9 @@ $(document).ready(function () {
                   }
         });
   });
+
+        // Initial Current Date to start date
+        document.getElementById('start_date').value = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
 });
 
 function validDates(){
@@ -106,14 +112,13 @@ function validDates(){
           end = end_date.value.replace(/-/g,'/');
           start_obj = new Date(start);
           end_obj = new Date(end);
-          today = new Date();  // Stat Date should begin at today's date
           if(start_obj.getTime() < today.getTime()){
-                start_date.value ='';
+                start_date.value =today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
                 end_date.value='';
                alert("Invalid Date Setttings, please make sure dates should start from current date, and in valid ranges!!");
           }else if(start_obj.getTime() > end_obj.getTime()){
-                        start_date.value ='';
-                    end_date.value='';
+                  start_date.value =today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
+                  end_date.value='';
                alert("Invalid Date Setttings, please make sure dates should start from current date, and in valid ranges!!");
           }
 
@@ -166,10 +171,42 @@ function add_question(){
          option.text = question.trim();
          question_list.add(option);
          document.getElementById('question').value ='';
+         // Toggle Remove question button
+         document.getElementById('remove_question').classList.contains('disabled');
+         document.getElementById('remove_question').classList.remove("disabled");
+         document.getElementById('remove_question').disabled = false;
       }
         var trigger = new Event('change');
         document.getElementById('question').dispatchEvent(trigger);
 }
+
+
+function remove_question(){
+      var question_list = document.getElementById('question_list');
+      var i=0;
+      var cout_unselect = 0;
+      while(1){
+         alert(cout_unselect);
+          if(cout_unselect == question_list.options.length){
+                break;
+          }
+          cout_unselect = 0;
+          for (var i = 0; i < question_list.options.length; i++) {
+              if(question_list.options[i].selected){
+                  question_list.options[i]=null;
+              }else{
+                  cout_unselect ++;
+              }
+          }
+      }
+        if(question_list.options.length == 0){
+                // Toggle Remove question button
+               document.getElementById('remove_question').classList.add("disabled");
+               document.getElementById('remove_question').disabled = true;
+        }
+
+}
+
 
 function add_location(){
    var location = document.getElementById('location').value;
@@ -198,6 +235,10 @@ function add_location(){
                 option.value = results[0].formatted_address.trim()+'|'+lat+'|'+lng;
                 option.text = results[0].formatted_address.trim();
                 location_list.add(option);
+                         // Toggle Remove location button
+               document.getElementById('remove_location').classList.contains('disabled');
+               document.getElementById('remove_location').classList.remove("disabled");
+               document.getElementById('remove_location').disabled = false;
             }else {
               alert("Invalid address");
           }
@@ -207,6 +248,33 @@ function add_location(){
         var trigger = new Event('change');
         document.getElementById('location').dispatchEvent(trigger);
 }
+
+function remove_question(){
+      var location_list = document.getElementById('location_list');
+      var i=0;
+      var cout_unselect = 0;
+      while(1){
+         alert(cout_unselect);
+          if(cout_unselect == location_list.options.length){
+                break;
+          }
+          cout_unselect = 0;
+          for (var i = 0; i < location_list.options.length; i++) {
+              if(location_list.options[i].selected){
+                  location_list.options[i]=null;
+              }else{
+                  cout_unselect ++;
+              }
+          }
+      }
+        if(location_list.options.length == 0){
+                // Toggle Remove question button
+               document.getElementById('remove_location').classList.add("disabled");
+               document.getElementById('remove_location').disabled = true;
+        }
+
+}
+
 
 function  check_submit(){
   // Check if there're some managers
@@ -236,14 +304,12 @@ function  check_submit(){
        return false;
     }
 
-    // Add multiple selection to question list and location list
-    document.getElementById('question_list').multiple = true;
+    // Mark all options to be true for questions and locations
     var question_list = document.getElementById('question_list');
         for (var i = 0; i <  question_list.options.length; i++) {
               question_list.options[i].selected = true;
             }
 
-    document.getElementById('location_list').multiple = true;
     var location_list = document.getElementById('location_list');
         for (var i = 0; i <  location_list.options.length; i++) {
               location_list.options[i].selected = true;
