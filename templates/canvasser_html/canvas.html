@@ -1,39 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    
-    <link rel="icon" href="../../static/image/logo.png">
+{% extends "header.html" %}
 
-    <title>Super Canvasser Canvasser</title>
+{% block header %}
+     <link href="/static/css/fullcalendar_css/fullcalendar.css" rel='stylesheet' />
+      <link href="/static/css/fullcalendar_css/fullcalendar.print.css" rel='stylesheet' media='print' />
+      <link href="/static/css/canvasser.css" rel="stylesheet">
 
-    <!-- Bootstrap core CSS -->
-    <link href="../../static/css/bs_css/bootstrap.min.css" rel="stylesheet">
-    <link href="../../static/css/fullcalendar_css/fullcalendar.css" rel='stylesheet' />
-    <link href="../../static/css/fullcalendar_css/fullcalendar.print.css" rel='stylesheet' media='print' />
+      <script type="text/javascript" src="/static/javascript/canvasser_script/fullcalendar_jq.js"></script>
+      <script type="text/javascript" src="/static/javascript/canvasser_script/fullcalendar.js"></script>
+{% endblock %}
 
-    <!-- JQuery implementation -->
-    <script src="../../static/jquery/jquery.js"></script>
-    <script src="../../static/jquery/jquery-ui.min.js"></script>
-    
-    
-
-    <!-- Custom styles for this login page -->
-    <link href="../../static/css/canvasser.css" rel="stylesheet">
-
-  </head>
-
-  <body>
-    <!-- this is the nav bar and the title on top -->
-    <nav class="navbar navbar-light bg-light">
-      <a class="navbar-brand" href="#">
-        <img src="../../static/image/logo.png" width="30" height="30" alt="">
-        Super Canvasser
-      </a>
-      <button class="btn btn-outline-success" type="button"><a href="{{url_for('auth.login')}}">Log out</a></button>
-    </nav>
-
+<!----------------------BODY PART---------------------------------------------->
+{% block body %}
     <!-- main functional parts -->
     <div class="container">
       <h1 style="text-align: center">Welcome {{u_name}}</h1>
@@ -51,18 +28,23 @@
     
     <button class="btn btn-outline-success btn-lg" type="button" id="canvas-btn" onclick="window.location.href='view_upcoming_assignment.html'">View Upcoming Assignment</button>
     <button class="btn btn-outline-success btn-lg" type="button" id="canvas-btn" onclick="window.location.href='canvas_start.html'">Start Canvas</button>
-
+    
+<!-- Alert for flash message-->
+   <script>
+    {% with errors = get_flashed_messages() %}
+      {% if errors %}
+        {% for msg in errors %}
+             alert('{{ msg }}');
+        {% endfor %}
+     {% endif %}
+  {% endwith %}
+</script>
   <!-- scripts below will taking care of calendar javascript interactions-->
   <script type=text/javascript>
     $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
   </script>
-  <script type="text/javascript"  src="../../static/javascript/canvasser_script/canvas.js"></script>
+  <script type="text/javascript"  src="/static/javascript/canvasser_script/canvas.js"></script>
   <script type="text/javascript">
     canvasEvents = myFunc({{avails|tojson}})
   </script>
-  <script type="text/javascript" src="../../static/javascript/canvasser_script/fullcalendar_jq.js"></script>
-  <script type="text/javascript" src="../../static/javascript/canvasser_script/fullcalendar.js"></script>
-
-
-  </body>
-</html>
+{%  endblock %}

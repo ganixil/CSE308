@@ -1,23 +1,7 @@
+// Get Today's Date
+var today = new Date();
+
 $(document).ready(function() {
-		var script = document.createElement('script');
-		script.scr = "../jquery/jquery.js";
-		document.getElementsByTagName('head')[0].appendChild(script); 
-
-		var script2 = document.createElement('script');
-		script2.src = "../jquery/jquery-ui.min.js";
-		document.getElementsByTagName('head')[0].appendChild(script2);
-
-	    var date = new Date();
-		var d = date.getDate();
-		var m = date.getMonth();
-		var y = date.getFullYear();
-		
-		/*  className colors
-		
-		className: default(transparent), important(red), chill(pink), success(green), info(blue)
-		
-		*/		
-		
 		  
 		/* initialize the external events
 		-----------------------------------------------------------------*/
@@ -43,82 +27,78 @@ $(document).ready(function() {
 		});
 		//for loop converting fetched jason
 		var cEvents = JSON.parse(canvasEvents);
-		var clength = cEvents.length;
-		for (var i=0;i<clength;i++){
+		//Check there're some data need to be loaded first
+		if(cEvents){
+			var clength = cEvents.length;
+			for (var i=0;i<clength;i++){
+				var startRaw = cEvents[i]["start"];
+				alert(startRaw)
+				alert(typeof startRaw);
+				var start = new Date(Date.parse(startRaw));
+				cEvents[i]["start"] = start;
 
-			var startRaw = cEvents[i]["start"];
-			var start = new Date(Date.parse(startRaw));
-			start.setHours(start.getHours()+5);
-			cEvents[i]["start"] = start;
-
-			var endRaw = cEvents[i]["end"];
-			var end = new Date(Date.parse(endRaw));
-			end.setHours(end.getHours()+5);
-			cEvents[i]["end"] = end;
-
-			//for some reason all day doesnt work
-			/*if(cEvents[i]["allDay"].localeCompare("true")){
-				cEvents[i]["allDay"]=true;
 			}
-			else if(cEvents[i]["allDay"].localeCompare("true")){
-				cEvents[i]["allDay"]=false;
-			}*/
-
-		}
+	}
 		/* initialize the calendar
 		-----------------------------------------------------------------*/
 		var calendar =  $('#calendar').fullCalendar({
 			header: {
 				left: 'title',
-				center: 'agendaDay,agendaWeek,month, listMonth',
-				right: 'prev,next today'
+				center: 'month',
+				right: 'prevYear,prev,next,nextYear today'
+			},
+			buttonText:{
+				month:'Month Calendar'
 			},
 			editable: true,
 			firstDay: 1, //  1(Monday) this can be changed to 0(Sunday) for the USA system
 			selectable: true,
 			defaultView: 'month',
 			
-			axisFormat: 'h:mm',
 			columnFormat: {
-                month: 'ddd',    // Mon
-                week: 'ddd d', // Mon 7
-                day: 'dddd M/d',  // Monday 9/7
-                agendaDay: 'dddd d'
+                month: 'ddd'   // Mon
             },
             titleFormat: {
-                month: 'MMMM yyyy', // September 2009
-                week: "MMMM yyyy", // September 2009
-                day: 'MMMM yyyy'                  // Tuesday, Sep 8, 2009
+                month: 'MMMM yyyy' // September 2009
             },
 			allDaySlot: false,
 			selectHelper: true,
 			select: function(start, end, allDay) {
-				window.alert("Free at this date")
-				if (true) {
-					calendar.fullCalendar('renderEvent',
+				// Temp_date will be used to manipulate each date between strat and end
+				var temp_date = new Date(start);
+				var end_date = new Date(end);
+				// Start Date must be greater than the today date
+				if(temp_date.getTime() < today.getTime()){
+					alert("Cannot set avaliablity on past dates !! ")
+				}else{
+				// Check if the 'temp_date' can be set avaliablity or not
+						while(temp_date <= end_date){
+						if(isAvaliable(temp_date)){
+							 calendar.fullCalendar('renderEvent',
+								{
+									title: "Avaliable",
+									start: temp_date,
+									constraint: 'Ava', //an event ID
+									textColor:'black !important',
+									backgroundColor: "#FF3B30!important"
+								},
+								true // make the event "stick"
+							);
+						$.getJSON($SCRIPT_ROOT + '/canvasser/update_ava',
 						{
 							title: "Free",
 							start: start,
 							end: end,
 							allDay: allDay
-						},
-						true // make the event "stick"
+						},function(data){
 
-					);
+						}
+						)
+						}
+						temp_date = new Date(temp_date.getTime() + 86400000); // + 1 day in ms
+					}
 				}
 				calendar.fullCalendar('unselect');
-				$.getJSON($SCRIPT_ROOT + '/canvasser/update_ava',
-				{
-					title: "Free",
-					start: start,
-					end: end,
-					allDay: allDay
-				},
-				function(data){
-
-				}
-				)
-				
 			},
 			droppable: true, // this allows things to be dropped onto the calendar !!!
 			drop: function(date, allDay) { // this function is called when something is dropped
@@ -150,3 +130,16 @@ $(document).ready(function() {
 		
 		
 	});
+
+
+function isAvaliable(check_date){
+	var events = $('#calendar').fullCalendar('clientEvents', function (event) {
+		alert("Cehck");
+    //  for (var i=0; i < events.length, i++){
+    //  	alert(events);
+    // 	// alert(events[i].title);
+    // }
+  });
+	return true;
+
+}

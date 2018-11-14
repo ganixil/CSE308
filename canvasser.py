@@ -1,8 +1,8 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for
+    Blueprint, flash, g, redirect, render_template, request, url_for,session
 )
 from werkzeug.exceptions import abort
-from database import db_session, User, CanAva
+from database import db_session, User, CanAva, Role
 import json
 import logging
 import datetime
@@ -37,23 +37,29 @@ def update_ava():
 
 
 # Method for rendering the canvasser's homepage
-@bp.route('/canPage/<u_email>', methods=('GET', 'POST'))
-def canPage(u_email):
+@bp.route('/canPage/<u_name>', methods=('GET', 'POST'))
+def canPage(u_name):
 	global user_email
-	user_email = u_email
+	user_email = session['info']['email']
+ 
+	#### Query Role from DB  #########
+	role_obj = db_session.query(Role).filter(Role.email == user_email, Role.role =='canvasser').first()
 
-	# Fetching data from db and format it into json
-	# This part is intended for fetching stored availabilities in db
-	events = db_session.query(CanAva).filter(CanAva.email == u_email)
+	'''
+	Fetch CanAva Objects to get Event date
+	'''
+	events = db_session.query(CanAva).filter(CanAva.role_id == role_obj.id).all()
 	avails =[]
-	for instance in events:
-		avails.append({
-			'title':"Free",
-			'start':str(instance.theDate),
-			'end':str(instance.theDate),
-			'allDay':True
-			})
+	# if len(events)>0:
+	# 	for instance in events:
+	# 		avails.append({
+	# 			'title':"Free",
+	# 			'start':str(instance.theDate),
+	# 			'end':str(instance.theDate),
+	# 			'allDay':True
+	# 			})
 
-	canvasEvents = json.dumps(avails)
-	logging.debug("fetching info availability from database for "+u_email)
-	return render_template('canvasser_html/canvas.html',avails=canvasEvents)
+	# 	canvasEvents = json.dumps(avails)
+	# 	logging.debug("fetching info availability from database for "+user_email)
+	# 	return render_template('canvasser_html/canvas.html',avails=canvasEvents)
+	return render_template('canvasser_html/canvas.html',avails=None)
