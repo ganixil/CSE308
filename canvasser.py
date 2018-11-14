@@ -2,7 +2,7 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for,session
 )
 from werkzeug.exceptions import abort
-from database import db_session, User, CanAva, Role
+from database import db_session, User, CanAva, Role, CampaignCanvasser, Assignment
 import json
 import logging
 import datetime
@@ -57,7 +57,7 @@ def remove_ava():
 	role_obj = db_session.query(Role).filter(Role.email == user_email, Role.role == 'canvasser').first()
 	''' Create CanAva object,and removev from DB'''
 	ava_obj = db_session.query(CanAva).filter(CanAva.role_id == role_obj.id, CanAva.theDate == startDate).first()
-	print(ava_obj)
+
 	db_session.delete(ava_obj)
 	db_session.commit()
 
@@ -79,16 +79,31 @@ def canPage(u_name):
 	'''
 	events = db_session.query(CanAva).filter(CanAva.role_id == role_obj.id).all()
 	avails =[]
-	# if len(events)>0:
-	# 	for instance in events:
-	# 		avails.append({
-	# 			'title':"Free",
-	# 			'start':str(instance.theDate),
-	# 			'end':str(instance.theDate),
-	# 			'allDay':True
-	# 			})
+	if len(events)>0:
+		for instance in events:
+			avails.append({
+				'title':"Avaliable",
+				'constraint': 'Ava',
+				'start':str(instance.theDate),
+				'textColor':'black !important',
+				'backgroundColor': "#FF3B30!important"
+				})
 
-	# 	canvasEvents = json.dumps(avails)
-	# 	logging.debug("fetching info availability from database for "+user_email)
-	# 	return render_template('canvasser_html/canvas.html',avails=canvasEvents)
+	camp_canvassers = db_session.query(CampaignCanvasser).filter(CampaignCanvasser.role_id == role_obj.id).all()
+	for ele in camp_canvassers:
+		## Get one Campaign Canvasser Object
+		ass_obj = db_session.query(Assignment).filter(Assignment.canvasser_id == ele.id).all()
+		for ele_ass in ass_obj:
+			avails.append({
+				'title':"Have Assignment",
+				'constraint': 'Ass',
+				'start':str(ele_ass.theDate),
+				'textColor':'black !important',
+				'backgroundColor': "#F0F8FF !important"
+				})
+	
+	if(len(avails) != 0):
+		canvasEvents = json.dumps(avails)
+		logging.debug("fetching info availability  and assignemnt from database for "+ user_email)
+		return render_template('canvasser_html/canvas.html',avails=canvasEvents)
 	return render_template('canvasser_html/canvas.html',avails=None)

@@ -32,11 +32,9 @@ $(document).ready(function() {
 			var clength = cEvents.length;
 			for (var i=0;i<clength;i++){
 				var startRaw = cEvents[i]["start"];
-				alert(startRaw)
-				alert(typeof startRaw);
-				var start = new Date(Date.parse(startRaw));
+				var dsplit = startRaw.split("-");
+				var start = new Date(dsplit[0],dsplit[1]-1,dsplit[2]);
 				cEvents[i]["start"] = start;
-
 			}
 	}
 		/* initialize the calendar
