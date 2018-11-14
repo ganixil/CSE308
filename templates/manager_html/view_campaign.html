@@ -22,6 +22,7 @@
                       <i class = "fa fa-sort-up float-right"> </i>
                     </th >
                      <th style="text-align:center"> See Details </th>
+                      <th style="text-align:center"> Delete </th>
                  </tr>
               </thead>
           {% for ele in camp %}
@@ -32,6 +33,11 @@
               <td class="list-buttons-column" style="font-size: 18px; text-align:center">{{ camp[ele][0].duration }} </td>
               <td class="list-buttons-column" style="text-align:center">
                <button  type ="button" class="btn btn-outline-info detail"> <i class="fa fa-info-circle"></i></button>
+              </td>
+                <td class="list-buttons-column" style="text-align:center">
+                  <form method ="post" action="{{url_for('manager.delete',campName =camp[ele][0].name) }} ">
+                    <button  type="submit" name ='submit' class="btn btn-outline-danger"> <i class="fa fa-trash">del</i></button>
+                </form>
               </td>
             </tr>
           {% endfor %}

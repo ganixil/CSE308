@@ -301,6 +301,18 @@ def editCampaign(u_email):
 	return render_template('manager_html/edit_campaign.html', all_campaigns = all_campaigns,index = 6)
 
 
+''' Method for deleting Campaing'''
+@bp.route('/delete_campaign/<campName>/', methods=('GET', 'POST'))
+def delete(campName):
+    if request.method == 'POST':
+    	deletedCamp = db_session.query(Campaign).filter(Campaign.name == campName).first()
+    	if deletedCamp is not None:
+    		''' Find the deletedCamp, and delete'''
+    		db_session.delete(deletedCamp)
+    		db_session.commit()
+    		flash("Delete the Campaign Successfully","info")
+    return redirect(url_for('manager.viewCampaign'))
+
 
 @bp.route('/view_assignment', methods=['GET','POST'])
 def viewAssignment():
