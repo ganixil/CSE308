@@ -16,7 +16,7 @@ def create_data_model(_locations):
     # convert latitude and longitude degrees to miles
     data["locations"] = [(l[0] * 69, l[1] * 69) for l in _locations]
 
-    
+    print(_locations)
     data["num_locations"] = len(data["locations"])
     data["num_vehicles"] = 1
     # specifiy starting location
@@ -127,13 +127,13 @@ def makeAssign(locations, duration):
     return assignmentCollection
 
 # main function used for testing
-def main():
-    locations = \
-              [(4,4),
-               (2,0), (8,0),
-               (6,1), (3,0),
-               (5,2), (7,2)]
-    assn = makeAssign(locations, duration)
-    print(assn)
+# def main():
+#     locations = \
+#               [(4,4),
+#                (2,0), (8,0),
+#                (6,1), (3,0),
+#                (5,2), (7,2)]
+#     assn = makeAssign(locations, duration)
+#     print(assn)
 if __name__ == '__main__':
     main()

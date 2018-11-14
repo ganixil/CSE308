@@ -19,6 +19,7 @@ $(document).ready(function () {
 		}
 
 	map = new google.maps.Map(document.getElementById("map"), mapOptions);
+  geocoder = new google.maps.Geocoder();
 
 	var input = document.getElementById('location');
 	var searchBox = new google.maps.places.SearchBox(input);
@@ -46,7 +47,7 @@ $(document).ready(function () {
               console.log("Returned place contains no geometry");
               return;
             }
-            
+
           var infowindow = new google.maps.InfoWindow({
           		content: place.formatted_address
           });
@@ -76,166 +77,176 @@ $(document).ready(function () {
           });
           map.fitBounds(bounds);
         });
+
+        google.maps.event.addListener(map, 'click', function(event) {
+           geocoder.geocode({
+            'latLng': event.latLng
+              }, function (results, status) {
+                  if (status == google.maps.GeocoderStatus.OK) {
+                      if (results[0]) {
+                         document.getElementById('location').value = results[0].formatted_address;
+                         var trigger = new Event('change');
+                         document.getElementById('location').dispatchEvent(trigger);
+                      } else {
+                          alert('No results found');
+                      }
+                  } else {
+                      alert('Geocoder failed due to: ' + status);
+                  }
+        });
+  });
 });
 
+function validDates(){
+     var start_date = document.getElementById('start_date');
+     var end_date = document.getElementById('end_date');
+     // If Both dates are not empty, check if they are invalid
+     if(start_date.value && end_date.value){
+          start = start_date.value.replace(/-/g,'/');
+          end = end_date.value.replace(/-/g,'/');
+          start_obj = new Date(start);
+          end_obj = new Date(end);
+          today = new Date();  // Stat Date should begin at today's date
+          if(start_obj.getTime() < today.getTime()){
+                start_date.value ='';
+                end_date.value='';
+               alert("Invalid Date Setttings, please make sure dates should start from current date, and in valid ranges!!");
+          }else if(start_obj.getTime() > end_obj.getTime()){
+                        start_date.value ='';
+                    end_date.value='';
+               alert("Invalid Date Setttings, please make sure dates should start from current date, and in valid ranges!!");
+          }
 
-// function addManagerToTable(){
-// 	console.log("Im here and b = ");
-// 	var a = document.getElementById("manager_selector");
-// 	var b = a.value;
-	
-// 	if(b != "null"){
-// 		var ob = document.getElementsByName("flaskManager");
-// 		if(ob.length == 0){
-// 			var node = document.getElementById("insertManager");//insertManager is name of table
-// 			var trNode = document.createElement("input");
-// 			trNode.setAttribute("name", "flaskManager");
-// 			trNode.setAttribute("type", "text");
-// 			trNode.setAttribute("class", "dis");
-// 			trNode.setAttribute("value", b)
-// 			node.appendChild(trNode);
-// 			console.log(node)
-			
-// 		}else{
-// 			var bool = exists(b, ob);
-// 			if(bool ==false){
-// 				var node = document.getElementById("insertManager");//insertManager is name of table
-// 				var trNode = document.createElement("input");
-// 				trNode.setAttribute("name", "flaskManager");
-// 				trNode.setAttribute("type", "text");
-// 				trNode.setAttribute("class", "dis");
-// 				trNode.setAttribute("value", b)
-// 				node.appendChild(trNode);
+     }
+}
 
-// 			}
-// 		}	
-// 	}
-// 	a.selectedIndex= -1;
-
-// }
-
-// function addCanvasserToTable(){
-// 	var a = document.getElementById("canvasser_selector");
-// 	var b = a.value;
-// 	if(b != "null"){
-// 		var ob = document.getElementsByName("flaskCanvasser");
-// 		if(ob.length == 0){
-// 			var node = document.getElementById("insertCanvasser");//insertManager is name of table
-// 			var trNode = document.createElement("input");
-// 			trNode.setAttribute("name", "flaskCanvasser");
-// 			trNode.setAttribute("type", "text");
-// 			trNode.setAttribute("class", "dis");
-// 			trNode.setAttribute("value", b)
-// 			node.appendChild(trNode);
-			
-
-// 		}else{
-// 			var bool = exists(b, ob);
-// 			if(bool == false){
-// 				var node = document.getElementById("insertCanvasser");//insertManager is name of table
-// 				var trNode = document.createElement("input");
-// 				trNode.setAttribute("name", "flaskCanvasser");
-// 				trNode.setAttribute("type", "text");
-// 				trNode.setAttribute("class", "dis");
-// 				trNode.setAttribute("value", b)
-// 				node.appendChild(trNode);
-				
-// 			}
-// 		}	
-// 	}
-// 	a.selectedIndex= -1;
-
-// }
-// function addLocationToTable(){
-
-// 	var a = document.getElementById("address");
-// 	var b = a.value;
-
-//     geocoder = new google.maps.Geocoder();
-    
-//     var exit = false;
-//     geocoder.geocode({'address':b},function(results,status){
-//     	if(status == 'OK'){
-//     		map.setCenter(results[0].geometry.location);
-// 	    	var marker = new google.maps.Marker({
-//             	map: map,
-//             	position: results[0].geometry.location
-//         	});
+// Toggle Add Question Button
+function toggle_question(){
+    if(document.getElementById('question').value){
+                document.getElementById('add_question').classList.remove("disabled");
+                document.getElementById('add_question').disabled = false;
+            }
+    else{     
+                document.getElementById('add_question').classList.add("disabled");
+                document.getElementById('add_question').disabled = true;
+  } 
+}
 
 
-// 	    	if(b != "null"){
-// 				var ob = document.getElementsByName("flaskLocation");
-// 				if(ob.length == 0){
-// 					var node = document.getElementById("insertLocation");
-// 					var trNode = document.createElement("input");
-// 					trNode.setAttribute("name","flaskLocation");
-// 					trNode.setAttribute("type", "text");
-// 					trNode.setAttribute("class", "dis");
-// 					trNode.setAttribute("value", b)	
-// 					node.appendChild(trNode);	
-// 				}else{
-// 					var bool = exists(b, ob);
-// 					if(bool ==false){
-// 						var node = document.getElementById("insertLocation");
-// 						var trNode = document.createElement("input");
-// 						trNode.setAttribute("name", "flaskLocation");
-// 						trNode.setAttribute("type", "text");
-// 						trNode.setAttribute("class", "dis");
-// 						trNode.setAttribute("value", b)
-// 						node.appendChild(trNode);
-						
-// 					}
-// 				}
-// 				a.selectedIndex = -1;	
-// 			}
-// 	    }else {
-// 	    	exit = true;
-//         	alert('There is no such place on Earth: ');
-        	
-//       	}
-//     });
-     
-   
+// Toggle Add LocationButton
+function toggle_location(){
+    if(document.getElementById('location').value){
+                document.getElementById('add_location').classList.remove("disabled");
+                document.getElementById('add_location').disabled = false;
+            }
+    else{     
+                document.getElementById('add_location').classList.add("disabled");
+                document.getElementById('add_location').disabled = true;
+  } 
+}
 
-	
-// }
+function add_question(){
+   var question = document.getElementById('question').value;
+   var question_list = document.getElementById('question_list');
+   var all_options = question_list.options;
+   var add = true;
+    for(var i=0; i < all_options.length; i++)
+     {
+        if(all_options[i].value == question){
+             alert("The question does already exist!!");
+             document.getElementById('question').value ='';
+                add= false;  // We do not need to create option
+                break;
+        }
+     }
+     if(add){
+      // Need to add new question
+         var option = document.createElement("option");
+         option.value = question.trim();
+         option.text = question.trim();
+         question_list.add(option);
+         document.getElementById('question').value ='';
+      }
+        var trigger = new Event('change');
+        document.getElementById('question').dispatchEvent(trigger);
+}
 
-// function addQuestionToTable(){
-// 	var a = document.getElementById("questions");
-// 	var b = a.value;
-// 	if(b != "null"){
-// 		var ob = document.getElementsByName("flaskQuestion");
-// 		if(ob.length == 0){
-// 			var node = document.getElementById("insertQuestions");
-// 			var trNode = document.createElement("input");
-// 			trNode.setAttribute("name","flaskQuestion");
-// 			trNode.setAttribute("type", "text");
-// 			trNode.setAttribute("class", "dis");
-// 			trNode.setAttribute("value", b)	
-// 			node.appendChild(trNode);	
-// 		}
-// 		else{
-// 			var bool = exists(b, ob);
-// 			if(bool ==false){
-// 				var node = document.getElementById("insertQuestions");
-// 				var trNode = document.createElement("input");
-// 				trNode.setAttribute("name", "flaskQuestion");
-// 				trNode.setAttribute("type", "text");
-// 				trNode.setAttribute("class", "dis");
-// 				trNode.setAttribute("value", b)
-// 				node.appendChild(trNode);
-				
-// 			}
-// 		}
-// 	a.selectedIndex = -1;	
-// 	}
-// }
+function add_location(){
+   var location = document.getElementById('location').value;
+   var location_list = document.getElementById('location_list');
+   var all_options = location_list.options;
+   var add = true;
+    for(var i=0; i < all_options.length; i++)
+     {
+        if(all_options[i].value ==location){
+             alert("The location does already exist!!");
+              document.getElementById('location').value ='';
+              add= false;  // We do not need to create option
+                break;
+        }
+     }
+     if(add){
+      // Need to add new location
+      // Check if the string of address is valid or not
+        var geocoder = new google.maps.Geocoder();
+        geocoder.geocode({'address': location}, function(results, status){
+            if (status === google.maps.GeocoderStatus.OK && results.length > 0) {
+                // set it to the correct, formatted address if it's valid
+                var option = document.createElement("option");
+                var lat = results[0].geometry.location.lat();
+                var lng = results[0].geometry.location.lng();
+                option.value = results[0].formatted_address.trim()+'|'+lat+'|'+lng;
+                option.text = results[0].formatted_address.trim();
+                location_list.add(option);
+            }else {
+              alert("Invalid address");
+          }
+        });
+         document.getElementById('location').value ='';
+      }
+        var trigger = new Event('change');
+        document.getElementById('location').dispatchEvent(trigger);
+}
 
-// function exists(text, arr ){
-// 	for( var i = 0; i < arr.length; i++){
-// 		if(text == arr[i].value){
-// 			return true;
-// 		}
-// 	}
-// 	return false;
-// }
+function  check_submit(){
+  // Check if there're some managers
+    var managers = document.getElementById('managers');
+    var has_managers= false;
+    for (var i = 0; i < managers.options.length; i++) {
+      if (managers.options[i].selected) {
+            has_managers= true;
+             break;
+      }
+    }
+    if(! has_managers){
+        alert("Failed to create, Please Select at least one manager!!");
+        return false;
+    }
+    // Check if there're some canvassers
+    var canvassers = document.getElementById('canvassers');
+    var has_canvassers= false;
+    for (var i = 0; i < canvassers.options.length; i++) {
+      if (canvassers.options[i].selected) {
+            has_canvassers= true;
+             break;
+      }
+    }
+    if(!has_canvassers){
+       alert("Failed to create, Please Select at least one canvasser!!");
+       return false;
+    }
+
+    // Add multiple selection to question list and location list
+    document.getElementById('question_list').multiple = true;
+    var question_list = document.getElementById('question_list');
+        for (var i = 0; i <  question_list.options.length; i++) {
+              question_list.options[i].selected = true;
+            }
+
+    document.getElementById('location_list').multiple = true;
+    var location_list = document.getElementById('location_list');
+        for (var i = 0; i <  location_list.options.length; i++) {
+              location_list.options[i].selected = true;
+            }
+
+}

@@ -20,11 +20,10 @@
      <div class="form-group">
      	<label class="col-lg-3" style="font-weight: bold; font-size: 18px;" for ="managers"> Choose Managers: </label>
          <select multiple="multiple" name="managers" id="managers" required>
-                <option selected="selected" disabled="disabled" value ="{{ session['info']['email']}}| {{ session['info']['name']}}">{{ session['info']['name']}} ({{ session['info']['email']}})</option>
-                <option>Banana</option>
-                <option>Blueberry</option>
-                <option>Cherry</option>
-                <option>Coconut</option>
+                <option selected="selected" disabled="disabled" value ="{{ session['info']['email']}}|{{ session['info']['name']}}">{{ session['info']['name']}} ({{ session['info']['email']}})</option>
+                {% for ele in managers %}
+                    <option value ="{{ ele }}|{{ managers[ele] }}">{{managers[ele]}}({{(ele)}})</option>
+                {% endfor %}
          </select>
      </div>
     <hr/><br/>
@@ -32,55 +31,44 @@
      <div class="form-group">
      	<label class="col-lg-3" style="font-weight: bold; font-size: 18px;" for ="canvasser"> Choose Canvassers: </label>
          <select multiple="multiple" name="canvassers" id="canvassers" required>
-                <option>Banana</option>
-                <option>Blueberry</option>
-                <option>Cherry</option>
-                <option>Coconut</option>
-                <option>Grapefruit</option>
-                <option>Kiwi</option>
-                <option>Lemon</option>
-                <option>Lime</option>
+                {% for ele in canvassers %}
+                    <option value = "{{ ele }}|{{ canvassers[ele] }}">{{canvassers[ele]}}({{(ele)}})</option>
+                {% endfor %}
          </select>
      </div>
    <hr/>
 
   <!---------------------------Dates Part--------------------->
-     <div  id = "error" {% if not result %} style= "display:none" {% elif ("Error" in result) %} class ="alert alert-danger alert-dismissable" style = "display:block" {% else %} class ="alert alert-success alert-dismissable" style = "display:block" {% endif %}>
-          <a href="#" class="close" data-dismiss="alert">&times;</a> <strong> {{ result }} !!! </strong> 
-     </div>
+     <label class="col-lg-2" style="font-weight: bold; font-size: 18px;">Date Settings: </label>
     <div class="form-group form-inline">
-        <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="start_date">Start Date: </label>
-        <input class ="form-control col-lg-5" type="date" data-date-format="yyyy-mm-dd" name="start_date" id ="start_date" required>
-    </div>
-    <div class="form-group form-inline">
-        <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="end_date">End Date: </label>
-        <input class ="form-control col-lg-5" type="date" data-date-format="yyyy-mm-dd" name="end_date" id ="end_date" required >
+            <div style ="margin-left:5%;font-size:16px; font-weight: bold;">From :</div>
+            <input style ="margin-left:1%;" class ="form-control col-lg-3" type="date" data-date-format="yyyy-mm-dd" name="start_date" id ="start_date" onchange='validDates()' required>
+            <div style ="margin-left:2%;font-size:16px; font-weight: bold;">To :</div>
+            <input style ="margin-left:1%;" class ="form-control col-lg-3" type="date" data-date-format="yyyy-mm-dd" name="end_date" id ="end_date" onchange='validDates()' required >
     </div>
     <hr/><br/>
   <!---------------------------Questions Part--------------------->
     <div class="form-group form-inline">
         <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="question">New Question: </label>
-         <input class="form-control col-lg-5 input-md" id ="question" type="text" name ="question" placeholder ="Type New Question" >
-         <button class ="btn btn-primary" id="add_question" href="#" disabled> Add New Question </button>
+         <input class="form-control col-lg-5 input-md" id="question" type="text" name ="question" placeholder="Type New Question" onchange="toggle_question()" oninput="toggle_question()" >
+         <a class ="btn btn-primary disabled" id="add_question" onclick='add_question()' disabled> Add New Question </a>
     </div>
     <div class="form-group form-inline">
-    	<label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="question_list">Added Question: </label>
+    	<label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for="question_list">Added Question: </label>
         <select class="form-control col-lg-5" name="question_list" id="question_list">
-		    <option>1</option>
-		    <option>2</option>
   		</select>
     </div>
     <hr/><br/>
  <!---------------------------Talking Point Part--------------------->
      <div class="form-group form-inline">
-    	<label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="talking">Set Talking Point: </label>
-    	 <textarea class="form-control col-lg-5" rows="3" id="talking" name='talking' placeholder="Without Any Talking Points"></textarea>
+    	<label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for="talking">Set Talking Point: </label>
+    	 <textarea class="form-control col-lg-5" rows="3" id="talking" name='talking' placeholder="None" value="None"></textarea>
     </div>
     <hr/><br/>
  <!---------------------------Duration Part--------------------->
      <div class="form-group form-inline">
-    	<label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="duration">Select Duration: </label>
-			<select class="form-control col-lg-5" name = "duration" required >
+    	<label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for="duration">Select Duration: </label>
+			<select class="form-control col-lg-5" name="duration" required >
 				<option value="5">5 minutes</option>
 				<option value="10">10 minutes</option>
 				<option value="15">15 minutes</option>
@@ -92,26 +80,37 @@
     <hr/><br/>
  <!---------------------------Location--------------------->
     <div class="form-group form-inline">
-        <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="question">New Location: </label>
-         <input class="form-control col-lg-5 input-md" id ="location" type="text" name ="location" placeholder ="Type New Location" >
-         <button class ="btn btn-primary" id="add_location" href="#" disabled> Add New Location </button>
+        <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="location">New location: </label>
+         <input class="form-control col-lg-5 input-md" id="location" type="text" name ="location" placeholder="Type New location" onchange="toggle_location()" oninput="toggle_location()" >
+         <a class ="btn btn-primary disabled" id="add_location" onclick='add_location()' disabled> Add New Location </a>
     </div>
     <div class="form-group form-inline">
-    	<label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="location_list">Added Location: </label>
+        <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for="location_list">Added Location: </label>
         <select class="form-control col-lg-5" name="location_list" id="location_list">
-		    <option>1</option>
-  		</select>
+        </select>
     </div>
     <div class="form-group form-inline">
 		<div id="map" name="map_location" class="col-lg-8" style="margin-left: 10%; height: 350px;background-color: grey"></div>
     </div>
-
     <hr/><br/>
+    <div class="form-group form-inline" style="margin-left: 30%">
+         <button class="btn btn-success btn-lg" id="submit" name="submit" type="submit" onclick="check_submit()"> <i class="fa fa-plus-circle"></i> Create Campaign </button>
+    </div>
+   
 
 
     </form>
   </div>
   {% block script %} 
+    <script>
+    {% with errors = get_flashed_messages() %}
+      {% if errors %}
+        {% for msg in errors %}
+             alert('{{ msg }}');
+        {% endfor %}
+     {% endif %}
+  {% endwith %}
+    </script>
     <script src="/static/javascript/manager_js/multi.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCGuEpRycbTYDCcS6uxiot0x0eSLkpTbiY&libraries=places&callback=initAutocomplete"></script>
     <script  src="/static/javascript/manager_js/create_campaign.js"></script> {% endblock%}

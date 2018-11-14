@@ -1,279 +1,118 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<link rel="stylesheet" type="text/css" href="../../static/css/manager.css">
-		
-		
-		
-	</head>
-    
-	<body>
-		<div class="container" > 
-			<div style="width: 1500px;background-color:white;opacity: .7"><span class="title" > Edit Campaign </span> </div>
-			<div class="nav">
-                
-			</div>
-            <div class="float">
-            	<div class="stay" style="position:fixed">
-                    <div class="n" onclick="location.href='{{ url_for('manager.createCampaign') }}'"><span class="link">Create Campaign</span></div>
-	                <div class="onPage" onclick="location.href='{{ url_for('manager.editCampaign') }}'"><span class="link">Edit Campaign</span></div>
-	                <div class="n" onclick="location.href='{{ url_for('manager.viewCampaign') }}'"><span class="link">View Campaign</span></div>
-	                <div class="n" onclick="location.href='{{ url_for('manager.viewCampaignResult') }}'"><span class="link">View Campaign Result</span></div>
-	                <div class="n" onclick="location.href='{{ url_for('manager.viewCanvasAssignment') }}'"><span class="link">View Canvas Assignment</span></div>
-	                <div class="n" onclick="location.href='{{ url_for('manager.createCanvasAssignment') }}'"><span class="link">Create Canvas Assignment</span></div>
-	            </div>
-            </div>
-			<div class="signOut" onclick="location.href='{{ url_for('auth.login') }}'"><span class="outText">Sign Out</span> </div>
-		</div>
+{% extends "layout.html" %}
+	{% block newHeader %}
+	<link rel="stylesheet" type="text/css" href="/static/css/multi.css">
 
-		<div class="container">
-			<form id="createCampaign" method='post' action="{{url_for('manager.showCampaign')}}" style="height: 1800px">
-				<div class="box" style="height:120px; width:450px; top:160px;"><span class="label" style="font-size: 17px;">Select Campaign</span>
-					<!--             ewrweriewjrklwqerjoiewuroiqweuroiqwueruqwirueworuqwpeoruqewporopqwerpo -->
-					<!-- signal: <input name='signal' id='signal' type='text' value="a"> -->
-					<div class="content" style="margin-left:10px;" >
-						<table  cellpadding="3">
-							<tr>
-								<td nowrap="" style="width:200px"> Select Campaign: </td>
-								<td>
-									<select id="scampaign_name" name = "scampaign_name" value="" onchange="displayEdit()">
-										<option value="none" ></option>
-										
-										{% for item in camp %}
-											{% if item.campaign_name == show %}
-												<option value='{{item.campaign_name}}' selected="selected"> {{item.campaign_name}}</option>
-											{% else %}
-												<option value='{{item.campaign_name}}'> {{item.campaign_name}}</option>
-											{% endif %}
-										{% endfor %}
-									</select>
-								</td>
-							</tr>
-							<tr>
-								<td nowrap="" style="width:130px; " > New Campiagn Name:</td>
-								<td> <input type="text" name="new_campaign_name" id="new_campaign_name" value ='{{show}}'></td>
-							</tr>
+	<link rel="stylesheet" type="text/css" href="/static/css/create_campaign.css">
+	{% endblock %}
+    {% block title %} <h3 id = "title"> Create Compaigns </h3> {% endblock %}
+{%block main %}
+<!-----------------Create Compaign------------------>
+<br/>
+  <div class="container ">
+    <form  method="post" action ="{{url_for('manager.createCampaign', u_email = session['info']['email']) }}" role="form">
+  <!---------------------------Compaing Name--------------------->
+    <div class="form-group form-inline">
+         <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="name"> Compaign Name : </label>
+              <input class="form-control col-lg-5 input-md" id ="name" type="text" name ="name" placeholder = "New Comapign Name" required autofocus>
+    </div>
+    <hr/><br/>
+     <!---------------------------Select Managers-------------------->
+     <div class="form-group">
+     	<label class="col-lg-3" style="font-weight: bold; font-size: 18px;" for ="managers"> Choose Managers: </label>
+         <select multiple="multiple" name="managers" id="managers" required>
+                <option selected="selected" disabled="disabled" value ="{{ session['info']['email']}}| {{ session['info']['name']}}">{{ session['info']['name']}} ({{ session['info']['email']}})</option>
+                <option>Banana</option>
+                <option>Blueberry</option>
+                <option>Cherry</option>
+                <option>Coconut</option>
+         </select>
+     </div>
+    <hr/><br/>
+      <!---------------------------Select Canvassers------------------->
+     <div class="form-group">
+     	<label class="col-lg-3" style="font-weight: bold; font-size: 18px;" for ="canvasser"> Choose Canvassers: </label>
+         <select multiple="multiple" name="canvassers" id="canvassers" required>
+                <option>Banana</option>
+                <option>Blueberry</option>
+                <option>Cherry</option>
+                <option>Coconut</option>
+                <option>Grapefruit</option>
+                <option>Kiwi</option>
+                <option>Lemon</option>
+                <option>Lime</option>
+         </select>
+     </div>
+   <hr/>
 
-						</table>
-					</div>
-				</div>
+  <!---------------------------Dates Part--------------------->
+     <div  id = "error" {% if not result %} style= "display:none" {% elif ("Error" in result) %} class ="alert alert-danger alert-dismissable" style = "display:block" {% else %} class ="alert alert-success alert-dismissable" style = "display:block" {% endif %}>
+          <a href="#" class="close" data-dismiss="alert">&times;</a> <strong> {{ result }} !!! </strong> 
+     </div>
+    <div class="form-group form-inline">
+        <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="start_date">Start Date: </label>
+        <input class ="form-control col-lg-5" type="date" data-date-format="yyyy-mm-dd" name="start_date" id ="start_date" required>
+    </div>
+    <div class="form-group form-inline">
+        <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="end_date">End Date: </label>
+        <input class ="form-control col-lg-5" type="date" data-date-format="yyyy-mm-dd" name="end_date" id ="end_date" required >
+    </div>
+    <hr/><br/>
+  <!---------------------------Questions Part--------------------->
+    <div class="form-group form-inline">
+        <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="question">New Question: </label>
+         <input class="form-control col-lg-5 input-md" id ="question" type="text" name ="question" placeholder ="Type New Question" >
+         <button class ="btn btn-primary" id="add_question" href="#" disabled> Add New Question </button>
+    </div>
+    <div class="form-group form-inline">
+    	<label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="question_list">Added Question: </label>
+        <select class="form-control col-lg-5" name="question_list" id="question_list">
+		    <option>1</option>
+		    <option>2</option>
+  		</select>
+    </div>
+    <hr/><br/>
+ <!---------------------------Talking Point Part--------------------->
+     <div class="form-group form-inline">
+    	<label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="talking">Set Talking Point: </label>
+    	 <textarea class="form-control col-lg-5" rows="3" id="talking" name='talking' placeholder="Without Any Talking Points"></textarea>
+    </div>
+    <hr/><br/>
+ <!---------------------------Duration Part--------------------->
+     <div class="form-group form-inline">
+    	<label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="duration">Select Duration: </label>
+			<select class="form-control col-lg-5" name = "duration" required >
+				<option value="5">5 minutes</option>
+				<option value="10">10 minutes</option>
+				<option value="15">15 minutes</option>
+				<option value="20">20 minutes</option>
+				<option value="25">25 minutes</option>
+				<option value="30">30 minutes</option>
+			</select>
+    </div>
+    <hr/><br/>
+ <!---------------------------Location--------------------->
+    <div class="form-group form-inline">
+        <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="question">New Location: </label>
+         <input class="form-control col-lg-5 input-md" id ="location" type="text" name ="location" placeholder ="Type New Location" >
+         <button class ="btn btn-primary" id="add_location" href="#" disabled> Add New Location </button>
+    </div>
+    <div class="form-group form-inline">
+    	<label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="location_list">Added Location: </label>
+        <select class="form-control col-lg-5" name="location_list" id="location_list">
+		    <option>1</option>
+  		</select>
+    </div>
+    <div class="form-group form-inline">
+		<div id="map" name="map_location" class="col-lg-8" style="margin-left: 10%; height: 350px;background-color: grey"></div>
+    </div>
 
-
-				<div class="box" style="height:120px; width:450px; top:160px;"><span class="label" style="font-size: 17px;">Manager and Canvasser</span>
-					<div class="content" style="margin-left:10px;" >
-						<table  cellpadding="3">
-							<tr>
-								<td nowrap="" style="width:200px"> Select Manager: </td>
-								<td><select id='manager_selector'name="manager_name" value="" onchange="addManagerToTable()">
-										<option value="null"></option>
-
-										{% for item in managers %}
-											<option value='{{item}}'> {{item}} </option>
-										{% endfor %}
-
-									</select>
-								</td>
-							</tr>
-							<tr>
-								<td nowrap="" style="width:200px"> Select Canvasser: </td>
-								<td><select id='canvasser_selector' name="canvasser_name" value="" onchange="addCanvasserToTable()">
-										
-										<option value="null"></option>
-
-										{% for item in canvasser %}
-											<option value='{{item}}'> {{item}} </option>
-										{% endfor %}
-
-									</select>
-								</td>
-							</tr>
-							
-						</table>
-					</div>
-					
-					<div id='manageTable' style="height: 120px;overflow-y: scroll" onmousemove="a()">
-			            <table id="insertManager" cellpadding="3" >
- 							<tr><th nowrap="" style="width:200px"> Manager</th></tr>
-								{% for item in currentManagers %}
-									<script type="text/javascript">
-										var b = '{{item}}';
-										var node = document.getElementById("insertManager");//insertManager is name of table
-										var trNode = document.createElement("input");
-										trNode.setAttribute("name", "flaskManager");
-										trNode.setAttribute("type", "text");
-										trNode.setAttribute("class", "dis");
-										trNode.setAttribute("value", b)
-										node.appendChild(trNode);
-									</script>
-								{% endfor %}
-						</table>
-					</div>
-					
-					<div id='canvasTable' style="margin-top:40px; height:120px;overflow-y: scroll" onmousemove="a()">
-			            <table id="insertCanvasser" cellpadding="3" >
-							<tr><th nowrap="" style="width:200px"> Canvasser</th></tr>
-								{% for item in currentCanvassers %}
-									<script type="text/javascript">
-										var b = '{{item}}';
-										var node = document.getElementById("insertCanvasser");//insertManager is name of table
-										var trNode = document.createElement("input");
-										trNode.setAttribute("name", "flaskCanvasser");
-										trNode.setAttribute("type", "text");
-										trNode.setAttribute("class", "dis");
-										trNode.setAttribute("value", b)
-										node.appendChild(trNode);
-									</script>
-								{% endfor %}
-						</table>
-					</div>
-
-				</div>
-
- 				<div class="box" style="height:130px; width:450px; top:160px;"><span class="label" style="font-size: 17px;">Time</span>
-					<div class="content" style="margin-left: 30px">
-						<table>
-							<tr>
-								<td nowrap="" style="width:130px; " > Start Date: </td>
-								<td> <input type="date" name="start_date" value='{{start}}'></td>
-							</tr>
-							<tr>
-								<td nowrap="" style="width:130px; " > End Date: </td>
-								<td> <input type="date" name="end_date" value='{{end}}'></td>
-								
-							</tr>
-						</table>
-					</div>
-				</div>
+    <hr/><br/>
 
 
-				<div class="box" style="height:400px; width:450px; top:160px;"><span class="label" style="font-size: 17px;">Location</span>
-					<div class="content" style="margin-left: -15px; margin-top: -10px">
-						<table>
-                            <tr>
-                                <td nowrap="" style="width:200px;position: relative; top:-80px">Pick Locations:</td>
-                                <td><div id="map" name="map_location" style="position: relative; left:5px; top: 30px;height: 250px; width: 270px;background-color: blue"></div></td>
-                            </tr>
-                            <tr>
-                                <td nowrap="" style="width:200px;position: relative; top:50px">Street Address: </td>
-                                <td> <input type="text" id="address" style="position:relative;top:50px; left:-20px;width:270px" ></td>
-                            </tr>
-                            <tr>
-                            	<td></td>
-                            	<td>
-                            	<button class="submit" type="button" onclick="addLocationToTable()">Add Location</button>
-                            	</td>
-
-                            </tr>
-                        </table>
-					</div>
-					<div id='locationTable' style="overflow-y: scroll" onmousemove="a()">
-			            <table id="insertLocation" cellpadding="3" >
-							<tr><th nowrap="" style="width:200px">Locations</th></tr>
-							{% for item in locations %}
-								<script type="text/javascript">
-									var b = '{{item}}';
-									var node = document.getElementById("insertLocation");
-									var trNode = document.createElement("input");
-									trNode.setAttribute("name", "flaskLocation");
-									trNode.setAttribute("type", "text");
-									trNode.setAttribute("class", "dis");
-									trNode.setAttribute("value", b)
-									node.appendChild(trNode);
-								</script>
-							{% endfor %}
-						</table>
-					</div>
-				</div>
-				<div class="box" style="height:140px; width:450px; margin-top:40px;"><span class="label" style="font-size: 17px;">Questionaires</span>
-					<div class="content" style="margin-left:10px;" >
-						<table  cellpadding="3">
-							<tr>
-								<td nowrap="" style="width:200px"> Enter Questions: </td>
-								<td>
-								<input id="questions" type="" name="questions">
-								</td>
-							</tr>
-							<tr>
-								<td></td>
-								<td>
-									<button class="submit-location" type="button" onclick="addQuestionToTable()">Add Question</button>
-								</td>
-							</tr>
-						</table>
-					</div>
-					<div id='questionTable' style="overflow-y: scroll" onmousemove="a()">
-			            <table id="insertQuestions" cellpadding="3" >
-							<tr><th nowrap="" style="width:200px">Questions</th></tr>
-							{% for item in questions %}
-								<script type="text/javascript">
-									var b = '{{item}}';
-									var node = document.getElementById("insertQuestions");
-									var trNode = document.createElement("input");
-									trNode.setAttribute("name","flaskQuestion");
-									trNode.setAttribute("type", "text");
-									trNode.setAttribute("class", "dis");
-									trNode.setAttribute("value", b)	
-									node.appendChild(trNode);
-
-								</script>
-							{% endfor %}
-						</table>
-					</div>
-			</div>
-			<div class="box" style="height:120px; width:450px; top:160px;"><span class="label" style="font-size: 17px;">Set Talking Points</span>
-					<div class="content" style="margin-left:10px;" >
-						<table  cellpadding="3">
-							<tr><span class="label" style="font-size: 17px;">What Canvasser should say during the visit</span></tr>
-							<tr>
-								<textarea id='talkings' name="talking" style="width: 300px;height: 50px;margin-top: 2px;"></textarea>
-								{% if talk %}
-									<script type="text/javascript">
-										document.getElementById('talkings').value = '{{talk}}';
-									</script>
-								{% endif %}
-							</tr>
-							
-						</table>
-					</div>
-			</div>
-
-			<div class="box" style="height:90px; width:450px; top:160px;"><span class="label" style="font-size: 17px;">Duration of Canvas</span>
-					<div class="content" style="margin-left:10px;" >
-						<table  cellpadding="3">
-							<tr>
-								<td nowrap="" style="width:200px"> Set Duration: </td>
-								<td>
-									<select name = "duration">
-
-
-										{%  for num in range(1,7) %} 
-											{% if num*5 == duration %}
-												<option value="{{num*5}}" selected='selected'>{{num*5}} minutes</option>
-
-											{% else %}
-												<option value="{{num*5}}">{{num*5}} minutes</option>
-											{% endif %}
-
-										{% endfor %}
-
-									</select>
-								</td>
-							</tr>
-						</table>
-					</div>
-			</div>
-
-
-				<button class="submit" name='submit_btn' value="submit_form">Update Campaign</button>
-			</form>
-
-
-
-		</div>
-		
-		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCGuEpRycbTYDCcS6uxiot0x0eSLkpTbiY"></script>
-		<script type="text/javascript" src="../../static/javascript/manager_js/edit_campaign.js"></script>
-
-
-	</body>
-</html>
+    </form>
+  </div>
+  {% block script %} 
+    <script src="/static/javascript/manager_js/multi.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCGuEpRycbTYDCcS6uxiot0x0eSLkpTbiY&libraries=places&callback=initAutocomplete"></script>
+    <script  src="/static/javascript/manager_js/create_campaign.js"></script> {% endblock%}
+{%  endblock %}

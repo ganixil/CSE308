@@ -10,7 +10,7 @@ import pymysql
 # Database connection string example
 # 'mysql+pymysql://username:password@address:port/databaseName'
 # Connect to the database with the database connection string
-engine = create_engine('mysql+pymysql://xiangyiliu:111308288@mysql3.cs.stonybrook.edu:3306/xiangyiliu', convert_unicode=True)
+engine = create_engine('mysql+pymysql://root:1969@localhost:3306/cse308', convert_unicode=True)
 db_session = scoped_session(sessionmaker(autocommit=False, autoflush=False,bind=engine))
 # Make the sqlalchemy object relation mapper base class
 Base = declarative_base()
@@ -31,7 +31,7 @@ class User(Base):
     name = Column(String(80), nullable=False)
     avatar = Column(String(80), nullable=True, default ="None")
     ##########  One User Can Have Multiple Roles(Canvasser, Admin, Managers)
-    users_relation = relationship('Role', backref='users', lazy = True)
+    users_relation = relationship('Role', backref='users', cascade="all,save-update,delete-orphan", lazy = True)
 
     def __init__(self,email, password, name,avatar):
         self.email = email
@@ -51,11 +51,11 @@ class Role(Base):
     role= Column(String(20), nullable=False)  ####### (canvasser, manager, admin)
 
     ################## Only manager role has this relationship, it refers to one or multiple campaings##############
-    roles_relation = relationship("CampaignManager", backref= "roles",cascade="all,save-update,delete, delete-orphan")
+    roles_relation = relationship("CampaignManager", backref= "roles",cascade="all,save-update, delete-orphan")
     ################## Only canvasser role has this relationship, it refers to one or multiple campaings##############
-    roles_relation_1 = relationship("CampaignCanvasser", backref= "roles",cascade="all,save-update,delete, delete-orphan")
+    roles_relation_1 = relationship("CampaignCanvasser", backref= "roles",cascade="all,save-update,delete-orphan")
     ################## Only canvasser role has this relationship, it refers to one or one on its available dates ##############
-    roles_relation_2 = relationship("CanAva", backref= "roles",cascade="all,save-update,delete, delete-orphan")
+    roles_relation_2 = relationship("CanAva", backref= "roles",cascade="all,save-update,delete-orphan")
 
     UniqueConstraint(email, role)  
 
@@ -77,13 +77,13 @@ class Campaign(Base):
     duration = Column(Integer, default = 0, nullable=True)
 
     ########## One Campaign has multiple Managers##############
-    campaigns_relation= relationship("CampaignManager", backref = "campaigns",cascade="all,save-update,delete,delete-orphan")
+    campaigns_relation= relationship("CampaignManager", backref = "campaigns",cascade="all,save-update,delete-orphan")
     ######### One Campaign has multiple Canvassers################
-    campaigns_relation_1= relationship("CampaignCanvasser", backref = "campaigns",cascade="all,save-update,delete,delete-orphan")
+    campaigns_relation_1= relationship("CampaignCanvasser", backref = "campaigns",cascade="all,save-update,delete-orphan")
     ########## One campaign has multiple Locations###################
-    campaigns_relation_2= relationship("CampaignLocation", backref = "campaigns",cascade="all,save-update,delete,delete-orphan")
+    campaigns_relation_2= relationship("CampaignLocation", backref = "campaigns",cascade="all,save-update,delete-orphan")
     ######### One campaign has multiple questions############
-    campaigns_relation_3=relationship("Questionnaire",backref="campaigns",cascade="all,save-update,delete,delete-orphan")
+    campaigns_relation_3=relationship("Questionnaire",backref="campaigns",cascade="all,save-update,delete-orphan")
 
     def __init__(self, name, startDate, endDate,talking,duration):
         self.name = name
@@ -119,7 +119,7 @@ class CampaignLocation(Base):   # Association Table (Campaign + Locations)
     lat = Column(Float,nullable = False)
     lng = Column(Float,nullable = False)
     ############# One campaign location has one assignment  One-To-One ##############
-    location_relation=relationship("Assignment", uselist=False, backref="campaign_locations",cascade="all,save-update,delete,delete-orphan")
+    location_relation=relationship("Assignment", uselist=False, backref="campaign_locations",cascade="all,save-update,delete-orphan")
 
     UniqueConstraint(campaign_name, location)
 
@@ -153,7 +153,7 @@ class CampaignCanvasser(Base):   # Association Table (Campaign + CanvasserRole)
     role_id = Column(Integer, ForeignKey('roles.id', onupdate="CASCADE", ondelete="CASCADE"))
 
     ############# One campaign canvasser has one assignment  One-To-One ##############
-    canvasser_relation=relationship("Assignment", uselist=False, backref="campaign_canvassers",cascade="all,save-update,delete,delete-orphan")
+    canvasser_relation=relationship("Assignment", uselist=False, backref="campaign_canvassers",cascade="all,save-update,delete-orphan")
 
     UniqueConstraint(campaign_name, role_id) # one canvasser + one campaign 
 
