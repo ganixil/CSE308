@@ -72,7 +72,7 @@ $(document).ready(function() {
 					alert("Cannot set avaliablity on past dates !! ")
 				}else{
 				// Check if the 'temp_date' can be set avaliablity or not
-						while(temp_date <= end_date){
+					while(temp_date.getTime() <= end_date.getTime()){
 						if(isAvaliable(temp_date)){
 							 calendar.fullCalendar('renderEvent',
 								{
@@ -86,60 +86,52 @@ $(document).ready(function() {
 							);
 						$.getJSON($SCRIPT_ROOT + '/canvasser/update_ava',
 						{
-							title: "Free",
-							start: start,
-							end: end,
-							allDay: allDay
-						},function(data){
-
+								title: "Avaliable",
+								start: temp_date,
+								constraint: 'Ava', 
+								textColor:'black !important',
+								backgroundColor: "#FF3B30!important"
+						});
 						}
-						)
-						}
-						temp_date = new Date(temp_date.getTime() + 86400000); // + 1 day in ms
+					// Increase 1 day to 'temp_date'
+					temp_date = new Date(temp_date.getTime() + 86400000); // + 1 day in ms
 					}
 				}
 				calendar.fullCalendar('unselect');
 			},
-			droppable: true, // this allows things to be dropped onto the calendar !!!
-			drop: function(date, allDay) { // this function is called when something is dropped
-			
-				// retrieve the dropped element's stored Event Object
-				var originalEventObject = $(this).data('eventObject');
-				
-				// we need to copy it, so that multiple events don't have a reference to the same object
-				var copiedEventObject = $.extend({}, originalEventObject);
-				
-				// assign it the date that was reported
-				copiedEventObject.start = date;
-				copiedEventObject.allDay = allDay;
-				
-				// render the event on the calendar
-				// the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
-				$('#calendar').fullCalendar('renderEvent', copiedEventObject, true);
-				
-				// is the "remove after drop" checkbox checked?
-				if ($('#drop-remove').is(':checked')) {
-					// if so, remove the element from the "Draggable Events" list
-					$(this).remove();
-				}
-				
-			},
-			
 			events: cEvents,			
 		});
-		
-		
+				
 	});
 
 
 function isAvaliable(check_date){
+	// Get all existed events from calendar
 	var events = $('#calendar').fullCalendar('clientEvents', function (event) {
-		alert("Cehck");
-    //  for (var i=0; i < events.length, i++){
-    //  	alert(events);
-    // 	// alert(events[i].title);
-    // }
+		return event;
   });
+	// Check if the d
+	for(var i=0; i < events.length; i++){
+			if(events[i].start.getTime() == check_date.getTime()){
+				// You cannot set avaliability on the date which has events
+				if(events[i].constraint == 'Ava'){
+					// select the avaliable date caused 'unset'
+					$('#calendar').fullCalendar('removeEvents', events[i]._id);
+					$.getJSON($SCRIPT_ROOT + '/canvasser/remove_ava',
+						{
+								title: "Avaliable",
+								start: events[i].start,
+								constraint: 'Ava', 
+								textColor:'black !important',
+								backgroundColor: "#FF3B30!important"
+						});
+					return false;
+				}else if(events[i].constraint == 'Ass'){
+					// selecct the date with assignment without any meaning
+				  return false;
+				}
+			}
+	}
 	return true;
 
 }
