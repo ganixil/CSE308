@@ -21,7 +21,7 @@ bp = Blueprint('manager', __name__, url_prefix='/manager')
 ''' Store All Campaigns Info : Key = campaign Name ; Value = Detail Info the specified Campaign'''
 camp = {}
 
-''' Create Assignment for one Campaing'''
+''' Create Assignment for one Campaign'''
 def createAssignment(newCamp,canvassers,locations):
 	# flag for marking the assignment the campaign as possible
 	assignmentPossible = False
@@ -48,59 +48,6 @@ def createAssignment(newCamp,canvassers,locations):
 	startDate = newCamp.startDate
 	endDate = newCamp.endDate
 	print(type(startDate))
-	# startdatetime.strptime(date_string, '%Y-%m-%d').date()
-	# startDate = datetime.date(int(startDate[0:4]), int(startDate[5:7]), int(startDate[8:]))
-	# endDate = datetime.date(int(endDate[0:4]), int(endDate[5:7]), int(endDate[8:]))
-	# 	emails = []
-	# 	for i in range(len(canvassers)):
-	# 		roleObj = db_session.query(Role).filter(Role.id == canvassers[i].user_id).first()
-	# 		emails.append(roleObj.email)
-	# 	# collect the available dates of each canvasser in the campaign
-	# 	for i in range(len(emails)):
-	# 		cEmail = emails[i]
-	# 		canDates = db_session.query(CanAva).filter(CanAva.email == cEmail).all()
-	# 		for j in range(len(canDates)):
-	# 			# filter out dates not in the campaign range
-	# 			if(canDates[j].theDate >= startDate and canDates[j].theDate <= endDate):
-	# 				dates.append(DateObject(canDates[j].theDate, canDates[j].email, canDates[j].id))
-	# 	# sort dates by earliest available using bubble sort
-	# 	sortComplete = 0
-	# 	while(sortComplete == 0):
-	# 		sortComplete = 1
-	# 		for i in range(len(dates)):
-	# 			if(i != (len(dates)-1)):
-	# 				if(dates[i].date > dates[i+1].date):
-	# 					temp = dates[i+1]
-	# 					dates[i+1] = dates[i]
-	# 					dates[i] = temp
-	# 					sortComplete = 0
-	# 	# assign assignments to dates
-	# 	mappedAssignments = []
-	# 	while(len(dates) > 0 and len(assignments) > 0):
-	# 		dTemp = dates.pop(0)
-	# 		aTemp = assignments.pop(0)
-	# 		mappedAssignments.append(assignmentMapping(dTemp.date, dTemp.canEmail, dTemp.dateId, aTemp))
-	# 	# if no more assingments then this mapping is possible
-	# 	if(len(assignments) == 0):
-	# 		assignmentPossible = True
-
-	# 	# add assignments to database
-	# 	for i in range(len(mappedAssignments)):
-	# 		for j in range(len(mappedAssignments[i].assignment)):
-	# 			assignObj = Assignment(mappedAssignments[i].date, mappedAssignments[i].assignment[j][0], mappedAssignments[i].assignment[j][1], mappedAssignments[i].canEmail, j, campObj.id)
-	# 			db_session.add(assignObj)
-	# 			db_session.commit()
-
-	# 	# remove taken dates out of available in the database
-	# 	for i in range(len(mappedAssignments)):
-	# 		dateDelete = db_session.query(CanAva).filter(CanAva.id == mappedAssignments[i].dateId).first()
-	# 		db_session.delete(dateDelete)
-	# 		db_session.commit()
-	# 	# if not enough dates/canvassers display warning
-	# 	if(assignmentPossible == False):
-	# 		return 'not possible'
-
-	# campObj= db_session.query(Campaign)
 	return True
 
 
@@ -176,6 +123,7 @@ def createCampaign(u_email):
 	all_managers={}
 	all_canvassers={}
 
+
 	'''Get all managers '''
 	manager_roles = db_session.query(Role).filter(Role.role == 'manager', Role.email != u_email).all()
 	for ele in manager_roles:
@@ -186,6 +134,7 @@ def createCampaign(u_email):
 	for ele in canvasser_roles:
 		ele_user = db_session.query(User).filter(User.email == ele.email).first()
 		all_canvassers[ele.email] = ele_user.name
+		
 	if request.method == 'POST':
 		campaign_name = request.form['name']
 		startDate = request.form['start_date']
@@ -230,10 +179,70 @@ def createCampaign(u_email):
 	return render_template('manager_html/create_campaign.html', managers = all_managers, canvassers = all_canvassers, index = 5)
 
 
-@bp.route('/edit_campaign', methods=['GET','POST'])
-def editCampaign():
-	print("Enter Edit Campaign \n")
-	return render_template('manager_html/edit_campaign.html', camp=camp, name = None, camp_list = [], index = 0)
+@bp.route('/edit_campaign/<u_email>', methods=['GET','POST'])
+def editCampaign(u_email):
+	all_campaigns = db_session.query(Campaign).all()
+
+	''' Key is 'email', Value is 'name'''
+	all_managers={}
+	all_canvassers={}
+
+
+	'''Get all managers '''
+	manager_roles = db_session.query(Role).filter(Role.role == 'manager', Role.email != u_email).all()
+	for ele in manager_roles:
+		ele_user = db_session.query(User).filter(User.email == ele.email).first()
+		all_managers[ele.email] = ele_user.name
+	'''Get all cavasser'''
+	canvasser_roles = db_session.query(Role).filter(Role.role == 'canvasser').all()
+	for ele in canvasser_roles:
+		ele_user = db_session.query(User).filter(User.email == ele.email).first()
+		all_canvassers[ele.email] = ele_user.name
+
+
+	if request.method == 'POST':
+		if request.form['submit'] == 'select_campaign':
+			campaign_name = request.form['campaign_list']
+			campaign = db_session.query(Campaign).filter(Campaign.name == campaign_name).first()
+			campaign_manager = campaign.campaigns_relation
+			campaign_canvasser = campaign.campaigns_relation_1
+			campaign_location = campaign.campaigns_relation_2
+			campaign_question = campaign.campaigns_relation_3
+
+			###here is all the manager assign to the campaign
+			managers={}
+			for cm in campaign_manager:
+				cm_email = db_session.query(Role).filter(Role.id == cm.role_id).first().email
+				cm_user = db_session.query(User).filter(User.email == cm_email).first()
+				managers[cm_email] = cm_user.name
+
+			###here is all the canvasser assign to the campaign
+			canvassers={}
+			for cc in campaign_canvasser:
+				cc_email = db_session.query(Role).filter(Role.id == cc.role_id).first().email
+				cc_user = db_session.query(User).filter(User.email == cc_email).first()
+				canvassers[cc_email] = cc_user.name
+
+			###
+			#comparing two dictionary 
+			###
+			unselected_managers=all_managers
+			all(map(unselected_managers.pop, managers))
+
+			unselected_canvassers=all_canvassers
+			all(map(unselected_canvassers.pop, canvassers))
+
+
+			return render_template('manager_html/edit_campaign.html', all_campaigns = all_campaigns,unselected_managers = unselected_managers, unselected_canvassers = unselected_canvassers, managers = managers, canvassers=canvassers, start_date = campaign.startDate, end_date = campaign.endDate, talking=campaign.talking,index = 6)
+
+
+		elif request.form['submit'] == 'submit_change':
+			print("not ok")
+			pass
+	
+	return render_template('manager_html/edit_campaign.html', all_campaigns = all_campaigns,index = 6)
+
+
 
 @bp.route('/view_assignment', methods=['GET','POST'])
 def viewAssignment():

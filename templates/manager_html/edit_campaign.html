@@ -4,57 +4,69 @@
 
 	<link rel="stylesheet" type="text/css" href="/static/css/create_campaign.css">
 	{% endblock %}
-    {% block title %} <h3 id = "title"> Create Compaigns </h3> {% endblock %}
+    {% block title %} <h3 id = "title"> Edit Compaigns </h3> {% endblock %}
 {%block main %}
 <!-----------------Create Compaign------------------>
 <br/>
+
   <div class="container ">
-    <form  method="post" action ="{{url_for('manager.createCampaign', u_email = session['info']['email']) }}" role="form">
-  <!---------------------------Compaing Name--------------------->
+
+    <form  method="post" action ="{{url_for('manager.editCampaign', u_email = session['info']['email']) }}" role="form">
+        <!---------------------------Compaign Name--------------------->
     <div class="form-group form-inline">
-         <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="name"> Compaign Name : </label>
-              <input class="form-control col-lg-5 input-md" id ="name" type="text" name ="name" placeholder = "New Comapign Name" required autofocus>
+         <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="name"> Choose Campaign : </label>
+            <select class="form-control col-lg-5" name="campaign_list" id="campaign_list">
+                <option value="null"></option>
+                {% for item in all_campaigns %}
+                <option value='{{item.name}}'>{{item.name}}</option>
+                {% endfor %}
+            </select>
+         <button class ="btn btn-primary" name="submit" value = "select_campaign" > Select Campaign </button>
     </div>
     <hr/><br/>
-     <!---------------------------Select Managers-------------------->
+
+    <!---------------------------Select Managers-------------------->
      <div class="form-group">
-     	<label class="col-lg-3" style="font-weight: bold; font-size: 18px;" for ="managers"> Choose Managers: </label>
+        <label class="col-lg-3" style="font-weight: bold; font-size: 18px;" for ="managers"> Choose Managers: </label>
          <select multiple="multiple" name="managers" id="managers" required>
                 <option selected="selected" disabled="disabled" value ="{{ session['info']['email']}}| {{ session['info']['name']}}">{{ session['info']['name']}} ({{ session['info']['email']}})</option>
-                <option>Banana</option>
-                <option>Blueberry</option>
-                <option>Cherry</option>
-                <option>Coconut</option>
+
+                {% for ele in managers %}
+                  <option selected="selected" value ="{{ ele }}| {{managers[ele]}}">{{managers[ele]}} ({{ele}})</option>
+                {% endfor %}
+                {% for ele in unselected_managers %}
+                    <option value ="{{ ele }}|{{ unselected_managers[ele] }}">{{unselected_managers[ele]}}({{(ele)}})</option>
+                {% endfor %}
          </select>
      </div>
     <hr/><br/>
       <!---------------------------Select Canvassers------------------->
+
      <div class="form-group">
-     	<label class="col-lg-3" style="font-weight: bold; font-size: 18px;" for ="canvasser"> Choose Canvassers: </label>
-         <select multiple="multiple" name="canvassers" id="canvassers" required>
-                <option>Banana</option>
-                <option>Blueberry</option>
-                <option>Cherry</option>
-                <option>Coconut</option>
-                <option>Grapefruit</option>
-                <option>Kiwi</option>
-                <option>Lemon</option>
-                <option>Lime</option>
+        <label class="col-lg-3" style="font-weight: bold; font-size: 18px;" for ="canvasser"> Choose Canvassers: </label>
+         <select multiple="multiple" name="canvassers" id="canvassers">
+
+                {% for ele in canvassers %}
+                    <option selected="selected" value = "{{ ele }}|{{ canvassers[ele] }}">{{canvassers[ele]}}({{(ele)}})</option>
+                {% endfor %}
+                {% for ele in unselected_canvassers %}
+                    <option value ="{{ ele }}|{{ unselected_canvassers[ele] }}">{{unselected_canvassers[ele]}}({{(ele)}})</option>
+                {% endfor %}
          </select>
      </div>
-   <hr/>
+    <hr/></br>
 
-  <!---------------------------Dates Part--------------------->
+    <!---------------------------Dates Part--------------------->
      <div  id = "error" {% if not result %} style= "display:none" {% elif ("Error" in result) %} class ="alert alert-danger alert-dismissable" style = "display:block" {% else %} class ="alert alert-success alert-dismissable" style = "display:block" {% endif %}>
           <a href="#" class="close" data-dismiss="alert">&times;</a> <strong> {{ result }} !!! </strong> 
      </div>
     <div class="form-group form-inline">
         <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="start_date">Start Date: </label>
-        <input class ="form-control col-lg-5" type="date" data-date-format="yyyy-mm-dd" name="start_date" id ="start_date" required>
+        <input class ="form-control col-lg-5" type="date" data-date-format="yyyy-mm-dd" name="start_date" id ="start_date" value="{{start_date}}">
     </div>
     <div class="form-group form-inline">
         <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="end_date">End Date: </label>
-        <input class ="form-control col-lg-5" type="date" data-date-format="yyyy-mm-dd" name="end_date" id ="end_date" required >
+        <input class ="form-control col-lg-5" type="date" data-date-format="yyyy-mm-dd" name="end_date" id ="end_date" value="{{end_date}}">
     </div>
     <hr/><br/>
   <!---------------------------Questions Part--------------------->
@@ -64,30 +76,30 @@
          <button class ="btn btn-primary" id="add_question" href="#" disabled> Add New Question </button>
     </div>
     <div class="form-group form-inline">
-    	<label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="question_list">Added Question: </label>
+        <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="question_list">Added Question: </label>
         <select class="form-control col-lg-5" name="question_list" id="question_list">
-		    <option>1</option>
-		    <option>2</option>
-  		</select>
+            <option>1</option>
+            <option>2</option>
+        </select>
     </div>
     <hr/><br/>
  <!---------------------------Talking Point Part--------------------->
      <div class="form-group form-inline">
-    	<label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="talking">Set Talking Point: </label>
-    	 <textarea class="form-control col-lg-5" rows="3" id="talking" name='talking' placeholder="Without Any Talking Points"></textarea>
+        <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="talking">Set Talking Point: </label>
+         <textarea class="form-control col-lg-5" rows="3" id="talking" name='talking' placeholder="Without Any Talking Points">{{talking}}</textarea>
     </div>
     <hr/><br/>
  <!---------------------------Duration Part--------------------->
      <div class="form-group form-inline">
-    	<label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="duration">Select Duration: </label>
-			<select class="form-control col-lg-5" name = "duration" required >
-				<option value="5">5 minutes</option>
-				<option value="10">10 minutes</option>
-				<option value="15">15 minutes</option>
-				<option value="20">20 minutes</option>
-				<option value="25">25 minutes</option>
-				<option value="30">30 minutes</option>
-			</select>
+        <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="duration">Select Duration: </label>
+            <select class="form-control col-lg-5" name = "duration" required >
+                <option value="5">5 minutes</option>
+                <option value="10">10 minutes</option>
+                <option value="15">15 minutes</option>
+                <option value="20">20 minutes</option>
+                <option value="25">25 minutes</option>
+                <option value="30">30 minutes</option>
+            </select>
     </div>
     <hr/><br/>
  <!---------------------------Location--------------------->
@@ -97,21 +109,25 @@
          <button class ="btn btn-primary" id="add_location" href="#" disabled> Add New Location </button>
     </div>
     <div class="form-group form-inline">
-    	<label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="location_list">Added Location: </label>
+        <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="location_list">Added Location: </label>
         <select class="form-control col-lg-5" name="location_list" id="location_list">
-		    <option>1</option>
-  		</select>
+            <option>1</option>
+        </select>
     </div>
     <div class="form-group form-inline">
-		<div id="map" name="map_location" class="col-lg-8" style="margin-left: 10%; height: 350px;background-color: grey"></div>
+        <div id="map" name="map_location" class="col-lg-8" style="margin-left: 10%; height: 350px;background-color: grey"></div>
     </div>
+
 
     <hr/><br/>
 
-
+    <div class="form-group form-inline" style="margin-left: 30%">
+         <button class="btn btn-success btn-lg" id="submit" name="submit" type="submit" value ="submit_change"> <i class="fa fa-plus-circle"></i> Create Campaign </button>
+    </div>
     </form>
   </div>
-  {% block script %} 
+
+{% block script %} 
     <script src="/static/javascript/manager_js/multi.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCGuEpRycbTYDCcS6uxiot0x0eSLkpTbiY&libraries=places&callback=initAutocomplete"></script>
     <script  src="/static/javascript/manager_js/create_campaign.js"></script> {% endblock%}
