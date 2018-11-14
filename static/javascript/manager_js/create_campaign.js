@@ -186,13 +186,13 @@ function remove_question(){
       var i=0;
       var cout_unselect = 0;
       while(1){
-         alert(cout_unselect);
           if(cout_unselect == question_list.options.length){
                 break;
           }
           cout_unselect = 0;
           for (var i = 0; i < question_list.options.length; i++) {
               if(question_list.options[i].selected){
+                alert("hre");
                   question_list.options[i]=null;
               }else{
                   cout_unselect ++;
@@ -249,7 +249,7 @@ function add_location(){
         document.getElementById('location').dispatchEvent(trigger);
 }
 
-function remove_question(){
+function remove_location(){
       var location_list = document.getElementById('location_list');
       var i=0;
       var cout_unselect = 0;
