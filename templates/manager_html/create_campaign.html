@@ -22,7 +22,7 @@
          <select multiple="multiple" name="managers" id="managers" required>
                 <option selected="selected" disabled="disabled" value ="{{ session['info']['email']}}|{{ session['info']['name']}}">{{ session['info']['name']}} ({{ session['info']['email']}})</option>
                 {% for ele in managers %}
-                    <option value ="{{ ele }}|{{ managers[ele] }}">{{managers[ele]}}({{(ele)}})</option>
+                    <option value ="{{ ele }}">{{managers[ele]}}({{(ele)}})</option>
                 {% endfor %}
          </select>
      </div>
@@ -32,7 +32,7 @@
      	<label class="col-lg-3" style="font-weight: bold; font-size: 18px;" for ="canvasser"> Choose Canvassers: </label>
          <select multiple="multiple" name="canvassers" id="canvassers" required>
                 {% for ele in canvassers %}
-                    <option value = "{{ ele }}|{{ canvassers[ele] }}">{{canvassers[ele]}}({{(ele)}})</option>
+                    <option value = "{{ ele }}">{{canvassers[ele]}}({{(ele)}})</option>
                 {% endfor %}
          </select>
      </div>
@@ -55,8 +55,9 @@
     </div>
     <div class="form-group form-inline">
     	<label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for="question_list">Added Question: </label>
-        <select class="form-control col-lg-5" name="question_list" id="question_list">
+        <select multiple="multiple" class="form-control col-lg-5" name="question_list" id="question_list">
   		</select>
+         <a class ="btn btn-primary disabled" id='remove_question' onclick="remove_question()" disabled> Remove Questions </a>
     </div>
     <hr/><br/>
  <!---------------------------Talking Point Part--------------------->
@@ -86,8 +87,9 @@
     </div>
     <div class="form-group form-inline">
         <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for="location_list">Added Location: </label>
-        <select class="form-control col-lg-5" name="location_list" id="location_list">
+        <select multiple='multiple' class="form-control col-lg-5" name="location_list" id="location_list">
         </select>
+        <a class ="btn btn-primary disabled" id='remove_location'  disabled> Remove Locations</a>
     </div>
     <div class="form-group form-inline">
 		<div id="map" name="map_location" class="col-lg-8" style="margin-left: 10%; height: 350px;background-color: grey"></div>

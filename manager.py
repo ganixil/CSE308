@@ -9,7 +9,7 @@ import googlemaps
 from assignmentCreator import makeAssign
 import datetime
 from datetime import date
-from assignmentModeling import DateObject, assignmentMapping
+import math
 
 
 #link google map
@@ -21,34 +21,81 @@ bp = Blueprint('manager', __name__, url_prefix='/manager')
 ''' Store All Campaigns Info : Key = campaign Name ; Value = Detail Info the specified Campaign'''
 camp = {}
 
-''' Create Assignment for one Campaign'''
-def createAssignment(newCamp,canvassers,locations):
+
+''' Create Assignment for one Campaing'''
+def createAssignment(newCamp):
+	'''
+	newCamp---> campaign Object
+	'''
 	# flag for marking the assignment the campaign as possible
 	assignmentPossible = False
+
 	# get headquarters for starting location for routing algorithm
 	globalVars = db_session.query(GlobalVariables).first()
 	hq = (globalVars.hqX, globalVars.hqY)
 	# get campaign location data
-	all_locations = []
+	locations = []
 	# add the headquarters to the location set
-	all_locations.append(hq)
+	locations.append(hq)
 	# add all campaign locations to the locations set
-	for ele in locations:
-		ele_arr = ele.split('|')
-		all_locations.append((float(ele_arr[1]), float(ele_arr[2])))
-	# make assignments with the routing alorithm
-	startDate = newCamp.startDate
-	endDate = newCamp.endDate
-	print(type(startDate))
-	print(all_locations)
-	assignments = makeAssign(all_locations, int(newCamp.duration))
+	locations_relation = newCamp.campaigns_relation_2
+	for ele in locations_relation:
+		locations.append((ele.lat, ele.lng))
 
-	dates = []
 	# get the start and end dates of the campaign
 	startDate = newCamp.startDate
 	endDate = newCamp.endDate
-	print(type(startDate))
-	return True
+
+	# make assignments with the routing alorithm
+	assignments = makeAssign(locations, newCamp.duration)
+
+	dates = [] ###### Store the Valid CanAva Objects
+
+	''' Get all Campaign Canvassers'''
+	camp_canvassers = newCamp.campaigns_relation_1
+	for ele in camp_canvassers:
+		''' Get all this Campaign Canvasser's all avaliable dates'''
+		canDates = db_session.query(CanAva).filter(CanAva.role_id == ele.role_id).all()
+		for ele_ava in canDates:
+			if ele_ava.theDate >= startDate and ele_ava.theDate <= endDate:
+				dates.append(ele_ava)
+
+	'''sort dates by earliest available CanAva objects'''
+	dates.sort(key= lambda d: d.theDate)
+
+	# assign assignments to dates
+	mappedAssignments = []
+	while(len(dates) > 0 and len(assignments) > 0):
+		dTemp = dates.pop(0)
+		aTemp = assignments.pop(0)
+		ass_obj=[dTemp, aTemp]
+		mappedAssignments.append(ass_obj)
+	
+	#if no more assingments then this mapping is possible
+	if(len(assignments) == 0):
+		assignmentPossible = True
+
+	## add assignments to database
+	for ele in mappedAssignments:  ## ele[0]---> CanAva ; ele[1]--------> assignment
+		for order in range(len(ele[1])):
+			ass_obj = Assignment(ele[0].theDate, order)
+			''' Add Assignment Object to CampaignCanvasser Obejct'''
+			campCanvasser= db_session.query(CampaignCanvasser).filter(CampaignCanvasser.campaign_name == newCamp.name, CampaignCanvasser.role_id == ele[0].role_id).first()
+			campCanvasser.canvasser_relation.append(ass_obj)
+			''' Add Assignment Object to CampaigbLocation Obejct'''
+			lat = ele[1][order][0]
+			lng = ele[1][order][1]
+			allCampLocation =db_session.query(CampaignLocation).filter(CampaignLocation.campaign_name == newCamp.name).all()
+			campLocation = [loc for loc in allCampLocation if (math.isclose(loc.lat, lat) and math.isclose(loc.lng, lng))]
+			campLocation[0].location_relation.append(ass_obj)
+			db_session.commit()
+			
+	# remove taken dates out of available in the database
+	for ele in mappedAssignments:
+		db_session.delete(ele[0])
+		db_session.commit()
+
+	return assignmentPossible
 
 
 
@@ -118,48 +165,55 @@ def viewCampaignDetail():
 
 @bp.route('/create_campaign/<u_email>', methods=['GET','POST'])
 def createCampaign(u_email):
-	print("Create Campaign here \n")
 	''' Key is 'email', Value is 'name'''
 	all_managers={}
 	all_canvassers={}
 
 
-	'''Get all managers '''
+	'''Get all managers from db '''
 	manager_roles = db_session.query(Role).filter(Role.role == 'manager', Role.email != u_email).all()
 	for ele in manager_roles:
 		ele_user = db_session.query(User).filter(User.email == ele.email).first()
 		all_managers[ele.email] = ele_user.name
-	'''Get all cavasser'''
+
+	'''Get all cavasser from db'''
 	canvasser_roles = db_session.query(Role).filter(Role.role == 'canvasser').all()
 	for ele in canvasser_roles:
 		ele_user = db_session.query(User).filter(User.email == ele.email).first()
 		all_canvassers[ele.email] = ele_user.name
-		
+
+	''' For submit button'''
 	if request.method == 'POST':
 		campaign_name = request.form['name']
 		startDate = request.form['start_date']
 		endDate = request.form['end_date']
 		talking = request.form['talking']
 		duration = request.form.get('duration')  # default = ''
-		managers = request.form.getlist('managers')  ## format = [email|name]
-		canvassers = request.form.getlist('canvassers') ## format = [mail|name]
+		managers = request.form.getlist('managers')  ## format = email
+		canvassers = request.form.getlist('canvassers') ## format = email
 		questions = request.form.getlist('question_list')
 		locations = request.form.getlist('location_list')  ## format = address|lat|lng
+
 		''' Create New Campaign Object'''
+		check_camp = db_session.query(Campaign).filter(Campaign.name == campaign_name).first()
+		if(check_camp):
+			flash("This Campaign Name already exists, please enter the unique campaing name!")
+			return render_template('manager_html/create_campaign.html', managers = all_managers, canvassers = all_canvassers, index = 5)
+		
 		newCamp = Campaign(campaign_name,startDate,endDate,talking,duration)
 		db_session.add(newCamp)
+
 		''' Add all managers to the newCamp relationship,'''
 		for ele in managers:
-			ele_arr = ele.split('|')
 			ele_obj = CampaignManager()
-			role_obj = db_session.query(Role).filter(Role.email == ele_arr[0], Role.role == 'manager').first()
+			role_obj = db_session.query(Role).filter(Role.email == ele, Role.role == 'manager').first()
 			role_obj.roles_relation.append(ele_obj)
 			newCamp.campaigns_relation.append(ele_obj)
+
 		''' Add all canvassers to the newCamp relationship-1, androle relationship-1'''
 		for ele in canvassers:
-			ele_arr = ele.split('|')
 			ele_obj = CampaignCanvasser()
-			role_obj = db_session.query(Role).filter(Role.email == ele_arr[0], Role.role == 'canvasser').first()
+			role_obj = db_session.query(Role).filter(Role.email == ele, Role.role == 'canvasser').first()
 			role_obj.roles_relation_1.append(ele_obj)
 			newCamp.campaigns_relation_1.append(ele_obj)
 
@@ -170,11 +224,15 @@ def createCampaign(u_email):
 		''' Add all locationto the newCamp relationship-2'''
 		for ele in locations:
 			ele_arr = ele.split('|')
-			ele_obj =  CampaignLocation(ele_arr[0], ele_arr[1], ele_arr[2])
+			ele_obj =  CampaignLocation(ele_arr[0],float(ele_arr[1]), float(ele_arr[2]))
 			newCamp.campaigns_relation_2.append(ele_obj)
 
 		db_session.commit()
-		createAssignment(newCamp,canvassers,locations)
+		#if not enough dates/canvassers display warning
+		if(not createAssignment(newCamp)):
+			flash("Create Campagin successfully, but did not make compeletely assingments !")
+		else:
+			flash("Create Compaingn and make compeletely assignments successfully !")
 
 	return render_template('manager_html/create_campaign.html', managers = all_managers, canvassers = all_canvassers, index = 5)
 
