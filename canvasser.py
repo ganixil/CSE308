@@ -109,15 +109,15 @@ def canPage(u_name):
 	return render_template('canvasser_html/canvas.html',avails=None, u_name=u_name)
 
 # Enter viewing upcomming assignment html page
-@bp.route('/viewing_upcomming assignment')
-def view_upcomming():
-	return render_template('canvasser_html/view_upcoming_assignment.html')
+@bp.route('/view_all_assignment')
+def view_assignment():
+	return render_template('canvasser_html/view_assignment.html')
 
 '''Work For viewingn assignment detail'''
-@bp.route('/view_assigment')
-def view_assigment():
+@bp.route('/view_assigment_detail')
+def view_assigment_detail():
 	print("enter view_assigment")
-	return render_template('canvasser_html/view_upcoming_assignment.html')
+	return render_template('canvasser_html/view_assignment.html')
 
 
 

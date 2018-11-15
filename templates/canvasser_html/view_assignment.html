@@ -1,0 +1,131 @@
+{% extends "header.html" %}
+
+{% block header %}
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="/static/javascript/bs_js/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <!-- Custom styles for this login page -->
+    <link href="/static/css/canvasser.css" rel="stylesheet">
+    <link href="/static/css/view_upcoming.css" rel="stylesheet">
+
+{% endblock %}
+
+<!----------------------BODY PART---------------------------------------------->
+{% block body %}
+    <!-- main functional parts -->
+      <h1 style="text-align: center;padding-top:10px;">Assignments</h1>
+      <hr/>
+    <button class="btn btn-info" type="button" style="margin-left:5%" id="canHome" onclick="window.location.href='{{ url_for( 'canvasser.canPage', u_name = session['info']['name'])}}' ">HomePage</button><br/>
+    <!-------------Title---------------->
+     <h4 style="margin-left:5%"><span style="padding-left:5px; font-weight: bold;">Basic Instructions : </span></h4>
+     <h5 style="margin-left:10%">You have two ways to see your assigment details<br/>
+        <ul>
+              <li>Select from assignements list</li>
+              <li> Click the location marker on the map</li>
+        </ul>  
+    </h5><hr/>
+     <form method="post" action ="{{ url_for('canvasser.view_upcomming')}}">
+        <div class="form-group form-inline">
+         <label class="col-1" style="font-weight:bold; font-size: 20px; margin-left:20%;" for ="assignment"> Location:</label>
+        <input class="form-control col-4" id ="assignment" type="text" name ="assignment" placeholder = "Selected Assignment to view" readonly required autofocus>
+    </div>
+        <!-------------Select one assignments from the list-------------->
+        <h4 style="margin-left:5%"><span style="padding-left:5px; font-weight: bold; padding-right: 5px;">1, Select from the list </span><i class="fa fa-search-plus fa-lg"></i></h4>
+        <div class="dropdown" style="margin-left: 5%">
+            <button class="btn btn-dark dropdown-toggle" type="button" id="assignment" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Assignments List
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <button class="dropdown-item" type="button">Assignment 1</button>
+                <button class="dropdown-item" type="button">Assignment 2</button>
+            </div>
+        </div><br/>
+ <!-------------Select one assignments through clicking the map marker-------------->
+    <h4 style="margin-left:5%"><span style="padding-left:5px; font-weight: bold; padding-right: 10px;">2, Click on the map marker</span><i class="fa fa-map-marker fa-lg"></i></h4>
+    <div class="form-group form-inline">
+
+        <div id="map" name="map" class="col-lg-8" style="margin-left: 10%; height: 350px;background-color: grey"></div>
+    </div>
+    <hr/>
+<!----------------- Viiew Assignment Detail-------------->
+    <div class="col-md-8" style="margin-left: 20%">
+        <div class="card-body">
+            <div class="row">
+               <div class="col-md-12">
+                 <h4><i class="fa fa-info-circle fa-lg"></i><span style="padding-left:10px; font-weight: bold;">Assignment Information</span></h4> 
+                 <hr/>
+                </div>
+            </div>
+            <!---------Details----------->
+            <div class="row">
+                <div class="col-md-12">
+                    <form>
+                        <!-------- Canvasser Name--------->  
+                        <div class="form-group row">
+                          <label for="username" class="col-3 col-form-label">Canvasser Name:</label> 
+                            <div class="col-6">
+                                <input id="username" name="username" placeholder="Canvaser Name" class="form-control here" readonly type="text" autofocus>
+                                </div>
+                        </div>
+                        <!--------Campaingn Name--------->  
+                        <div class="form-group row">
+                          <label for="campName" class="col-3 col-form-label">Campaign Name:</label> 
+                            <div class="col-6">
+                                <input id="campName" name="campName" placeholder="Campagin Name" class="form-control here" readonly type="text">
+                                </div>
+                        </div>
+                        <!---------Date------------>
+                        <div class="form-group row">
+                                <label for="date" class="col-3 col-form-label">Date:</label> 
+                                <div class="col-8">
+                                  <input id="date" name="date" placeholder="Assignment Date" class="form-control" type="text" readonly>
+                                </div>
+                        </div>
+                        <!---------Location Address------------>
+                        <div class="form-group row">
+                                <label for="location" class="col-3 col-form-label">Location:</label> 
+                                <div class="col-8">
+                                  <input id="location" name="location" placeholder="Assignment Location" class="form-control" type="text" readonly>
+                                </div>
+                        </div>                        
+                         <!---------Lat------------>
+                        <div class="form-group row">
+                                <label for="lat" class="col-3 col-form-label">Latitude:</label> 
+                                <div class="col-8">
+                                  <input id="lat" name="lat" placeholder="Location Lat" class="form-control" type="text" readonly>
+                                </div>
+                        </div>
+                         <!---------Lng------------>
+                        <div class="form-group row">
+                                <label for="lng" class="col-3 col-form-label">Longtitude:</label> 
+                                <div class="col-8">
+                                  <input id="lng" name="lng" placeholder="Location Lng" class="form-control" type="text" readonly>
+                                </div>
+                        </div>
+                        <!---------Talking Point--------->
+                        <div class="form-group row">
+                                <label for="talking" class="col-3 col-form-label">Talking Point</label> 
+                                <div class="col-8">
+                                  <input id="talking" name="talking" placeholder="Assignment Talking Point" class="form-control" type="text" readonly>
+                                </div>
+                        </div>
+
+                        <!---------Questions--------->                    
+                        <div class="form-group row">
+                            <label for="questions" class="col-3 col-form-label">Assignment Questionaire</label> 
+                                <div class="col-8">
+                                  <select class="col-8" id="questions" name="questions" disabled multiple>
+                                    <option value ="test1">test1</option>
+                                    <option value="test2">test2</option>
+                                  </select>
+                                </div>
+                        </div>
+                  </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- map js files--> 
+    <script  src="/static/javascript/canvasser_script/viewAssignment.js"></script> 
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCGuEpRycbTYDCcS6uxiot0x0eSLkpTbiY&libraries=places&callback=initAutocomplete"></script>
+{%  endblock %}
