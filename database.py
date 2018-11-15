@@ -203,6 +203,8 @@ class Assignment(Base):
     theDate = Column(Date, nullable= False)
     order = Column(Integer, nullable = False)
 
+    UniqueConstraint(canvasser_id, location_id, theDate)
+
     def __init__(self, theDate,order):
         self.theDate = theDate
         self.order = order

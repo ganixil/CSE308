@@ -38,7 +38,7 @@
                   <ul class="dropdown-menu">
                       {% for ele in session['info']['roles'] %}
                           {% if ele != session['info']['account'] %}
-                            <li><a class="dropdown-item" {% if ele == 'admin' %} href="{{ url_for('admin.adminPage', u_name = session['info']['name'] ) }}" {% elif ele == 'manager' %} href="{{ url_for('manager.manPage', u_name = session['info']['name'] ) }}"  {% elif ele == 'canvasser' %} href="{{ url_for('canvasser.canPage', u_email = session['info']['email'] ) }}" {% endif %} > <mark> <strong>{{ ele|upper }}</strong></mark></a></li>
+                            <li><a class="dropdown-item" {% if ele == 'admin' %} href="{{ url_for('admin.adminPage', u_name = session['info']['name'] ) }}" {% elif ele == 'manager' %} href="{{ url_for('manager.manPage', u_name = session['info']['name'] ) }}"  {% elif ele == 'canvasser' %} href="{{ url_for('canvasser.canPage', u_name = session['info']['name'] ) }}" {% endif %} > <mark> <strong>{{ ele|upper }}</strong></mark></a></li>
                           {% endif %}
                       {% endfor %}
                   </ul>

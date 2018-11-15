@@ -1,8 +1,8 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for
+    Blueprint, flash, g, redirect, render_template, request, url_for,session
 )
 from werkzeug.exceptions import abort
-from database import db_session, User, CanAva
+from database import db_session, User, CanAva, Role, CampaignCanvasser, Assignment
 import json
 import logging
 import datetime
@@ -21,39 +21,112 @@ def update_ava():
 	title = request.args.get('title')
 	# format the date string so it can be used to make a Python date object
 	start = request.args.get('start')
+
 	dateStrings = start.split()
 	dateString = dateStrings[3] + " " + dateStrings[1] + " " + dateStrings[2]
 	struc = time.strptime(dateString, '%Y %b %d')
-	dateObj = datetime.date(struc.tm_year, struc.tm_mon, struc.tm_mday)
+	''' yyyy-mm-dd'''
+	startDate = datetime.date(struc.tm_year, struc.tm_mon, struc.tm_mday)
 
-	end = request.args.get('end')
-	allDay = request.args.get('allDay')
-	ava = CanAva(title,dateObj,user_email)
-	db_session.add(ava)
-	logging.info("updating availability for email "+user_email+" with "+title+""+start+""+end)
+	''' Create CanAva object,and add it to DB'''
+	ava_obj = CanAva(startDate)
+	role_obj = db_session.query(Role).filter(Role.email == user_email, Role.role == 'canvasser').first()
+	role_obj.roles_relation_2.append(ava_obj)
+	db_session.commit()
+	logging.info("updating availability for email "+user_email+" with "+" the date on "+start)
+
+	return 'update'
+
+
+# Canvasser page url and render method, this method is for delete the avaliable date
+@bp.route('/remove_ava')
+def remove_ava():
+	# Fetching info from the calendar implemented in canvasser
+	# Using the javascript->html->jinja2->python interactions
+	title = request.args.get('title')
+	# format the date string so it can be used to make a Python date object
+	start = request.args.get('start')
+
+	dateStrings = start.split()
+	dateString = dateStrings[3] + " " + dateStrings[1] + " " + dateStrings[2]
+	struc = time.strptime(dateString, '%Y %b %d')
+	''' yyyy-mm-dd'''
+	startDate = datetime.date(struc.tm_year, struc.tm_mon, struc.tm_mday)
+
+	''' Query Role Id firstly, the query CanAva obj'''
+	role_obj = db_session.query(Role).filter(Role.email == user_email, Role.role == 'canvasser').first()
+	''' Create CanAva object,and removev from DB'''
+	ava_obj = db_session.query(CanAva).filter(CanAva.role_id == role_obj.id, CanAva.theDate == startDate).first()
+
+	db_session.delete(ava_obj)
 	db_session.commit()
 
-	return "set availability ok"
+	logging.info("delete available date for email "+user_email+" with "+" the date on "+start)
+	return 'remove'
 
 
 # Method for rendering the canvasser's homepage
-@bp.route('/canPage/<u_email>', methods=('GET', 'POST'))
-def canPage(u_email):
+@bp.route('/canPage/<u_name>', methods=('GET', 'POST'))
+def canPage(u_name):
 	global user_email
-	user_email = u_email
+	user_email = session['info']['email']
+ 
+	#### Query Role from DB  #########
+	role_obj = db_session.query(Role).filter(Role.email == user_email, Role.role =='canvasser').first()
 
-	# Fetching data from db and format it into json
-	# This part is intended for fetching stored availabilities in db
-	events = db_session.query(CanAva).filter(CanAva.email == u_email)
+	'''
+	Fetch CanAva Objects to get Event date
+	'''
+	events = db_session.query(CanAva).filter(CanAva.role_id == role_obj.id).all()
 	avails =[]
-	for instance in events:
-		avails.append({
-			'title':"Free",
-			'start':str(instance.theDate),
-			'end':str(instance.theDate),
-			'allDay':True
-			})
+	if len(events)>0:
+		for instance in events:
+			avails.append({
+				'title':"Avaliable",
+				'constraint': 'Ava',
+				'start':str(instance.theDate),
+				'textColor':'black !important',
+				'backgroundColor': "#FF3B30!important"
+				})
 
-	canvasEvents = json.dumps(avails)
-	logging.debug("fetching info availability from database for "+u_email)
-	return render_template('canvasser_html/canvas.html',avails=canvasEvents)
+	camp_canvassers = db_session.query(CampaignCanvasser).filter(CampaignCanvasser.role_id == role_obj.id).all()
+	for ele in camp_canvassers:
+		## Get one Campaign Canvasser Object
+		ass_obj = db_session.query(Assignment).filter(Assignment.canvasser_id == ele.id).all()
+		for ele_ass in ass_obj:
+			avails.append({
+				'title':"Have Assignment",
+				'constraint': 'Ass',
+				'start':str(ele_ass.theDate),
+				'textColor':'black !important',
+				'backgroundColor': "#7FFFD4 !important"
+				})
+
+	if(len(avails) != 0):
+		canvasEvents = json.dumps(avails)
+		logging.debug("fetching info availability  and assignemnt from database for "+ user_email)
+		return render_template('canvasser_html/canvas.html',avails=canvasEvents, u_name=u_name)
+	return render_template('canvasser_html/canvas.html',avails=None, u_name=u_name)
+
+# Enter viewing upcomming assignment html page
+@bp.route('/view_all_assignment')
+def view_assignment():
+	return render_template('canvasser_html/view_assignment.html')
+
+'''Work For viewingn assignment detail'''
+@bp.route('/view_assigment_detail')
+def view_assigment_detail():
+	print("enter view_assigment")
+	return render_template('canvasser_html/view_assignment.html')
+
+
+
+# Enter canvas_start html
+@bp.route('/set_start_canvasser')
+def set_canvasser():
+	return render_template('canvasser_html/canvas_start.html')
+
+# Enter done_canvas html
+@bp.route('/done_canvas')
+def done_canvasser():
+	return render_template('canvasser_html/done_canvas.html')

@@ -64,36 +64,46 @@ def createAssignment(newCamp):
 	dates.sort(key= lambda d: d.theDate)
 
 	# assign assignments to dates
-	mappedAssignments = []
+	mappedAssignments = {}  ### Key = Canvasser'role_id Value = CanAva and assignment
 	while(len(dates) > 0 and len(assignments) > 0):
-		dTemp = dates.pop(0)
-		aTemp = assignments.pop(0)
-		ass_obj=[dTemp, aTemp]
-		mappedAssignments.append(ass_obj)
+		dTemp = dates.pop(0)  #### CanAva
+		aTemp = assignments.pop(0)  #####  Location's lat and lng
+		if(dTemp.role_id in mappedAssignments):
+			mappedAssignments[dTemp.role_id].append((dTemp,aTemp))
+		else:
+			mappedAssignments[dTemp.role_id] = [(dTemp, aTemp)]
+
 	
 	#if no more assingments then this mapping is possible
 	if(len(assignments) == 0):
 		assignmentPossible = True
 
 	## add assignments to database
-	for ele in mappedAssignments:  ## ele[0]---> CanAva ; ele[1]--------> assignment
-		for order in range(len(ele[1])):
-			ass_obj = Assignment(ele[0].theDate, order)
+	for ele in mappedAssignments:  ## Key---> Role Id ; Value= the serveral list of [CanAva, assingment]
+		# ele is the key---> role_id
+		campCanvasser= db_session.query(CampaignCanvasser).filter(CampaignCanvasser.campaign_name == newCamp.name, CampaignCanvasser.role_id == ele).first()
+		for order in range(len(mappedAssignments[ele])):
+			######### Order ---> serveral list of [CanAva, assignment]
+			####### mappedAssignments[ele][order][0]---> get CanAva
+			ass_obj = Assignment(mappedAssignments[ele][order][0].theDate, order)
 			''' Add Assignment Object to CampaignCanvasser Obejct'''
-			campCanvasser= db_session.query(CampaignCanvasser).filter(CampaignCanvasser.campaign_name == newCamp.name, CampaignCanvasser.role_id == ele[0].role_id).first()
 			campCanvasser.canvasser_relation.append(ass_obj)
+
+			####### mappedAssignments[ele][order][1][0]---> get assignment(lat, lng)
+			lat =mappedAssignments[ele][order][1][0][0]  ####### Lat
+			lng = mappedAssignments[ele][order][1][0][1]  ########## lng
 			''' Add Assignment Object to CampaigbLocation Obejct'''
-			lat = ele[1][order][0]
-			lng = ele[1][order][1]
 			allCampLocation =db_session.query(CampaignLocation).filter(CampaignLocation.campaign_name == newCamp.name).all()
 			campLocation = [loc for loc in allCampLocation if (math.isclose(loc.lat, lat) and math.isclose(loc.lng, lng))]
 			campLocation[0].location_relation.append(ass_obj)
+
 			db_session.commit()
-			
-	# remove taken dates out of available in the database
-	for ele in mappedAssignments:
-		db_session.delete(ele[0])
-		db_session.commit()
+
+			# remove taken dates out of available in the database
+			# Delet(CanAva)
+			db_session.delete(mappedAssignments[ele][order][0])
+			db_session.commit()
+
 
 	return assignmentPossible
 
@@ -360,6 +370,20 @@ def editCampaign(u_email):
 			return render_template('manager_html/edit_campaign.html', all_campaigns = all_campaigns,index = 6)
 	
 	return render_template('manager_html/edit_campaign.html', all_campaigns = all_campaigns,index = 6)
+
+
+
+''' Method for deleting Campaing'''
+@bp.route('/delete_campaign/<campName>/', methods=('GET', 'POST'))
+def delete(campName):
+    if request.method == 'POST':
+    	deletedCamp = db_session.query(Campaign).filter(Campaign.name == campName).first()
+    	if deletedCamp is not None:
+    		''' Find the deletedCamp, and delete'''
+    		db_session.delete(deletedCamp)
+    		db_session.commit()
+    		flash("Delete the Campaign Successfully","info")
+    return redirect(url_for('manager.viewCampaign'))
 
 
 @bp.route('/view_assignment', methods=['GET','POST'])

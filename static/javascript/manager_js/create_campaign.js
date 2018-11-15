@@ -17,7 +17,7 @@ $(document).ready(function () {
 
    // Generate Map 
    var mapOptions = {
-		    center: new google.maps.LatLng(40.758896, -73.985130),
+		    center: new google.maps.LatLng(40.9256538, -73.140943),
 		    zoom: 13
 		}
 

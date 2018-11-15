@@ -98,16 +98,13 @@
     <div class="form-group form-inline" style="margin-left: 30%">
          <button class="btn btn-success btn-lg" id="submit" name="submit" type="submit" onclick="check_submit()"> <i class="fa fa-plus-circle"></i> Create Campaign </button>
     </div>
-   
-
-
     </form>
   </div>
   {% block script %} 
     <script>
-    {% with errors = get_flashed_messages() %}
-      {% if errors %}
-        {% for msg in errors %}
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for msg in messages %}
              alert('{{ msg }}');
         {% endfor %}
      {% endif %}
@@ -115,5 +112,6 @@
     </script>
     <script src="/static/javascript/manager_js/multi.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCGuEpRycbTYDCcS6uxiot0x0eSLkpTbiY&libraries=places&callback=initAutocomplete"></script>
-    <script  src="/static/javascript/manager_js/create_campaign.js"></script> {% endblock%}
+    <script  src="/static/javascript/manager_js/create_campaign.js"></script> 
+    {% endblock%}
 {%  endblock %}
