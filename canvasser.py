@@ -99,11 +99,27 @@ def canPage(u_name):
 				'constraint': 'Ass',
 				'start':str(ele_ass.theDate),
 				'textColor':'black !important',
-				'backgroundColor': "#F0F8FF !important"
+				'backgroundColor': "#7FFFD4 !important"
 				})
-	
+
 	if(len(avails) != 0):
 		canvasEvents = json.dumps(avails)
 		logging.debug("fetching info availability  and assignemnt from database for "+ user_email)
 		return render_template('canvasser_html/canvas.html',avails=canvasEvents)
 	return render_template('canvasser_html/canvas.html',avails=None)
+
+# Enter viewing upcomming assignment html page
+@bp.route('/viewing_upcomming assignment')
+def view_upcomming():
+	return render_template('canvasser_html/view_upcoming_assignment.html')
+
+
+# Enter canvas_start html
+@bp.route('/set_start_canvasser')
+def set_canvasser():
+	return render_template('canvasser_html/canvas_start.html')
+
+# Enter done_canvas html
+@bp.route('/done_canvas')
+def done_canvasser():
+	return render_template('canvasser_html/done_canvas.html')

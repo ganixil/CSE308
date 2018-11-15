@@ -15,19 +15,19 @@
     <div class="container">
       <h1 style="text-align: center">Welcome {{u_name}}</h1>
       <hr/>
-
+      <div class="alert alert-info" role="alert">
+          <i class="fa fa-2x fa-info-circle"></i><span style ='margin-left: 1%; font-size: 18px; color: black;'>Click on empty date for setting avaliability, Click on date with avaliability for deleting the avaliability</span>
+    </div>
       <!-- calendar implementation -->
       <div id='wrap'>
-
         <div id='calendar'></div>
-
         <div style='clear:both'></div>
       </div>
     </div> 
-
-    
-    <button class="btn btn-outline-success btn-lg" type="button" id="canvas-btn" onclick="window.location.href='view_upcoming_assignment.html'">View Upcoming Assignment</button>
-    <button class="btn btn-outline-success btn-lg" type="button" id="canvas-btn" onclick="window.location.href='canvas_start.html'">Start Canvas</button>
+   <div class="row">
+    <a class="btn btn-outline-success btn-lg" type="button" id="canvas-btn" href="{{ url_for('canvasser.view_upcomming')}}" style='margin-left: 20%;'> View Upcoming Assignment</a>
+    <a class="btn btn-outline-success btn-lg" type="button" id="canvas-btn" href="{{ url_for('canvasser.set_canvasser')}}" style='margin-right: 20%;'>Start Canvas</a>
+  </div>
     
 <!-- Alert for flash message-->
    <script>

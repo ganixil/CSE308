@@ -1,38 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    
-    <link rel="icon" href="../../static/image/logo.png">
+{% extends "header.html" %}
 
-    <title>Super Canvasser Canvasser</title>
-
-    <!-- Bootstrap core CSS -->
-    <link href="../../static/css/bs_css/bootstrap.min.css" rel="stylesheet">
-    
-
+{% block header %}
     <!-- JQuery & Javascript implementation -->
-    <script src="../../static/jquery/jquery.js"></script>
-    <script src="../../static/jquery/jquery-ui.min.js"></script>
-    <script src="../../static/javascript/bs_js/bootstrap.bundle.min.js"></script>
+    <script src="/static/javascript/bs_js/bootstrap.bundle.min.js"></script>
     
-
     <!-- Custom styles for this login page -->
-    <link href="../../static/css/canvasser.css" rel="stylesheet">
+    <link href="/static/css/canvasser.css" rel="stylesheet">
+{% endblock %}
 
-  </head>
-
-  <body>
-    <!-- this is the nav bar and the title on top -->
-    <nav class="navbar navbar-light bg-light">
-      <a class="navbar-brand" href="#">
-        <img src="../../static/image/logo.png" width="30" height="30" alt="">
-        Super Canvasser
-      </a>
-      <button class="btn btn-outline-success" type="button">Log out</button>
-    </nav>
-
+<!----------------------BODY PART---------------------------------------------->
+{% block body %}
     <!-- main functional parts -->
     <div class="container">
     <h2 style="text-align: center">Today's Assignment</h2>
@@ -53,14 +30,6 @@
       </div>
     </form>
 
-
-    <!-- map object still need implementation-->
-
-    <button class="btn btn-outline-success btn-lg" type="button" id="canvas-btn">Done with Current Location</button>
+    <button class="btn btn-outline-success btn-lg" type="button" id="canvas-btn" onclick="window.location.href='{{ url_for( 'canvasser.done_canvasser')}}' ">Done with Current Location</button>
     
-    
-    
-  <script type="text/javascript" src="../../static/javascript/fullcalendar_jq.js"></script>
-  <script type="text/javascript" src="../../static/javascript/fullcalendar.js"></script>
-  </body>
-</html>
+{%  endblock %}
