@@ -12,7 +12,7 @@
 {% block body %}
     <!-- main functional parts -->
     <div class="container">
-    <h2 style="text-align: center">Today's Assignment</h2>
+    <h2 style="text-align: center">Current Assignment</h2>
     <p style="margin-top: 5%">"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</p>
 
     <h5 style="margin-top: 5%">Next Location</h5>
@@ -31,5 +31,6 @@
     </form>
 
     <button class="btn btn-outline-success btn-lg" type="button" id="canvas-btn" onclick="window.location.href='{{ url_for( 'canvasser.done_canvasser')}}' ">Done with Current Location</button>
+
     
 {%  endblock %}
