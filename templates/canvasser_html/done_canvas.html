@@ -1,8 +1,6 @@
 {% extends "header.html" %}
 
 {% block header %}
-<!--   <link href="https://fonts.googleapis.com/css?family=Abel" rel="stylesheet"> -->
-    <!-- Custom styles for this login page -->
     <link href="/static/css/done_canvas.css" rel="stylesheet">
     <script href="/static/javascript/canvasser_script/done_canvas.js" rel="stylesheet"></script>
 
@@ -13,8 +11,13 @@
     <div class="container">
 
     <!-- main functional parts -->
-    <h1 style="text-align:center; margin-top: 2%; font-style: italic;"> Locatin1: Set Results Information</h1>
-    <hr/><br/>
+    <h1 style="text-align:center; margin-top: 2%; font-style: italic;">Set Results Information</h1>
+    <hr/>
+     <button class="btn btn-info" type="button" id="canHome" onclick="window.location.href='{{ url_for( 'canvasser.canPage', u_name = session['info']['name'])}}' ">HomePage</button>
+     <br/><br/>
+    <div class="alert alert-secondary" style="text-align: center;">
+  <strong>Location: </strong> Indicates a neutral informative change or action.
+</div>
     <form>
       <!------------- For Spoke To --------------------------->
       <div class="form-group">
@@ -86,7 +89,7 @@
         <textarea class="form-control" rows="5" name="comment" type="text" id="comment" placeholder="None" style="font-size: 20px;"></textarea>
       </div>
       <div class="form-group">
-        <button class="btn btn-outline-success btn-lg" type="button" id="canvas-btn">Submit</button>
+        <button class="btn btn-success btn-lg" type="button" name="submit" id="submit">Submit Results</button>
       </div>
     </form>
   </div>

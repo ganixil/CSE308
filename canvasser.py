@@ -105,13 +105,20 @@ def canPage(u_name):
 	if(len(avails) != 0):
 		canvasEvents = json.dumps(avails)
 		logging.debug("fetching info availability  and assignemnt from database for "+ user_email)
-		return render_template('canvasser_html/canvas.html',avails=canvasEvents)
-	return render_template('canvasser_html/canvas.html',avails=None)
+		return render_template('canvasser_html/canvas.html',avails=canvasEvents, u_name=u_name)
+	return render_template('canvasser_html/canvas.html',avails=None, u_name=u_name)
 
 # Enter viewing upcomming assignment html page
 @bp.route('/viewing_upcomming assignment')
 def view_upcomming():
 	return render_template('canvasser_html/view_upcoming_assignment.html')
+
+'''Work For viewingn assignment detail'''
+@bp.route('/view_assigment')
+def view_assigment():
+	print("enter view_assigment")
+	return render_template('canvasser_html/view_upcoming_assignment.html')
+
 
 
 # Enter canvas_start html

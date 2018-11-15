@@ -1,7 +1,15 @@
 body {
      font-family: Arial, Helvetica, sans-serif;
     background: #fafafa;
-    background-color:#e2e9ee;
+    background-color:#E8F4FB;
+}
+
+#canHome{
+	font-size: 18px;
+}
+#canHome:hover{
+	font-size: 22px;
+	font-weight: bold;
 }
 
 /* Customize the label (the container) */

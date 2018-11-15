@@ -102,9 +102,9 @@
   </div>
   {% block script %} 
     <script>
-    {% with errors = get_flashed_messages() %}
-      {% if errors %}
-        {% for msg in errors %}
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for msg in messages %}
              alert('{{ msg }}');
         {% endfor %}
      {% endif %}

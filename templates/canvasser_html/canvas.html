@@ -13,7 +13,7 @@
 {% block body %}
     <!-- main functional parts -->
     <div class="container">
-      <h1 style="text-align: center">Welcome {{u_name}}</h1>
+      <h2 style="text-align: center;padding-top:10px;">Canvasser Management System -- {{u_name}}</h2>
       <hr/>
       <div class="alert alert-info" role="alert">
           <i class="fa fa-2x fa-info-circle"></i><span style ='margin-left: 1%; font-size: 18px; color: black;'>Click on empty date for setting avaliability, Click on date with avaliability for deleting the avaliability</span>
@@ -25,8 +25,8 @@
       </div>
     </div> 
    <div class="row">
-    <a class="btn btn-outline-success btn-lg" type="button" id="canvas-btn" href="{{ url_for('canvasser.view_upcomming')}}" style='margin-left: 20%;'> View Upcoming Assignment</a>
-    <a class="btn btn-outline-success btn-lg" type="button" id="canvas-btn" href="{{ url_for('canvasser.set_canvasser')}}" style='margin-right: 20%;'>Start Canvas</a>
+      <button class="btn btn-outline-success btn-lg" type="button" id="canvas-btn" onclick="window.location.href='{{ url_for('canvasser.view_upcomming')}}' ">View Upcoming Assignments</button>
+    <button class="btn btn-outline-success btn-lg" type="button" id="canvas-btn" onclick="window.location.href='{{ url_for('canvasser.set_canvasser')}}' " style='margin-right: 20%;'>Start Canvas</button>
   </div>
     
 <!-- Alert for flash message-->
