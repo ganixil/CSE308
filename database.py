@@ -107,7 +107,7 @@ class Questionnaire(Base):
        self.question = question
 
     def __repr__(self):
-        return "<Questionnaire(Campaign name='%s', question='%s', endDate='%s')>" % (self.campaign_name, self.question)
+        return "<Questionnaire(Campaign name='%s', question='%s')>" % (self.campaign_name, self.question)
 
     
 class CampaignLocation(Base):   # Association Table (Campaign + Locations)

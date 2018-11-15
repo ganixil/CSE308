@@ -12,30 +12,33 @@
   <div class="container ">
 
     <form  method="post" action ="{{url_for('manager.editCampaign', u_email = session['info']['email']) }}" role="form">
-        <!---------------------------Compaign Name--------------------->
+    <!---------------------------Compaign Name--------------------->
     <div class="form-group form-inline">
-         <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="name"> Choose Campaign : </label>
+         <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" > Choose Campaign : </label>
             <select class="form-control col-lg-5" name="campaign_list" id="campaign_list">
                 <option value="null"></option>
                 {% for item in all_campaigns %}
-                <option value='{{item.name}}'>{{item.name}}</option>
+                <option value='{{item.name}}' {% if item.name == campaign_name %}selected{% endif %}>{{item.name}}</option>
                 {% endfor %}
             </select>
          <button class ="btn btn-primary" name="submit" value = "select_campaign" > Select Campaign </button>
+    </div>
+
+    <div class="form-group form-inline">
+         <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="name"> New Campaign Name: </label>
+          <input class="form-control col-lg-5 input-md" id ="campaign_name" type="text" name ="campaign_name" placeholder ="Type in New Campaign Name">
     </div>
     <hr/><br/>
 
     <!---------------------------Select Managers-------------------->
      <div class="form-group">
         <label class="col-lg-3" style="font-weight: bold; font-size: 18px;" for ="managers"> Choose Managers: </label>
-         <select multiple="multiple" name="managers" id="managers" required>
-                <option selected="selected" disabled="disabled" value ="{{ session['info']['email']}}| {{ session['info']['name']}}">{{ session['info']['name']}} ({{ session['info']['email']}})</option>
-
+         <select multiple="multiple" name="managers" id="managers">
                 {% for ele in managers %}
-                  <option selected="selected" value ="{{ ele }}| {{managers[ele]}}">{{managers[ele]}} ({{ele}})</option>
+                  <option selected="selected" value ="{{ ele }}">{{managers[ele]}} ({{ele}})</option>
                 {% endfor %}
                 {% for ele in unselected_managers %}
-                    <option value ="{{ ele }}|{{ unselected_managers[ele] }}">{{unselected_managers[ele]}}({{(ele)}})</option>
+                    <option value ="{{ ele }}">{{unselected_managers[ele]}}({{(ele)}})</option>
                 {% endfor %}
          </select>
      </div>
@@ -47,10 +50,10 @@
          <select multiple="multiple" name="canvassers" id="canvassers">
 
                 {% for ele in canvassers %}
-                    <option selected="selected" value = "{{ ele }}|{{ canvassers[ele] }}">{{canvassers[ele]}}({{(ele)}})</option>
+                    <option selected="selected" value = "{{ ele }}">{{canvassers[ele]}}({{(ele)}})</option>
                 {% endfor %}
                 {% for ele in unselected_canvassers %}
-                    <option value ="{{ ele }}|{{ unselected_canvassers[ele] }}">{{unselected_canvassers[ele]}}({{(ele)}})</option>
+                    <option value ="{{ ele }}">{{unselected_canvassers[ele]}}({{(ele)}})</option>
                 {% endfor %}
          </select>
      </div>
@@ -72,15 +75,17 @@
   <!---------------------------Questions Part--------------------->
     <div class="form-group form-inline">
         <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="question">New Question: </label>
-         <input class="form-control col-lg-5 input-md" id ="question" type="text" name ="question" placeholder ="Type New Question" >
-         <button class ="btn btn-primary" id="add_question" href="#" disabled> Add New Question </button>
+         <input class="form-control col-lg-5 input-md" id ="question" type="text" name ="question" placeholder ="Type New Question" onchange="toggle_question()" oninput="toggle_question()" >
+         <a class ="btn btn-primary" id="add_question" onclick="add_question()" disabled> Add New Question </a>
     </div>
     <div class="form-group form-inline">
-        <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="question_list">Added Question: </label>
-        <select class="form-control col-lg-5" name="question_list" id="question_list">
-            <option>1</option>
-            <option>2</option>
+      <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for="question_list">Added Question: </label>
+        <select multiple="multiple" class="form-control col-lg-5" name="question_list" id="question_list">
+          {% for q in question %}
+          <option>{{q.question}}</option>
+          {% endfor %}
         </select>
+         <a class ="btn btn-primary" id='remove_question' onclick="remove_question()"> Remove Questions </a>
     </div>
     <hr/><br/>
  <!---------------------------Talking Point Part--------------------->
@@ -93,26 +98,29 @@
      <div class="form-group form-inline">
         <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="duration">Select Duration: </label>
             <select class="form-control col-lg-5" name = "duration" required >
-                <option value="5">5 minutes</option>
-                <option value="10">10 minutes</option>
-                <option value="15">15 minutes</option>
-                <option value="20">20 minutes</option>
-                <option value="25">25 minutes</option>
-                <option value="30">30 minutes</option>
+                <option value="5" {% if duration == 5 %}selected{% endif%}>5 minutes</option>
+                <option value="10" {% if duration == 10 %}selected{% endif%}>10 minutes</option>
+                <option value="15" {% if duration == 15 %}selected{% endif%}>15 minutes</option>
+                <option value="20" {% if duration == 20 %}selected{% endif%}>20 minutes</option>
+                <option value="25" {% if duration == 25 %}selected{% endif%}>25 minutes</option>
+                <option value="30" {% if duration == 30 %}selected{% endif%}>30 minutes</option>
             </select>
     </div>
     <hr/><br/>
  <!---------------------------Location--------------------->
     <div class="form-group form-inline">
         <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="question">New Location: </label>
-         <input class="form-control col-lg-5 input-md" id ="location" type="text" name ="location" placeholder ="Type New Location" >
-         <button class ="btn btn-primary" id="add_location" href="#" disabled> Add New Location </button>
+         <input class="form-control col-lg-5 input-md" id="location" type="text" name ="location" placeholder="Type New location" onchange="toggle_location()" oninput="toggle_location()" >
+         <a class ="btn btn-primary disabled" id="add_location" onclick='add_location()' disabled> Add New Location </a>
     </div>
     <div class="form-group form-inline">
-        <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="location_list">Added Location: </label>
-        <select class="form-control col-lg-5" name="location_list" id="location_list">
-            <option>1</option>
+        <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for="location_list">Added Location: </label>
+        <select multiple='multiple' class="form-control col-lg-5" name="location_list" id="location_list">
+          {% for l in location %}
+            <option value='{{l.location}}|{{l.lat}}|{{l.lng}}'>{{l.location}}</option>
+          {% endfor %}
         </select>
+        <a class ="btn btn-primary" id='remove_location' onclick="remove_location()"> Remove Locations</a>
     </div>
     <div class="form-group form-inline">
         <div id="map" name="map_location" class="col-lg-8" style="margin-left: 10%; height: 350px;background-color: grey"></div>
@@ -122,7 +130,7 @@
     <hr/><br/>
 
     <div class="form-group form-inline" style="margin-left: 30%">
-         <button class="btn btn-success btn-lg" id="submit" name="submit" type="submit" value ="submit_change"> <i class="fa fa-plus-circle"></i> Create Campaign </button>
+         <button class="btn btn-success btn-lg" id="submit" name="submit" type="submit" value ="submit_change"> <i class="fa fa-plus-circle"></i> Edit Campaign </button>
     </div>
     </form>
   </div>
