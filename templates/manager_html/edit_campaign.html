@@ -76,13 +76,13 @@
     <div class="form-group form-inline">
         <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="question">New Question: </label>
          <input class="form-control col-lg-5 input-md" id ="question" type="text" name ="question" placeholder ="Type New Question" onchange="toggle_question()" oninput="toggle_question()" >
-         <a class ="btn btn-primary" id="add_question" onclick="add_question()" disabled> Add New Question </a>
+         <a class ="btn btn-primary disabled" id="add_question" onclick="add_question()" disabled> Add New Question </a>
     </div>
     <div class="form-group form-inline">
       <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for="question_list">Added Question: </label>
         <select multiple="multiple" class="form-control col-lg-5" name="question_list" id="question_list">
           {% for q in question %}
-          <option>{{q.question}}</option>
+          <option value='{{q.question}}'>{{q.question}}</option>
           {% endfor %}
         </select>
          <a class ="btn btn-primary" id='remove_question' onclick="remove_question()"> Remove Questions </a>

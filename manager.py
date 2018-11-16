@@ -278,8 +278,6 @@ def editCampaign(u_email):
 			campaign_location = campaign.campaigns_relation_2
 			campaign_question = campaign.campaigns_relation_3
 
-			print(campaign_location)
-			print(campaign_question)
 			###here is all the manager assign to the campaign
 			managers={}
 			for cm in campaign_manager:
@@ -306,6 +304,7 @@ def editCampaign(u_email):
 			return render_template('manager_html/edit_campaign.html', campaign_name = campaign_name, all_campaigns = all_campaigns,unselected_managers = unselected_managers, unselected_canvassers = unselected_canvassers, managers = managers, canvassers=canvassers, start_date = campaign.startDate, end_date = campaign.endDate, talking=campaign.talking, question=campaign_question, location=campaign_location, duration=campaign.duration,index = 6)
 
 		elif request.form['submit'] == 'submit_change':
+
 			old_campaign_name = request.form['campaign_list']
 			new_campaign_name = request.form['campaign_name']
 			startDate = request.form['start_date']
@@ -317,15 +316,12 @@ def editCampaign(u_email):
 			questions = request.form.getlist('question_list')
 			locations = request.form.getlist('location_list')  ## format = address|lat|lng
 
-
 			current_campaign = db_session.query(Campaign).filter(Campaign.name == old_campaign_name).first()
 
 			if new_campaign_name is '':
 				current_campaign.name = old_campaign_name
-				print("old")
 			else:
 				current_campaign.name = new_campaign_name
-				print("new")
 
 
 			current_campaign.startDate = startDate
@@ -340,36 +336,35 @@ def editCampaign(u_email):
 
 			db_session.commit()
 
-			# for ele in managers:
-			# 	ele_obj = CampaignManager()
-			# 	role_obj = db_session.query(Role).filter(Role.email == ele, Role.role == 'manager').first()
-			# 	role_obj.roles_relation.append(ele_obj)
-			# 	current_campaign.campaigns_relation.append(ele_obj)
+			for ele in managers:
+				ele_obj = CampaignManager()
+				role_obj = db_session.query(Role).filter(Role.email == ele, Role.role == 'manager').first()
+				role_obj.roles_relation.append(ele_obj)
+				current_campaign.campaigns_relation.append(ele_obj)
 
-			# ''' Add all canvassers to the newCamp relationship-1, androle relationship-1'''
-			# for ele in canvassers:
-			# 	ele_obj = CampaignCanvasser()
-			# 	role_obj = db_session.query(Role).filter(Role.email == ele, Role.role == 'canvasser').first()
-			# 	role_obj.roles_relation_1.append(ele_obj)
-			# 	current_campaign.campaigns_relation_1.append(ele_obj)
+			''' Add all canvassers to the newCamp relationship-1, androle relationship-1'''
+			for ele in canvassers:
+				ele_obj = CampaignCanvasser()
+				role_obj = db_session.query(Role).filter(Role.email == ele, Role.role == 'canvasser').first()
+				role_obj.roles_relation_1.append(ele_obj)
+				current_campaign.campaigns_relation_1.append(ele_obj)
 
-			# ''' Add all questions to the newCamp relationship-3'''
-			# for ele in questions:
-			# 	ele_obj = Questionnaire(ele)
-			# 	current_campaign.campaigns_relation_3.append(ele_obj)
+			''' Add all questions to the newCamp relationship-3'''
+			for ele in questions:
+				ele_obj = Questionnaire(ele)
+				current_campaign.campaigns_relation_3.append(ele_obj)
 
-			# ''' Add all locationto the newCamp relationship-2'''
-			# for ele in locations:
-			# 	ele_arr = ele.split('|')
-			# 	ele_obj =  CampaignLocation(ele_arr[0],float(ele_arr[1]), float(ele_arr[2]))
-			# 	current_campaign.campaigns_relation_2.append(ele_obj)
+			''' Add all locationto the newCamp relationship-2'''
+			for ele in locations:
+				ele_arr = ele.split('|')
+				ele_obj =  CampaignLocation(ele_arr[0],float(ele_arr[1]), float(ele_arr[2]))
+				current_campaign.campaigns_relation_2.append(ele_obj)
 
-
-			# db_session.commit()
+			db_session.commit()
 
 			return render_template('manager_html/edit_campaign.html', all_campaigns = all_campaigns,index = 6)
-	
-	return render_template('manager_html/edit_campaign.html', all_campaigns = all_campaigns,index = 6)
+	else:
+		return render_template('manager_html/edit_campaign.html', all_campaigns = all_campaigns,index = 6)
 
 
 

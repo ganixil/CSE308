@@ -170,6 +170,7 @@ function add_question(){
          option.value = question.trim();
          option.text = question.trim();
          question_list.add(option);
+         
          document.getElementById('question').value ='';
          // Toggle Remove question button
          document.getElementById('remove_question').classList.contains('disabled');
