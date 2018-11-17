@@ -1,3 +1,10 @@
+body {
+     font-family: Arial, Helvetica, sans-serif;
+    background: #fafafa;
+    background-color:#E8F4FB;
+}
+
+
 #assignment{
 	font-size: 18px;
 	margin-left: 5%;
@@ -8,10 +15,10 @@
 	border: 1;
 }
 
-.dropdown-item:hover{
-	font-size: 22px;
-	font-weight: bold;
-	background-color: skyblue;
+#canvas-btn {
+		display: flex;
+		min-width: 330px;
+		margin: 30px auto;
 }
 
 #canHome:hover{
@@ -20,7 +27,9 @@
 
 .list-group{
     max-height: 350px;
-    margin-bottom: 10px;
-    overflow:scroll;
+   	max-width: 100%;
+    overflow:auto;
     -webkit-overflow-scrolling: touch;
 }
+
+

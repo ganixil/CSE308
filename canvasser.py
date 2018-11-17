@@ -2,7 +2,7 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for,session
 )
 from werkzeug.exceptions import abort
-from database import db_session, User, CanAva, Role, CampaignCanvasser, Assignment, CampaignLocation, Camapaign
+from database import db_session, User, CanAva, Role, CampaignCanvasser, Assignment, CampaignLocation, Campaign
 import json
 import logging
 import datetime
@@ -114,11 +114,13 @@ def canPage(u_name):
 def view_assignment():
 	global assignements
 	print("Enter View Assignment")
+	assignments={}
 	''' Retrieve Role Object'''
 	can_role = db_session.query(Role).filter(Role.email == user_email, Role.role == 'canvasser').first()
 	''' Retrieve Camapaign Canvasser  Object List'''
 	can_camps = db_session.query(CampaignCanvasser).filter(CampaignCanvasser.role_id == can_role.id).all()
 	''' Store all asssigements of this Canvasser'''
+
 	for ele in can_camps:
 		''' Retrieve assignement object from DB'''
 		all_assignments=db_session.query(Assignment).filter(Assignment.canvasser_id == ele.id).all()
