@@ -2,7 +2,7 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for,session
 )
 from werkzeug.exceptions import abort
-from database import db_session, User, CanAva, Role, CampaignCanvasser, Assignment
+from database import db_session, User, CanAva, Role, CampaignCanvasser, Assignment, CampaignLocation, Camapaign
 import json
 import logging
 import datetime
@@ -11,6 +11,7 @@ import time
 # Create canvasser blueprint
 bp = Blueprint('canvasser', __name__, url_prefix='/canvasser')
 user_email=""
+assignments={}  ####### Key = Assignment, Value = (location,lat, lng)
 
 
 # Canvasser page url and render method, this method is for updating availability
@@ -111,13 +112,53 @@ def canPage(u_name):
 # Enter viewing upcomming assignment html page
 @bp.route('/view_all_assignment')
 def view_assignment():
-	return render_template('canvasser_html/view_assignment.html')
+	global assignements
+	print("Enter View Assignment")
+	''' Retrieve Role Object'''
+	can_role = db_session.query(Role).filter(Role.email == user_email, Role.role == 'canvasser').first()
+	''' Retrieve Camapaign Canvasser  Object List'''
+	can_camps = db_session.query(CampaignCanvasser).filter(CampaignCanvasser.role_id == can_role.id).all()
+	''' Store all asssigements of this Canvasser'''
+	for ele in can_camps:
+		''' Retrieve assignement object from DB'''
+		all_assignments=db_session.query(Assignment).filter(Assignment.canvasser_id == ele.id).all()
+		for ass in all_assignments:
+			location = db_session.query(CampaignLocation).filter(CampaignLocation.id == ass.location_id).first()
+			assignments[ass] =(location.location,location.lat,location.lng)
+
+	if assignments=={}:
+		'''Without any assignments'''
+		flash("You do not have any assignments")
+		return redirect(url_for('canvassser.canPage', u_name = session['info']['name']))
+	'''if there're some assignments'''
+	return render_template('canvasser_html/view_assignment.html',assignments = assignments, detail=None)
 
 '''Work For viewingn assignment detail'''
-@bp.route('/view_assigment_detail')
-def view_assigment_detail():
+@bp.route('/view_assigment_detail/<ass_id>')
+def view_assigment_detail(ass_id):
 	print("enter view_assigment")
-	return render_template('canvasser_html/view_assignment.html')
+	detail={}
+	''' Retrieve Assignment Object'''
+	assignment = db_session.query(Assignment).filter(Assignment.id == ass_id).first()
+	''' I need info: Canvasser Name; Campaign Name, Date, Location Latitude, Longtitude,
+		Talking Point, Questionnair;
+	'''
+	detail['assignment'] = assignment #### For getting date and order values
+
+	campaign_loc = db_session.query(CampaignLocation).filter(CampaignLocation.id == assignment.location_id).first()
+	detail['campaign_name'] = campaign_loc.campaign_name
+
+	###### loc=(location, lat,lng)
+	loc=(campaign_loc.location, campaign_loc.lat, campaign_loc.lng)
+	detail['location'] = loc ######## detail[2] = (location, lat, lng)
+
+	'''Get Specified Campaign Object'''
+	camp = db_session.query(Campaign).filter(Campaign.name == campaign_loc.campaign_name).first()
+	'''Get Questionaire'''
+	detail['questions'] = camp.campaigns_relation_3
+	'''Get Tlking Point'''
+	detail['talking'] = camp.talking
+	return render_template('canvasser_html/view_assignment.html',assignements=assignements,detail=detail)
 
 
 
