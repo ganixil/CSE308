@@ -5,13 +5,13 @@ today.setHours(0,0,0,0);
 $(document).ready(function () {
 	var managers = document.getElementById('managers');
    	 multi( managers, {
-                non_selected_header: 'Unselected Managers',
+                non_selected_header: 'Pick Managers',
                 selected_header: 'Selected Managers'
             });
 
 	var canvassers = document.getElementById('canvassers');
    	multi( canvassers, {
-                non_selected_header: 'Unselected Canvassers',
+                non_selected_header: 'Pick Canvassers',
                 selected_header: 'Selected Canvassers'
             });
 
