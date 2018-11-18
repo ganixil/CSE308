@@ -1,5 +1,17 @@
 {% extends "layout.html" %}
-    {% block newHeader %}{% endblock %}
+    {% block newHeader %}
+    
+<script>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+       {% for msg in messages%}
+             alert('{{ msg}}');
+             {% endfor %}
+     {% endif %}
+  {% endwith %}
+</script>
+
+    {% endblock %}
     {% block title %} <h3 id = "title"> View Compaigns </h3> {% endblock %}
   {%block main %}
 <!-----------------View Compaign------------------>
@@ -132,5 +144,8 @@
         </div>
        </div>
     </div>
-  {% block script %} <script  src="/static/javascript/manager_js/view_campaign.js"></script> {% endblock%}
+  {% block script %}
+
+
+   <script  src="/static/javascript/manager_js/view_campaign.js"></script> {% endblock%}
 {%  endblock %}

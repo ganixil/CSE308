@@ -37,7 +37,7 @@
             <li  {% if index == 5 %} class="active" {% endif %}>
                 <a href="{{ url_for('manager.createCampaign', u_email = session['info']['email'] )}}" >Create Campaigns</a>
             </li>
-            <li id ="edit_cam" {% if index == 6 %} class="active" {% endif %}>
+            <li id ="edit_cam" {% if index == 6  %} class="active" {% endif %}>
                 <a href="{{ url_for('manager.editCampaign', u_email = session['info']['email'] ) }}">Edit Campaigns</a>
             </li>
             <li id ="view_ass">

@@ -3,6 +3,17 @@
 	<link rel="stylesheet" type="text/css" href="/static/css/multi.css">
 
 	<link rel="stylesheet" type="text/css" href="/static/css/create_campaign.css">
+
+    <script>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+       {% for msg in messages%}
+             alert('{{ msg}}');
+             {% endfor %}
+     {% endif %}
+  {% endwith %}
+</script>
+
 	{% endblock %}
     {% block title %} <h3 id = "title"> Create Compaigns </h3> {% endblock %}
 {%block main %}
@@ -101,15 +112,7 @@
     </form>
   </div>
   {% block script %} 
-    <script>
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        {% for msg in messages %}
-             alert('{{ msg }}');
-        {% endfor %}
-     {% endif %}
-  {% endwith %}
-    </script>
+
     <script src="/static/javascript/manager_js/multi.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCGuEpRycbTYDCcS6uxiot0x0eSLkpTbiY&libraries=places&callback=initAutocomplete"></script>
     <script  src="/static/javascript/manager_js/create_campaign.js"></script> 

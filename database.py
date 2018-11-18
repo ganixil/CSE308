@@ -202,6 +202,8 @@ class Assignment(Base):
     location_id = Column(Integer, ForeignKey('campaign_locations.id', onupdate="CASCADE", ondelete="CASCADE"))
     theDate = Column(Date, nullable= False)
     order = Column(Integer, nullable = False)
+    ########   Flag to record the assginemtn has done or not
+    done = Column(Boolean, nullable=False, default=False)
 
     UniqueConstraint(canvasser_id, location_id, theDate)
 

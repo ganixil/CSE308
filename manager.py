@@ -243,6 +243,7 @@ def createCampaign(u_email):
 			flash("Create Campagin successfully, but did not make compeletely assingments !")
 		else:
 			flash("Create Compaingn and make compeletely assignments successfully !")
+		return redirect(url_for('manager.manPage'))
 
 	return render_template('manager_html/create_campaign.html', managers = all_managers, canvassers = all_canvassers, index = 5)
 
@@ -362,7 +363,7 @@ def editCampaign(u_email):
 
 			db_session.commit()
 
-			return render_template('manager_html/edit_campaign.html', all_campaigns = all_campaigns,index = 6)
+			return redirect(url_for('manager.manPage'))
 	else:
 		return render_template('manager_html/edit_campaign.html', all_campaigns = all_campaigns,index = 6)
 
