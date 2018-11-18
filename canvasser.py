@@ -109,11 +109,13 @@ def canPage(u_name):
 		return render_template('canvasser_html/canvas.html',avails=canvasEvents, u_name=u_name)
 	return render_template('canvasser_html/canvas.html',avails=None, u_name=u_name)
 
+
 # Enter viewing upcomming assignment html page
 @bp.route('/view_all_assignment')
 def view_assignment():
-	global assignements
+	global assignments
 	print("Enter View Assignment")
+
 	assignments={}
 	''' Retrieve Role Object'''
 	can_role = db_session.query(Role).filter(Role.email == user_email, Role.role == 'canvasser').first()
@@ -138,8 +140,13 @@ def view_assignment():
 '''Work For viewingn assignment detail'''
 @bp.route('/view_assigment_detail/<ass_id>')
 def view_assigment_detail(ass_id):
-	print("enter view_assigment")
+	global assignments
+	print("enter view_assigment detail")
+
 	detail={}
+	''' Retrieve Canvasser Name'''
+	canvasser = db_session.query(User).filter(User.email == user_email).first()
+	detail['canvasser_name'] = canvasser.name
 	''' Retrieve Assignment Object'''
 	assignment = db_session.query(Assignment).filter(Assignment.id == ass_id).first()
 	''' I need info: Canvasser Name; Campaign Name, Date, Location Latitude, Longtitude,
@@ -160,7 +167,7 @@ def view_assigment_detail(ass_id):
 	detail['questions'] = camp.campaigns_relation_3
 	'''Get Tlking Point'''
 	detail['talking'] = camp.talking
-	return render_template('canvasser_html/view_assignment.html',assignements=assignements,detail=detail)
+	return render_template('canvasser_html/view_assignment.html',assignments=assignments,detail=detail)
 
 
 
