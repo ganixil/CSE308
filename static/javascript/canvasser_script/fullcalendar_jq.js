@@ -66,6 +66,13 @@ $(document).ready(function() {
 				var temp_date = new Date(start);
 				var end_date = new Date(end);
 				// Start Date must be greater than the today date
+				
+				// Discard the time on today's date
+				var str_today = today.toString().split(" ");
+				str_today[4] = "00:00:00";
+				str_today=str_today.join(" ");
+				today = new Date(str_today);
+
 				if(temp_date.getTime() < today.getTime()){
 					alert("Cannot set avaliablity on past dates !! ")
 				}else{

@@ -7,6 +7,16 @@
 
       <script type="text/javascript" src="/static/javascript/canvasser_script/fullcalendar_jq.js"></script>
       <script type="text/javascript" src="/static/javascript/canvasser_script/fullcalendar.js"></script>
+        <!-- Alert for flash message-->
+      <script>
+          {% with messages = get_flashed_messages() %}
+            {% if messages %}
+             {% for msg in messages%}
+                   alert('{{ msg}}');
+                   {% endfor %}
+           {% endif %}
+        {% endwith %}
+      </script>
 {% endblock %}
 
 <!----------------------BODY PART---------------------------------------------->
@@ -16,7 +26,7 @@
       <h2 style="text-align: center;padding-top:10px;">Canvasser Management System -- {{u_name}}</h2>
       <hr/>
       <div class="alert alert-info" role="alert">
-          <i class="fa fa-2x fa-info-circle"></i><span style ='margin-left: 1%; font-size: 18px; color: black;'>Click on empty date for setting avaliability, Click on date with avaliability for deleting the avaliability</span>
+          <i class="fa fa-2x fa-info-circle"></i><span style ='margin-left: 1%; font-size: 18px; color: black;'>Click on empty date to set your avaliabilities, Re-click on available date to delete your avaliability</span>
     </div>
       <!-- calendar implementation -->
       <div id='wrap'>
@@ -24,21 +34,11 @@
         <div style='clear:both'></div>
       </div>
     </div> 
-   <div class="row">
-      <button class="btn btn-outline-success btn-lg" type="button" id="canvas-btn" onclick="window.location.href='{{ url_for('canvasser.view_assignment')}}' ">View Assignments</button>
-    <button class="btn btn-outline-success btn-lg" type="button" id="canvas-btn" onclick="window.location.href='{{ url_for('canvasser.set_canvasser')}}' " style='margin-right: 20%;'>Start Canvas</button>
+   <div class="row" style="margin-left: 25%; margin-top: 1%;">
+      <button style="margin-right:2%;" class="btn btn-outline-success btn-lg" type="button" id="canvas-btn" onclick="window.location.href='{{ url_for('canvasser.view_assignment')}}' ">View Assignments</button>
+     <button class="btn btn-outline-success btn-lg" type="button" id="canvas-btn" onclick="window.location.href='{{ url_for('canvasser.set_canvasser')}}'">Start Canvas</button>
   </div>
     
-<!-- Alert for flash message-->
-   <script>
-    {% with errors = get_flashed_messages() %}
-      {% if errors %}
-        {% for msg in errors %}
-             alert('{{ msg }}');
-        {% endfor %}
-     {% endif %}
-  {% endwith %}
-</script>
   <!-- scripts below will taking care of calendar javascript interactions-->
   <script type=text/javascript>
     $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};

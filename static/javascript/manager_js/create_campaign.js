@@ -1,6 +1,7 @@
 var map;
 var today = new Date();
 today.setHours(0,0,0,0);
+var markers = [];
 
 $(document).ready(function () {
 	var managers = document.getElementById('managers');
@@ -27,7 +28,7 @@ $(document).ready(function () {
 	var input = document.getElementById('location');
 	var searchBox = new google.maps.places.SearchBox(input);
 
-	var markers = [];
+	     markers = [];
         // Listen for the event fired when the user selects a prediction and retrieve
         // more details for that place.
         searchBox.addListener('places_changed', function() {
@@ -88,8 +89,6 @@ $(document).ready(function () {
                   if (status == google.maps.GeocoderStatus.OK) {
                       if (results[0]) {
                          document.getElementById('location').value = results[0].formatted_address;
-                         var trigger = new Event('change');
-                         document.getElementById('location').dispatchEvent(trigger);
                       } else {
                           alert('No results found');
                       }
@@ -101,6 +100,7 @@ $(document).ready(function () {
 
         // Initial Current Date to start date
         document.getElementById('start_date').value = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
+       $('#locations_text').linenumbers({col_width:'75px'});
 });
 
 function validDates(){
@@ -125,160 +125,176 @@ function validDates(){
      }
 }
 
-// Toggle Add Question Button
-function toggle_question(){
-    if(document.getElementById('question').value){
-                document.getElementById('add_question').classList.remove("disabled");
-                document.getElementById('add_question').disabled = false;
-            }
-    else{     
-                document.getElementById('add_question').classList.add("disabled");
-                document.getElementById('add_question').disabled = true;
-  } 
-}
-
-
-// Toggle Add LocationButton
-function toggle_location(){
-    if(document.getElementById('location').value){
-                document.getElementById('add_location').classList.remove("disabled");
-                document.getElementById('add_location').disabled = false;
-            }
-    else{     
-                document.getElementById('add_location').classList.add("disabled");
-                document.getElementById('add_location').disabled = true;
-  } 
-}
-
-function add_question(){
-   var question = document.getElementById('question').value;
-   var question_list = document.getElementById('question_list');
-   var all_options = question_list.options;
-   var add = true;
-    for(var i=0; i < all_options.length; i++)
-     {
-        if(all_options[i].value == question){
-             alert("The question does already exist!!");
-             document.getElementById('question').value ='';
-                add= false;  // We do not need to create option
-                break;
+// Remove Questions from questions_text
+function remove_questions(){
+        var questions_text= document.getElementById('questions_text');
+        if(questions_text.value.length ==""){
+              alert("No selected questions need to be removed !!");
+              return "no";
         }
-     }
-     if(add){
-      // Need to add new question
-         var option = document.createElement("option");
-         option.value = question.trim();
-         option.text = question.trim();
-         question_list.add(option);
-         
-         document.getElementById('question').value ='';
-         // Toggle Remove question button
-         document.getElementById('remove_question').classList.contains('disabled');
-         document.getElementById('remove_question').classList.remove("disabled");
-         document.getElementById('remove_question').disabled = false;
-      }
-        var trigger = new Event('change');
-        document.getElementById('question').dispatchEvent(trigger);
-}
-
-
-function remove_question(){
-      var question_list = document.getElementById('question_list');
-      var i=0;
-      var cout_unselect = 0;
-      while(1){
-          if(cout_unselect == question_list.options.length){
-                break;
-          }
-          cout_unselect = 0;
-          for (var i = 0; i < question_list.options.length; i++) {
-              if(question_list.options[i].selected){
-                alert("hre");
-                  question_list.options[i]=null;
-              }else{
-                  cout_unselect ++;
-              }
-          }
-      }
-        if(question_list.options.length == 0){
-                // Toggle Remove question button
-               document.getElementById('remove_question').classList.add("disabled");
-               document.getElementById('remove_question').disabled = true;
+        var start = questions_text.selectionStart;
+        var end = questions_text.selectionEnd
+        var all_questions = questions_text.value.split("\n");
+        var questions = questions_text.value.substring(start, end).split("\n");
+        if(questions.length==0){
+          alert("No selected questions need to be removed !!");
+          return "no";
         }
-
+        else{
+            var remove = false;
+            for(var i=0; i < questions.length; i++){
+                  if(all_questions.includes(questions[i])){
+                    remove = true;
+                         all_questions.splice(all_questions.indexOf(questions[i]), 1);
+                  }
+            }
+            if(remove){
+               document.getElementById('questions_text').value = all_questions.join('\n');
+               alert("Remove some questions successfully!!");
+               return "remove";
+           }
+           else{
+                alert("No questions need to be moved !!");
+                return "no";
+           }
+      }
 }
 
-
+// Through the searchbox of the map to add new location to TextArea
 function add_location(){
    var location = document.getElementById('location').value;
-   var location_list = document.getElementById('location_list');
-   var all_options = location_list.options;
-   var add = true;
-    for(var i=0; i < all_options.length; i++)
-     {
-        if(all_options[i].value ==location){
-             alert("The location does already exist!!");
-              document.getElementById('location').value ='';
-              add= false;  // We do not need to create option
-                break;
-        }
-     }
-     if(add){
-      // Need to add new location
-      // Check if the string of address is valid or not
+   if(location==""){
+       alert("No location need to be added");
+       return false;
+   }
+
+   var locations_text= document.getElementById('locations_text');
+   var all_locations = locations_text.value.split("\n");
+   for(var i=0; i< all_locations.length; i++){
+    // Remove empty spaces 
+        all_locations[i] = all_locations[i].replace(/\s/g, '');
+   }
+    // Check if the string of address is valid or not
         var geocoder = new google.maps.Geocoder();
         geocoder.geocode({'address': location}, function(results, status){
             if (status === google.maps.GeocoderStatus.OK && results.length > 0) {
                 // set it to the correct, formatted address if it's valid
-                var option = document.createElement("option");
-                var lat = results[0].geometry.location.lat();
-                var lng = results[0].geometry.location.lng();
-                option.value = results[0].formatted_address.trim()+'|'+lat+'|'+lng;
-                option.text = results[0].formatted_address.trim();
-                location_list.add(option);
-                         // Toggle Remove location button
-               document.getElementById('remove_location').classList.contains('disabled');
-               document.getElementById('remove_location').classList.remove("disabled");
-               document.getElementById('remove_location').disabled = false;
+                var test_location = results[0].formatted_address.replace(/\s/g, '');
+                  if(all_locations.includes(test_location)){
+                        alert("This location already exists");
+                  }
+                  else{
+                    if(locations_text.value ==""){
+                       locations_text.value=results[0].formatted_address.trim();
+
+                    }else{
+                    locations_text.value= locations_text.value+'\n'+results[0].formatted_address.trim();
+                  }
+                    var trigger = new Event('change');
+                    document.getElementById('locations_text').dispatchEvent(trigger);
+                }
             }else {
-              alert("Invalid address");
+              alert("Invalid address location");
           }
         });
+            // Clear out the old markers.
+          markers.forEach(function(marker) {
+            marker.setMap(null);
+          });
          document.getElementById('location').value ='';
-      }
-        var trigger = new Event('change');
-        document.getElementById('location').dispatchEvent(trigger);
 }
 
-function remove_location(){
-      var location_list = document.getElementById('location_list');
-      var i=0;
-      var cout_unselect = 0;
-      while(1){
-         alert(cout_unselect);
-          if(cout_unselect == location_list.options.length){
-                break;
-          }
-          cout_unselect = 0;
-          for (var i = 0; i < location_list.options.length; i++) {
-              if(location_list.options[i].selected){
-                  location_list.options[i]=null;
-              }else{
-                  cout_unselect ++;
-              }
-          }
-      }
-        if(location_list.options.length == 0){
-                // Toggle Remove question button
-               document.getElementById('remove_location').classList.add("disabled");
-               document.getElementById('remove_location').disabled = true;
+// Remove Locations from location_text
+function remove_locations(){
+        var locations_text= document.getElementById('locations_text');
+        if(locations_text.value ==""){
+            alert("No selected locations need to be removed !!");
+            return "no";
         }
+        var start = locations_text.selectionStart;
+        var end = locations_text.selectionEnd
+        var all_locations = locations_text.value.split("\n");
+        var locations = locations_text.value.substring(start, end).split("\n");
+        if(locations.length==0){
+          alert("No selected locations need to be removed !!");
+          return "no";
+        }
+        else{
+             var remove = false;
+            for(var i=0; i < locations.length; i++){
+                  if(all_locations.includes(locations[i])){
+                    remove = true
+                         all_locations.splice(all_locations.indexOf(locations[i]), 1);
+                  }
+            }
+            if(remove){
+              document.getElementById('locations_text').value = all_locations.join('\n');
+               alert("Remove some locations successfully!!");
+                          return "remove";
+           }
+           else{
+                alert("No locations need to be removed");
+                return "no";
+           }
+      }
+}
 
+// check if there're repeated questions
+function check_questions(){
+   var questions_text= document.getElementById('questions_text');
+   if(questions_text.value ==""){
+           return true;
+   }
+    var all_questions = questions_text.value.split("\n");
+    var results=[];
+    while(all_questions.length>0){
+      // The shift() method removes the first element from an array and returns that removed element.
+          var temp = all_questions.shift()
+          temp = temp.replace(/\s/g, '');
+         if(results.includes(temp)){
+            alert("You have repeated questions, please double check them!!")
+            return false;
+         }
+         else{
+           results.push(temp);
+         }
+    }
+    return true;
+}
+
+
+// check if there're repeated locations
+function check_locations(){
+   var locations_text= document.getElementById('locations_text');
+      if(locations_text.value ==""){
+           return true;
+   }
+    var all_locations = locations_text.value.split("\n");
+    var results=[];
+    while(all_locations.length>0){
+      // The shift() method removes the first element from an array and returns that removed element.
+          var temp = all_locations.shift()
+          temp = temp.replace(/\s/g, '');
+         if(results.includes(temp)){
+            alert("You have repeated locations, please double check them!!")
+            return false;
+         }
+         else{
+           results.push(temp);
+         }
+    }
+    return true;
 }
 
 
 function  check_submit(){
-  // Check if there're some managers
+     var name = document.getElementById('name');
+     if (name.value == ""){
+        alert("Failed to create, Please type one Campaign Name");
+        return false;
+     }
+
+    // Check if there're some managers
     var managers = document.getElementById('managers');
     var has_managers= false;
     for (var i = 0; i < managers.options.length; i++) {
@@ -304,16 +320,14 @@ function  check_submit(){
        alert("Failed to create, Please Select at least one canvasser!!");
        return false;
     }
-
-    // Mark all options to be true for questions and locations
-    var question_list = document.getElementById('question_list');
-        for (var i = 0; i <  question_list.options.length; i++) {
-              question_list.options[i].selected = true;
-            }
-
-    var location_list = document.getElementById('location_list');
-        for (var i = 0; i <  location_list.options.length; i++) {
-              location_list.options[i].selected = true;
-            }
+    var locations = document.getElementById('locations_text').value;
+    if(locations.trim() == ""){
+      alert("Failed to create, Please at least one location !!");
+    }
+    // Check repeated questions 
+    if(check_questions()== false || check_locations() == false){
+          return false;
+    }
+    return true;
 
 }

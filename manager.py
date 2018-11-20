@@ -12,6 +12,7 @@ from datetime import date
 import math
 
 
+
 #link google map
 gmaps = googlemaps.Client(key = key)
 
@@ -20,7 +21,6 @@ bp = Blueprint('manager', __name__, url_prefix='/manager')
 
 ''' Store All Campaigns Info : Key = campaign Name ; Value = Detail Info the specified Campaign'''
 camp = {}
-
 
 ''' Create Assignment for one Campaing'''
 def createAssignment(newCamp):
@@ -201,49 +201,65 @@ def createCampaign(u_email):
 		duration = request.form.get('duration')  # default = ''
 		managers = request.form.getlist('managers')  ## format = email
 		canvassers = request.form.getlist('canvassers') ## format = email
-		questions = request.form.getlist('question_list')
-		locations = request.form.getlist('location_list')  ## format = address|lat|lng
+		questions = request.form['questions_text']
+		locations = request.form['locations_text']
+		valid_locations =[]
 
-		''' Create New Campaign Object'''
-		check_camp = db_session.query(Campaign).filter(Campaign.name == campaign_name).first()
-		if(check_camp):
-			flash("This Campaign Name already exists, please enter the unique campaing name!")
-			return render_template('manager_html/create_campaign.html', managers = all_managers, canvassers = all_canvassers, index = 5)
+		if locations != "" :
+			 locations_arr = locations.split('\n')
+			 for ele in locations_arr:
+			 	if(gmaps.geocode(ele) == []):
+			 		flash("Failed to create campaign, the address \' "+ele+"\' is not valid!!")
+			 		return render_template('manager_html/create_campaign.html', managers = all_managers, canvassers = all_canvassers, index = 5)
+			 	lat = gmaps.geocode(ele)[0]['geometry']['location']['lat']
+			 	lng = gmaps.geocode(ele)[0]['geometry']['location']['lng']
+			 	address=gmaps.geocode(ele)[0]['formatted_address']
+			 	valid_locations.append((address,lat, lng))
+		print(valid_locations)
+
+		''' Check if locations are valid or not'''
+
+
+		# ''' Create New Campaign Object'''
+		# check_camp = db_session.query(Campaign).filter(Campaign.name == campaign_name).first()
+		# if(check_camp):
+		# 	flash("This Campaign Name already exists, please enter the unique campaing name!")
+		# 	return render_template('manager_html/create_campaign.html', managers = all_managers, canvassers = all_canvassers, index = 5)
 		
-		newCamp = Campaign(campaign_name,startDate,endDate,talking,duration)
-		db_session.add(newCamp)
+		# newCamp = Campaign(campaign_name,startDate,endDate,talking,duration)
+		# db_session.add(newCamp)
 
-		''' Add all managers to the newCamp relationship,'''
-		for ele in managers:
-			ele_obj = CampaignManager()
-			role_obj = db_session.query(Role).filter(Role.email == ele, Role.role == 'manager').first()
-			role_obj.roles_relation.append(ele_obj)
-			newCamp.campaigns_relation.append(ele_obj)
+		# ''' Add all managers to the newCamp relationship,'''
+		# for ele in managers:
+		# 	ele_obj = CampaignManager()
+		# 	role_obj = db_session.query(Role).filter(Role.email == ele, Role.role == 'manager').first()
+		# 	role_obj.roles_relation.append(ele_obj)
+		# 	newCamp.campaigns_relation.append(ele_obj)
 
-		''' Add all canvassers to the newCamp relationship-1, androle relationship-1'''
-		for ele in canvassers:
-			ele_obj = CampaignCanvasser()
-			role_obj = db_session.query(Role).filter(Role.email == ele, Role.role == 'canvasser').first()
-			role_obj.roles_relation_1.append(ele_obj)
-			newCamp.campaigns_relation_1.append(ele_obj)
+		# ''' Add all canvassers to the newCamp relationship-1, androle relationship-1'''
+		# for ele in canvassers:
+		# 	ele_obj = CampaignCanvasser()
+		# 	role_obj = db_session.query(Role).filter(Role.email == ele, Role.role == 'canvasser').first()
+		# 	role_obj.roles_relation_1.append(ele_obj)
+		# 	newCamp.campaigns_relation_1.append(ele_obj)
 
-		''' Add all questions to the newCamp relationship-3'''
-		for ele in questions:
-			ele_obj = Questionnaire(ele)
-			newCamp.campaigns_relation_3.append(ele_obj)
-		''' Add all locationto the newCamp relationship-2'''
-		for ele in locations:
-			ele_arr = ele.split('|')
-			ele_obj =  CampaignLocation(ele_arr[0],float(ele_arr[1]), float(ele_arr[2]))
-			newCamp.campaigns_relation_2.append(ele_obj)
+		# ''' Add all questions to the newCamp relationship-3'''
+		# for ele in questions:
+		# 	ele_obj = Questionnaire(ele)
+		# 	newCamp.campaigns_relation_3.append(ele_obj)
+		# ''' Add all locationto the newCamp relationship-2'''
+		# for ele in locations:
+		# 	ele_arr = ele.split('|')
+		# 	ele_obj =  CampaignLocation(ele_arr[0],float(ele_arr[1]), float(ele_arr[2]))
+		# 	newCamp.campaigns_relation_2.append(ele_obj)
 
-		db_session.commit()
-		#if not enough dates/canvassers display warning
-		if(not createAssignment(newCamp)):
-			flash("Create Campagin successfully, but did not make compeletely assingments !")
-		else:
-			flash("Create Compaingn and make compeletely assignments successfully !")
-		return redirect(url_for('manager.manPage'))
+		# db_session.commit()
+		# #if not enough dates/canvassers display warning
+		# if(not createAssignment(newCamp)):
+		# 	flash("Create Campagin successfully, but did not make compeletely assingments !")
+		# else:
+		# 	flash("Create Compaingn and make compeletely assignments successfully !")
+		# return redirect(url_for('manager.manPage'))
 
 	return render_template('manager_html/create_campaign.html', managers = all_managers, canvassers = all_canvassers, index = 5)
 

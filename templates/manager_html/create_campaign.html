@@ -1,9 +1,10 @@
 {% extends "layout.html" %}
 	{% block newHeader %}
 	<link rel="stylesheet" type="text/css" href="/static/css/multi.css">
+    <script src="/static/jquery/jquery-linenumbers.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="/static/css/create_campaign.css">
-
+<!---------- Alert Flash Message-------------->
     <script>
     {% with messages = get_flashed_messages() %}
       {% if messages %}
@@ -13,9 +14,8 @@
      {% endif %}
   {% endwith %}
 </script>
-
 	{% endblock %}
-    {% block title %} <h3 id = "title"> Create Compaigns </h3> {% endblock %}
+    {% block title %} <h3 id = "title"> Create Compaigns System </h3> {% endblock %}
 {%block main %}
 <!-----------------Create Compaign------------------>
 <br/>
@@ -23,13 +23,13 @@
     <form  method="post" action ="{{url_for('manager.createCampaign', u_email = session['info']['email']) }}" role="form">
   <!---------------------------Compaing Name--------------------->
     <div class="form-group form-inline">
-         <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="name"> Compaign Name : </label>
-              <input class="form-control col-lg-5 input-md" id ="name" type="text" name ="name" placeholder = "New Comapign Name" required autofocus>
+         <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for="name"> Compaign Name : </label>
+              <input class="form-control col-lg-5 input-md" id="name" type="text" name="name" placeholder="New Comapign Name" required autofocus>
     </div>
     <hr/><br/>
      <!---------------------------Select Managers-------------------->
      <div class="form-group">
-     	<label class="col-lg-3" style="font-weight: bold; font-size: 18px;" for ="managers"> Choose Managers: </label>
+     	<i class="fa fa-angle-double-right prefix"></i><label class="col-lg-3" style="font-weight: bold; font-size: 18px;" for ="managers"> Choose Managers: </label>
          <select multiple="multiple" name="managers" id="managers" required>
                 <option selected="selected" disabled="disabled" value ="{{ session['info']['email']}}|{{ session['info']['name']}}">{{ session['info']['name']}} ({{ session['info']['email']}})</option>
                 {% for ele in managers %}
@@ -40,7 +40,7 @@
     <hr/><br/>
       <!---------------------------Select Canvassers------------------->
      <div class="form-group">
-     	<label class="col-lg-3" style="font-weight: bold; font-size: 18px;" for ="canvasser"> Choose Canvassers: </label>
+     	<i class="fa fa-angle-double-right prefix"></i><label class="col-lg-3" style="font-weight: bold; font-size: 18px;" for ="canvasser"> Choose Canvassers: </label>
          <select multiple="multiple" name="canvassers" id="canvassers" required>
                 {% for ele in canvassers %}
                     <option value = "{{ ele }}">{{canvassers[ele]}}({{(ele)}})</option>
@@ -50,7 +50,7 @@
    <hr/>
 
   <!---------------------------Dates Part--------------------->
-     <label class="col-lg-2" style="font-weight: bold; font-size: 18px;">Date Settings: </label>
+    <i class="fa fa-angle-double-right prefix"></i><label class="col-lg-2" style="font-weight: bold; font-size: 18px;">Date Settings: </label>
     <div class="form-group form-inline">
             <div style ="margin-left:5%;font-size:16px; font-weight: bold;">From :</div>
             <input style ="margin-left:1%;" class ="form-control col-lg-3" type="date" data-date-format="yyyy-mm-dd" name="start_date" id ="start_date" onchange='validDates()' required>
@@ -59,17 +59,17 @@
     </div>
     <hr/><br/>
   <!---------------------------Questions Part--------------------->
-    <div class="form-group form-inline">
-        <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="question">New Question: </label>
-         <input class="form-control col-lg-5 input-md" id="question" type="text" name ="question" placeholder="Type New Question" onchange="toggle_question()" oninput="toggle_question()" >
-         <a class ="btn btn-primary disabled" id="add_question" onclick='add_question()' disabled> Add New Question </a>
+    <div class="form-inline">
+     <i class="fa fa-angle-double-right prefix"></i><label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="question">New Questions: </label>
+     <a class ="btn btn-primary " id='remove_question' onclick="remove_questions()"> Remove Questions</a>
     </div>
-    <div class="form-group form-inline">
-    	<label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for="question_list">Added Question: </label>
-        <select multiple="multiple" class="form-control col-lg-5" name="question_list" id="question_list">
-  		</select>
-         <a class ="btn btn-primary disabled" id='remove_question' onclick="remove_question()" disabled> Remove Questions </a>
-    </div>
+     <br/>
+<textarea class="form-control" rows="5" id="questions_text" name="questions_text" placeholde="Please type alist of yes/no questons." >Line Number 1.
+Number 2.
+On left line is appearing as 3
+Keep going for 4.
+Now line number 5
+Line 6.</textarea>
     <hr/><br/>
  <!---------------------------Talking Point Part--------------------->
      <div class="form-group form-inline">
@@ -91,23 +91,24 @@
     </div>
     <hr/><br/>
  <!---------------------------Location--------------------->
-    <div class="form-group form-inline">
-        <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="location">New location: </label>
-         <input class="form-control col-lg-5 input-md" id="location" type="text" name ="location" placeholder="Type New location" onchange="toggle_location()" oninput="toggle_location()" >
-         <a class ="btn btn-primary disabled" id="add_location" onclick='add_location()' disabled> Add New Location </a>
+    <div class="form-inline">
+     <i class="fa fa-angle-double-right prefix"></i><label class="col-lg-2" style="font-weight: bold; font-size: 18px;">New Locations: </label>
+     <a class ="btn btn-primary " id='remove_location' onclick="remove_locations()"> Remove Locations</a>
     </div>
+     <br/>
+<textarea class="form-control" rows="5" id="locations_text" name="locations_text" placeholder="Location Format: NUMBER, STREET, UNIT, CITY, STATE, ZIP" required></textarea>
+    <hr/><br/>
     <div class="form-group form-inline">
-        <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for="location_list">Added Location: </label>
-        <select multiple='multiple' class="form-control col-lg-5" name="location_list" id="location_list">
-        </select>
-        <a class ="btn btn-primary disabled" id='remove_location'  disabled> Remove Locations</a>
+        <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="location">Search location: </label>
+         <input class="form-control col-lg-5 input-md" id="location" type="text" name ="location" placeholder="Search locations here">
+         <a class ="btn btn-primary" id="add_location" onclick='add_location()'> Add New Location </a>
     </div>
     <div class="form-group form-inline">
 		<div id="map" name="map_location" class="col-lg-8" style="margin-left: 10%; height: 350px;background-color: grey"></div>
     </div>
     <hr/><br/>
     <div class="form-group form-inline" style="margin-left: 30%">
-         <button class="btn btn-success btn-lg" id="submit" name="submit" type="submit" onclick="check_submit()"> <i class="fa fa-plus-circle"></i> Create Campaign </button>
+        <button class="btn btn-success btn-lg" id="submit" name="submit" type="submit" onclick="check_submit()"> <i class="fa fa-plus-circle"></i> Create Campaign </button>
     </div>
     </form>
   </div>
