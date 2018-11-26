@@ -21,6 +21,10 @@ user_email=""
 	Therefore, i will load the assignments based on the value of assignment.order
 '''
 assignments={}
+past_assignments={}  ## store past assignments which date value less than today
+upcoming_assignments={} ## store past assignments which date value not less than today
+
+today = datetime.date.today()
 
 ''' 
 	update_ava() --- update the avaliability dates for the canvasser
@@ -135,6 +139,9 @@ def canPage(u_name):
 @bp.route('/view_all_assignment/<u_email>')
 def view_assignment(u_email):
 	global assignments
+	global today
+	global past_assignments
+	global upcoming_assignments
 	print("Enter View Assignment")
 
 	if assignments=={}:
@@ -142,12 +149,18 @@ def view_assignment(u_email):
 		flash("You do not have any assignments")
 		return redirect(url_for('canvasser.canPage', u_name = session['info']['name']))
 	'''if there're some assignments'''
-	return render_template('canvasser_html/view_assignment.html',assignments = assignments, detail=None)
+	for ele in assignments:
+		if ele.theDate < today:
+			past_assignments[ele] = assignments[ele]
+		else:
+			upcoming_assignments[ele] = assignments[ele]
+
+	return render_template('canvasser_html/view_assignment.html',upcoming_assignments= upcoming_assignments, past_assignments= past_assignments, detail=None)
 
 
 '''Work For viewingn assignment detail'''
-@bp.route('/view_assigment_detail/<ass_id>')
-def view_assigment_detail(ass_id):
+@bp.route('/view_assignment_detail/<ass_id>')
+def view_assignment_detail(ass_id):
 	global assignments
 	global user_email
 	print("enter view_assigment detail")
@@ -176,22 +189,22 @@ def view_assigment_detail(ass_id):
 	detail['questions'] = camp.campaigns_relation_3
 	'''Get Tlking Point'''
 	detail['talking'] = camp.talking
-	return render_template('canvasser_html/view_assignment.html',assignments=assignments,detail=detail)
 
+	return render_template('canvasser_html/view_assignment.html',upcoming_assignments= upcoming_assignments, past_assignments= past_assignments, detail=detail)
 
 # Enter canvas_start html
 @bp.route('/set_start_canvasser')
 def set_canvasser():
 	global assignments
 	global user_email
+	global today
 
 	'''
-		use ass_info to organize assignmenets : current day's assignment, 
+		use ass_info to organize assignments : current day's assignment, 
 		next location assignment, most recently visted assignmnet
 	'''
 	ass_info={} 
 
-	today = datetime.date.today()
 	current_ass=None  ## Keep current day's assignment
 	next_ass=None   ## Keep the next location need to be visted in default
 	'''Retrieve the today's assignment from global variable 'assignments'''
@@ -235,7 +248,7 @@ def set_canvasser():
 		current_camp_name = db_session.query(CampaignLocation).filter(CampaignLocation.id == current_ass.location_id).first()
 	ass_info['campaign_name'] = current_camp_name.campaign_name
 
-	# print("assignemnt Info for canvass")
+	# print("assignment Info for canvass")
 	# for ele in ass_info:
 	# 	print("%s---> %s" %(ele,ass_info[ele]))
 

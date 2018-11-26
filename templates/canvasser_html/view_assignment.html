@@ -6,13 +6,21 @@
     <!----------Inital location Makers---->
   <script type="text/javascript">
     $(document).ready(function () {
-         var locations =[];
-       // Get all locations
-       {% for instance in assignments %}
+         var past_locations=[];
+         var up_locations=[]
+       // Get past locations
+       {% for instance in past_assignments %}
           var one_location=[];
-         one_location.push('{{assignments[instance][0]}}', '{{assignments[instance][1]}}','{{assignments[instance][2]}}','{{ instance.id}}');
-         locations.push(one_location);
+         one_location.push('{{past_assignments[instance][0]}}', '{{past_assignments[instance][1]}}','{{past_assignments[instance][2]}}','{{ instance.id}}');
+         past_locations.push(one_location);
       {% endfor %}
+      // Get upcoming locations
+      {% for instance in upcoming_assignments %}
+          var one_location=[];
+         one_location.push('{{upcoming_assignments[instance][0]}}', '{{upcoming_assignments[instance][1]}}','{{upcoming_assignments[instance][2]}}','{{ instance.id}}');
+         up_locations.push(one_location);
+      {% endfor %}
+
       // Generate Map
        var mapOptions = {
             center: new google.maps.LatLng(40.9256538, -73.140943),
@@ -24,19 +32,19 @@
     // Inital Markers
         var marker, i;
         var bounds = new google.maps.LatLngBounds();
-
-        for (i = 0; i < locations.length; i++) { 
+// Past
+        for (i = 0; i < past_locations.length; i++) { 
           marker = new google.maps.Marker({
-            position: new google.maps.LatLng(locations[i][1], locations[i][2]),
-            label:"#"+i,
-            title:locations[i][0],
+            position: new google.maps.LatLng(past_locations[i][1], past_locations[i][2]),
+            label:"Past Assignments:#"+i,
+            title:past_locations[i][0],
             map: map
           });
 
           bounds.extend(marker.getPosition());
           google.maps.event.addListener(marker, 'click', (function(marker, i) {
             return function() {
-              infowindow.setContent(locations[i][0]);
+              infowindow.setContent(past_locations[i][0]);
               infowindow.open(map, marker);
               map.setCenter(marker.getPosition());
               map.setZoom(16);
@@ -44,14 +52,41 @@
               google.maps.event.addListener(infowindow, 'closeclick', function() {
                     map.fitBounds(bounds);
               });
-            var id = locations[i][3];
-           {% for instance in assignments %}
+            var id = past_locations[i][3];
+           {% for instance in past_assignments %}
             if ( {{instance.id}} == id){
-                 window.location.href = "{{ url_for('canvasser.view_assigment_detail', ass_id = instance.id)}}";
+                 window.location.href = "{{ url_for('canvasser.view_assignment_detail', ass_id = instance.id)}}";
                }
           {% endfor %}
+            }
+          })(marker, i));
+        }
+// Upcoming
+         for (i = 0; i < up_locations.length; i++) { 
+          marker = new google.maps.Marker({
+            position: new google.maps.LatLng(up_locations[i][1], up_locations[i][2]),
+            label:"Upcoming Assignments:#"+i,
+            title:up_locations[i][0],
+            map: map
+          });
 
-             // window.location.href = Flask.url_for('canvasser.view_assigment_detail', ass_id = locations[i][3]);
+          bounds.extend(marker.getPosition());
+          google.maps.event.addListener(marker, 'click', (function(marker, i) {
+            return function() {
+              infowindow.setContent(up_locations[i][0]);
+              infowindow.open(map, marker);
+              map.setCenter(marker.getPosition());
+              map.setZoom(16);
+              // If close infowindow, then go back to default mapsetting
+              google.maps.event.addListener(infowindow, 'closeclick', function() {
+                    map.fitBounds(bounds);
+              });
+            var id = up_locations[i][3];
+           {% for instance in upcoming_assignments %}
+            if ( {{instance.id}} == id){
+                 window.location.href = "{{ url_for('canvasser.view_assignment_detail', ass_id = instance.id)}}";
+               }
+          {% endfor %}
             }
           })(marker, i));
         }
@@ -77,18 +112,45 @@
         </ul>  
     </h5><hr/>
     <div class="row">
-   <!-- ----------- Locations on the List -->
+   <!-- ----------- Past Assignments in list -->
       <div class="panel panel-primary col"id="assigment_list">
-        <div class="panel-heading" style="margin-left: 5%;"><h3 class="panel-title">Locations on List</h3>
+        <div class="panel-heading" style="margin-left: 5%;"><h3 class="panel-title">Past assignments on List</h3>
         </div>
         <div class="panel-body">
+          {% if past_assignments is defined and past_assignments|length > 0 %}
           <ul class="list-group">
-             {% for instance in assignments %}
-            <a style="color:black !important;" class="list-group-item btn btn-info" value="{{ instance.id}}" href="{{ url_for('canvasser.view_assigment_detail', ass_id = instance.id)}}"><strong>Assignment #{{instance.order}}:</strong> {{assignments[instance][0]}} ({{assignments[instance][1]}},{{assignments[instance][2]}} )</a>
+             {% for instance in past_assignments %}
+            <a style="color:black !important;" class="list-group-item btn btn-info" value="{{ instance.id}}" href="{{ url_for('canvasser.view_assignment_detail', ass_id = instance.id)}}"><strong>Assignment #{{instance.order}}:</strong> {{past_assignments[instance][0]}} ({{past_assignments[instance][1]}},{{past_assignments[instance][2]}} )</a>
           {% endfor %}
         </ul>
+        {% else %}
+          <div class="alert alert-warning" role="alert" style="margin-left: 1%;">
+            <i class="fa fa-2x fa-info-circle"></i><span style ='margin-left: 1%; font-weight: bold; font-size: 18px; color: black;'>No past assignments</span>
+            </div>
+        {% endif %}
+     </div>
+    </div> 
+   <!-- ----------- Upcoming Assignments on List -->
+      <div class="panel panel-primary col"id="assigment_list">
+        <div class="panel-heading" style="margin-left: 5%;"><h3 class="panel-title">Upcoming Assignments on List</h3>
+        </div>
+        <div class="panel-body">
+        {% if upcoming_assignments is defined and upcoming_assignments|length > 0 %}
+          <ul class="list-group">
+               {% for instance in upcoming_assignments %}
+                 <a style="color:black !important;" class="list-group-item btn btn-info" value="{{  instance.id}}" href="{{ url_for('canvasser.view_assignment_detail', ass_id = instance.id)}}"><strong>Assignment #{{instance.order}}:</strong> {{upcoming_assignments[instance][0]}} ({{upcoming_assignments[instance][1]}},{{upcoming_assignments[instance][2]}} )</a>
+             {% endfor %}
+        </ul>
+        {% else %} 
+          <div class="alert alert-warning" role="alert">
+              <i class="fa fa-2x fa-info-circle"></i><span style ="margin-left: 1%; font-size: 18px; font-weight: bold; color: black;">No upcoming assignments</span>
+          </div>
+      {% endif %}
     </div>
-</div> 
+  </div> 
+</div>
+<hr/>
+<div class="row">
 <!----------------Loading locations for creating markers on Map-------->
 
   <div class="panel  panel-primary col" id="result_panel">
