@@ -212,6 +212,7 @@ def createCampaign(u_email):
 		## Add campaign's creator
 		managers.append(u_email)
 		questions=[] ### split quqestion with new line into one list 
+
 		if questions_text != None and questions_text.strip() !="":
 			questions = questions_text.split("\n")
 
