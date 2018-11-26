@@ -12,7 +12,6 @@ from datetime import date
 import math
 
 
-
 #link google map
 gmaps = googlemaps.Client(key = key)
 
@@ -179,7 +178,6 @@ def createCampaign(u_email):
 	all_managers={}
 	all_canvassers={}
 
-
 	'''Get all managers from db '''
 	manager_roles = db_session.query(Role).filter(Role.role == 'manager', Role.email != u_email).all()
 	for ele in manager_roles:
@@ -194,15 +192,27 @@ def createCampaign(u_email):
 
 	''' For submit button'''
 	if request.method == 'POST':
-		campaign_name = request.form['name']
-		startDate = request.form['start_date']
-		endDate = request.form['end_date']
-		talking = request.form['talking']
-		duration = request.form.get('duration')  # default = ''
-		managers = request.form.getlist('managers')  ## format = email
-		canvassers = request.form.getlist('canvassers') ## format = email
-		questions = request.form['questions_text']
-		locations = request.form['locations_text']
+		campaign_name = request.form['name'] # string
+		startDate = request.form['start_date'] #string 2018-11-26
+		endDate = request.form['end_date'] 
+		talking = request.form['talking'] #string 
+		duration = request.form['duration']  # string : default = 1
+		managers = request.form.getlist('managers')  ## list of emails
+		canvassers = request.form.getlist('canvassers') ## list of emails
+		questions_text = request.form['questions_text']  #string (multi-lines)
+		locations = request.form['locations_text'] #string (multi-lines)s
+		#print("%s %s %s %s %s %s %s %s %s" %(campaign_name, startDate, endDate, talking, duration, managers, canvassers, questions, locations))
+		
+		valid_locations =[]  #### Store valiad locations(address, lat, lng)
+
+		if not (campaign_name and startDate and endDate and duration and locations):
+			flash("Failed to create campaign, there're empty values!!")
+			return render_template('manager_html/create_campaign.html', managers = all_managers, canvassers = all_canvassers, index = 5)
+		## No empty
+		questions=[] ### split quqestion with new line into one list 
+		if questions_text != None and questions_text.trim() !="":
+			questions = questions_text.split("\n")
+
 		valid_locations =[]  #### Store valiad locations(address, lat, lng)
 
 		''' Check if locations are valid or not'''
@@ -210,20 +220,28 @@ def createCampaign(u_email):
 			 locations_arr = locations.split('\n')
 			 for ele in locations_arr:
 			 	if(gmaps.geocode(ele) == []):
-			 		flash("Failed to create campaign, the address \' "+ele+"\' is not valid!!")
+			 		flash("Failed to create campaign, the address("+ele+") is not valid!!")
 			 		return render_template('manager_html/create_campaign.html', managers = all_managers, canvassers = all_canvassers, index = 5)
 			 	lat = gmaps.geocode(ele)[0]['geometry']['location']['lat']
 			 	lng = gmaps.geocode(ele)[0]['geometry']['location']['lng']
 			 	address=gmaps.geocode(ele)[0]['formatted_address']
-			 	valid_locations.append((address,lat, lng))
+			 	test = (address,lat, lng)
+			 	'''Check if there're some repeated locations'''
+			 	if test in valid_locations:
+			 		flash("Failed to create campaign, the address: ("+address+") is repeated!!!")
+			 		return render_template('manager_html/create_campaign.html', managers = all_managers, canvassers = all_canvassers, index = 5)
+			 	else:
+			 		valid_locations.append((address,lat, lng))
+
+		# print("valid location list---> %s" %valid_locations)
 
 		''' Create New Campaign Object'''
 		check_camp = db_session.query(Campaign).filter(Campaign.name == campaign_name).first()
 		if(check_camp):
-			flash("This Campaign Name already exists, please enter the unique campaing name!")
+			flash("This Campaign Name already exists, please enter the unique campaign name!")
 			return render_template('manager_html/create_campaign.html', managers = all_managers, canvassers = all_canvassers, index = 5)
-		
-		newCamp = Campaign(campaign_name,startDate,endDate,talking,duration)
+		''' New Campaign Object'''
+		newCamp = Campaign(campaign_name,startDate,endDate,talking,int(duration))
 		db_session.add(newCamp)
 
 		''' Add all managers to the newCamp relationship,'''
@@ -242,11 +260,13 @@ def createCampaign(u_email):
 
 		''' Add all questions to the newCamp relationship-3'''
 		for ele in questions:
-			ele_obj = Questionnaire(ele)
-			newCamp.campaigns_relation_3.append(ele_obj)
+			if ele.trim() !="":
+				ele_obj = Questionnaire(ele)
+				newCamp.campaigns_relation_3.append(ele_obj)
+
 		''' Add all locationto the newCamp relationship-2'''
 		for ele in valid_locations:
-			ele_obj =  CampaignLocation(ele[0],float(ele[1]), float(ele[2]))
+			ele_obj =  CampaignLocation(ele[0], float(ele[1]), float(ele[2]))
 			newCamp.campaigns_relation_2.append(ele_obj)
 
 		db_session.commit()

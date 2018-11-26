@@ -24,14 +24,14 @@
   <!---------------------------Compaing Name--------------------->
     <div class="form-group form-inline">
          <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for="name"> Compaign Name : </label>
-              <input class="form-control col-lg-5 input-md" id="name" type="text" name="name" placeholder="New Comapign Name" required autofocus>
+              <input class="form-control col-lg-5 input-md" id="name" type="text" name="name" placeholder="New unique Comapign Name" required autofocus>
     </div>
     <hr/><br/>
      <!---------------------------Select Managers-------------------->
      <div class="form-group">
      	<i class="fa fa-angle-double-right prefix"></i><label class="col-lg-3" style="font-weight: bold; font-size: 18px;" for ="managers"> Choose Managers: </label>
          <select multiple="multiple" name="managers" id="managers" required>
-                <option selected="selected" disabled="disabled" value ="{{ session['info']['email']}}|{{ session['info']['name']}}">{{ session['info']['name']}} ({{ session['info']['email']}})</option>
+                <option selected="selected" disabled="disabled" value ="{{ session['info']['email']}}|{{ session['info']['name']}}">{{ session['info']['name']}} ({{ session['info']['email']}}) (campaign's creator)</option>
                 {% for ele in managers %}
                     <option value ="{{ ele }}">{{managers[ele]}}({{(ele)}})</option>
                 {% endfor %}
@@ -60,43 +60,29 @@
     <hr/><br/>
   <!---------------------------Questions Part--------------------->
     <div class="form-inline">
-     <i class="fa fa-angle-double-right prefix"></i><label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="question">New Questions: </label>
-     <a class ="btn btn-primary " id='remove_question' onclick="remove_questions()"> Remove Questions</a>
+     <i class="fa fa-angle-double-right prefix"></i><label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="question">Set Questions: </label>
     </div>
      <br/>
-<textarea class="form-control" rows="5" id="questions_text" name="questions_text" placeholde="Please type alist of yes/no questons." >Line Number 1.
-Number 2.
-On left line is appearing as 3
-Keep going for 4.
-Now line number 5
-Line 6.</textarea>
+<textarea class="form-control" rows="5" id="questions_text" name="questions_text" placeholder="Please enter one yes/no queston per line(eg: Did you hera of our product before?)"></textarea>
     <hr/><br/>
  <!---------------------------Talking Point Part--------------------->
      <div class="form-group form-inline">
     	<label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for="talking">Set Talking Point: </label>
-    	 <textarea class="form-control col-lg-5" rows="3" id="talking" name='talking' placeholder="None" value="None"></textarea>
+    	 <textarea class="form-control col-lg-5" rows="3" id="talking" name='talking' placeholder="Text describing what the canvasser should day during visits" value="None"></textarea>
     </div>
     <hr/><br/>
  <!---------------------------Duration Part--------------------->
      <div class="form-group form-inline">
-    	<label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for="duration">Select Duration: </label>
-			<select class="form-control col-lg-5" name="duration" required >
-				<option value="5">5 minutes</option>
-				<option value="10">10 minutes</option>
-				<option value="15">15 minutes</option>
-				<option value="20">20 minutes</option>
-				<option value="25">25 minutes</option>
-				<option value="30">30 minutes</option>
-			</select>
+    	<label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for="duration">Set Duration:</label>
+            <input class="form-control col-lg-5 input-md" type="number" id="duration" name="duration" min="1" max="30" placeholder="Duration should be between 1 and 300 minutes" value="1" required /><span style="padding-left: 5px; font-size: 18px">minutes</span>
     </div>
     <hr/><br/>
  <!---------------------------Location--------------------->
     <div class="form-inline">
-     <i class="fa fa-angle-double-right prefix"></i><label class="col-lg-2" style="font-weight: bold; font-size: 18px;">New Locations: </label>
-     <a class ="btn btn-primary " id='remove_location' onclick="remove_locations()"> Remove Locations</a>
+     <i class="fa fa-angle-double-right prefix"></i><label class="col-lg-2" style="font-weight: bold; font-size: 18px;">Set Locations: </label>
     </div>
      <br/>
-<textarea class="form-control" rows="5" id="locations_text" name="locations_text" placeholder="Location Format: NUMBER, STREET, UNIT, CITY, STATE, ZIP" required></textarea>
+<textarea class="form-control" rows="5" id="locations_text" name="locations_text" placeholder="Contains one address per line, in the following format: NUMBER, STREET, UNIT, CITY, STATE, ZIP" required></textarea>
     <hr/><br/>
     <div class="form-group form-inline">
         <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="location">Search location: </label>

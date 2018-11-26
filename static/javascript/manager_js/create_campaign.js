@@ -125,40 +125,6 @@ function validDates(){
      }
 }
 
-// Remove Questions from questions_text
-function remove_questions(){
-        var questions_text= document.getElementById('questions_text');
-        if(questions_text.value.length ==""){
-              alert("No selected questions need to be removed !!");
-              return "no";
-        }
-        var start = questions_text.selectionStart;
-        var end = questions_text.selectionEnd
-        var all_questions = questions_text.value.split("\n");
-        var questions = questions_text.value.substring(start, end).split("\n");
-        if(questions.length==0){
-          alert("No selected questions need to be removed !!");
-          return "no";
-        }
-        else{
-            var remove = false;
-            for(var i=0; i < questions.length; i++){
-                  if(all_questions.includes(questions[i])){
-                    remove = true;
-                         all_questions.splice(all_questions.indexOf(questions[i]), 1);
-                  }
-            }
-            if(remove){
-               document.getElementById('questions_text').value = all_questions.join('\n');
-               alert("Remove some questions successfully!!");
-               return "remove";
-           }
-           else{
-                alert("No questions need to be moved !!");
-                return "no";
-           }
-      }
-}
 
 // Through the searchbox of the map to add new location to TextArea
 function add_location(){
@@ -204,40 +170,6 @@ function add_location(){
          document.getElementById('location').value ='';
 }
 
-// Remove Locations from location_text
-function remove_locations(){
-        var locations_text= document.getElementById('locations_text');
-        if(locations_text.value ==""){
-            alert("No selected locations need to be removed !!");
-            return "no";
-        }
-        var start = locations_text.selectionStart;
-        var end = locations_text.selectionEnd
-        var all_locations = locations_text.value.split("\n");
-        var locations = locations_text.value.substring(start, end).split("\n");
-        if(locations.length==0){
-          alert("No selected locations need to be removed !!");
-          return "no";
-        }
-        else{
-             var remove = false;
-            for(var i=0; i < locations.length; i++){
-                  if(all_locations.includes(locations[i])){
-                    remove = true
-                         all_locations.splice(all_locations.indexOf(locations[i]), 1);
-                  }
-            }
-            if(remove){
-              document.getElementById('locations_text').value = all_locations.join('\n');
-               alert("Remove some locations successfully!!");
-                          return "remove";
-           }
-           else{
-                alert("No locations need to be removed");
-                return "no";
-           }
-      }
-}
 
 // check if there're repeated questions
 function check_questions(){
@@ -261,7 +193,6 @@ function check_questions(){
     }
     return true;
 }
-
 
 // check if there're repeated locations
 function check_locations(){
@@ -304,7 +235,7 @@ function  check_submit(){
       }
     }
     if(! has_managers){
-        alert("Failed to create, Please Select at least one manager!!");
+        alert("Failed to create, Please select at least one manager!!");
         return false;
     }
     // Check if there're some canvassers
@@ -317,12 +248,12 @@ function  check_submit(){
       }
     }
     if(!has_canvassers){
-       alert("Failed to create, Please Select at least one canvasser!!");
+       alert("Failed to create, Please select at least one canvasser!!");
        return false;
     }
     var locations = document.getElementById('locations_text').value;
     if(locations.trim() == ""){
-      alert("Failed to create, Please at least one location !!");
+      alert("Failed to create, Please add at least one location !!");
     }
     // Check repeated questions 
     if(check_questions()== false || check_locations() == false){
