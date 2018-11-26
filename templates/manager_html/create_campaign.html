@@ -31,9 +31,9 @@
      <div class="form-group">
      	<i class="fa fa-angle-double-right prefix"></i><label class="col-lg-3" style="font-weight: bold; font-size: 18px;" for ="managers"> Choose Managers: </label>
          <select multiple="multiple" name="managers" id="managers" required>
-                <option selected="selected" disabled="disabled" value ="{{ session['info']['email']}}|{{ session['info']['name']}}">{{ session['info']['name']}} ({{ session['info']['email']}}) (campaign's creator)</option>
+                <option value="{{ session['info']['email']}}|{{ session['info']['name']}}" selected disabled>{{ session['info']['name']}} ({{ session['info']['email']}}) (campaign's creator)</option>
                 {% for ele in managers %}
-                    <option value ="{{ ele }}">{{managers[ele]}}({{(ele)}})</option>
+                    <option value="{{ ele }}">{{managers[ele]}}({{(ele)}})</option>
                 {% endfor %}
          </select>
      </div>

@@ -132,15 +132,15 @@ def canPage(u_name):
 
 
 # Enter viewing upcomming assignment html page
-@bp.route('/view_all_assignment')
-def view_assignment():
+@bp.route('/view_all_assignment/<u_email>')
+def view_assignment(u_email):
 	global assignments
 	print("Enter View Assignment")
 
 	if assignments=={}:
 		'''Without any assignments'''
 		flash("You do not have any assignments")
-		return redirect(url_for('canvassser.canPage', u_name = session['info']['name']))
+		return redirect(url_for('canvasser.canPage', u_name = session['info']['name']))
 	'''if there're some assignments'''
 	return render_template('canvasser_html/view_assignment.html',assignments = assignments, detail=None)
 
