@@ -201,7 +201,7 @@ def createCampaign(u_email):
 		canvassers = request.form.getlist('canvassers') ## list of emails
 		questions_text = request.form['questions_text']  #string (multi-lines)
 		locations = request.form['locations_text'] #string (multi-lines)s
-		#print("%s %s %s %s %s %s %s %s %s" %(campaign_name, startDate, endDate, talking, duration, managers, canvassers, questions, locations))
+		print("%s %s %s %s %s %s %s %s %s" %(campaign_name, startDate, endDate, talking, duration, managers, canvassers, questions_text, locations))
 		
 		valid_locations =[]  #### Store valiad locations(address, lat, lng)
 
@@ -209,8 +209,11 @@ def createCampaign(u_email):
 			flash("Failed to create campaign, there're empty values!!")
 			return render_template('manager_html/create_campaign.html', managers = all_managers, canvassers = all_canvassers, index = 5)
 		## No empty
+		## Add campaign's creator
+		managers.append(u_email)
 		questions=[] ### split quqestion with new line into one list 
-		if questions_text != None and questions_text.strip(' \t\n\r') !="":
+
+		if questions_text != None and questions_text.strip() !="":
 			questions = questions_text.split("\n")
 
 		valid_locations =[]  #### Store valiad locations(address, lat, lng)
@@ -260,7 +263,7 @@ def createCampaign(u_email):
 
 		''' Add all questions to the newCamp relationship-3'''
 		for ele in questions:
-			if ele.strip(' \t\n\r') !="":
+			if ele.strip() !="":
 				ele_obj = Questionnaire(ele)
 				newCamp.campaigns_relation_3.append(ele_obj)
 
@@ -374,7 +377,7 @@ def editCampaign(u_email):
 				current_campaign.name = new_campaign_name
 				
 			questions=[] ### split quqestion with new line into one list 
-			if questions_text != None and questions_text.strip(' \t\n\r') !="":
+			if questions_text != None and questions_text.strip() !="":
 				questions = questions_text.split("\n")
 
 			locations =[]  #### Store valiad locations(address, lat, lng)
@@ -412,7 +415,7 @@ def editCampaign(u_email):
 
 			''' Add all questions to the newCamp relationship-3'''
 			for ele in questions:
-				if ele.strip(' \t\n\r') !="":
+				if ele.strip() !="":
 					ele_obj = Questionnaire(ele)
 					current_campaign.campaigns_relation_3.append(ele_obj)
 

@@ -41,7 +41,7 @@
                 <a href="{{ url_for('manager.editCampaign', u_email = session['info']['email'] ) }}">Edit Campaigns</a>
             </li>
             <li id ="view_ass">
-                <a href="{{ url_for('manager.viewAssignment') }}">View Assignments</a>
+                <a href="{{ url_for('manager.viewAssignment', u_email = session['info']['email'] )}}">View Assignments</a>
             </li>
             <li id ="edit_ass">
                 <a href="{{ url_for('manager.editAssignment') }}">Edit Assignments</a>
