@@ -84,20 +84,11 @@
     </div>
     <hr/><br/>
   <!---------------------------Questions Part--------------------->
-    <div class="form-group form-inline">
-        <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="question">New Question: </label>
-         <input class="form-control col-lg-5 input-md" id ="question" type="text" name ="question" placeholder ="Type New Question" onchange="toggle_question()" oninput="toggle_question()" >
-         <a class ="btn btn-primary disabled" id="add_question" onclick="add_question()" disabled> Add New Question </a>
+  <div class="form-inline">
+     <i class="fa fa-angle-double-right prefix"></i><label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="question">Set Questions:</label>
     </div>
-    <div class="form-group form-inline">
-      <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for="question_list">Added Question: </label>
-        <select multiple="multiple" class="form-control col-lg-5" name="question_list" id="question_list">
-          {% for q in question %}
-          <option value='{{q.question}}'>{{q.question}}</option>
-          {% endfor %}
-        </select>
-         <a class ="btn btn-primary" id='remove_question' onclick="remove_question()"> Remove Questions </a>
-    </div>
+     <br/>
+    <textarea class="form-control" rows="5" id="questions_text" name="questions_text" placeholder="Please enter one yes/no queston per line(eg: Did you heard of our product before?)">{% for q in question %}{{q.question + "\n"}}{% endfor %}</textarea>
     <hr/><br/>
  <!---------------------------Talking Point Part--------------------->
      <div class="form-group form-inline">
@@ -107,31 +98,21 @@
     <hr/><br/>
  <!---------------------------Duration Part--------------------->
      <div class="form-group form-inline">
-        <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="duration">Select Duration: </label>
-            <select class="form-control col-lg-5" name = "duration" required >
-                <option value="5" {% if duration == 5 %}selected{% endif%}>5 minutes</option>
-                <option value="10" {% if duration == 10 %}selected{% endif%}>10 minutes</option>
-                <option value="15" {% if duration == 15 %}selected{% endif%}>15 minutes</option>
-                <option value="20" {% if duration == 20 %}selected{% endif%}>20 minutes</option>
-                <option value="25" {% if duration == 25 %}selected{% endif%}>25 minutes</option>
-                <option value="30" {% if duration == 30 %}selected{% endif%}>30 minutes</option>
-            </select>
+        <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for="duration">Set Duration:</label>
+            <input class="form-control col-lg-5 input-md" type="number" id="duration" name="duration" min="1" max="30" placeholder="Duration should be between 1 and 300 minutes" value="{{duration}}" /><span style="padding-left: 5px; font-size: 18px">minutes</span>
     </div>
     <hr/><br/>
  <!---------------------------Location--------------------->
-    <div class="form-group form-inline">
-        <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="question">New Location: </label>
-         <input class="form-control col-lg-5 input-md" id="location" type="text" name ="location" placeholder="Type New location" onchange="toggle_location()" oninput="toggle_location()" >
-         <a class ="btn btn-primary disabled" id="add_location" onclick='add_location()' disabled> Add New Location </a>
+    <div class="form-inline">
+     <i class="fa fa-angle-double-right prefix"></i><label class="col-lg-2" style="font-weight: bold; font-size: 18px;">Set Locations: </label>
     </div>
+    <textarea class="form-control" rows="5" id="locations_text" name="locations_text" placeholder="Contains one address per line, in the following format: NUMBER, STREET, UNIT, CITY, STATE, ZIP">{% for l in location %}{% if not loop.last%}{{l.location + "\n"}}{% elif loop.last %}{{l.location}}{% endif %}{% endfor %}</textarea>
+    <hr/>
+
     <div class="form-group form-inline">
-        <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for="location_list">Added Location: </label>
-        <select multiple='multiple' class="form-control col-lg-5" name="location_list" id="location_list">
-          {% for l in location %}
-            <option value='{{l.location}}|{{l.lat}}|{{l.lng}}'>{{l.location}}</option>
-          {% endfor %}
-        </select>
-        <a class ="btn btn-primary" id='remove_location' onclick="remove_location()"> Remove Locations</a>
+        <label class="col-lg-2" style="font-weight: bold; font-size: 18px;" for ="location">Search location: </label>
+         <input class="form-control col-lg-5 input-md" id="location" type="text" name ="location" placeholder="Search locations here">
+         <a class ="btn btn-primary" id="add_location" onclick='add_location()'> Add New Location </a>
     </div>
     <div class="form-group form-inline">
         <div id="map" name="map_location" class="col-lg-8" style="margin-left: 10%; height: 350px;background-color: grey"></div>
