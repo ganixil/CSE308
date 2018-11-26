@@ -2,6 +2,7 @@
 
 {% block header %}
     <!-- Custom styles for this login page -->
+    <link href="/static/css/done_canvas.css" rel="stylesheet">
     <link href="/static/css/view_canvasser_ass.css" rel="stylesheet">
     <!----------Inital location Makers---->
   <script type="text/javascript">
@@ -114,7 +115,7 @@
     <div class="row">
    <!-- ----------- Past Assignments in list -->
       <div class="panel panel-primary col"id="assigment_list">
-        <div class="panel-heading" style="margin-left: 5%;"><h3 class="panel-title">Past assignments on List</h3>
+        <div class="panel-heading" style="margin-left: 5%;"><h3 class="panel-title"><strong>Past assignments on List</strong></h3><br/>
         </div>
         <div class="panel-body">
           {% if past_assignments is defined and past_assignments|length > 0 %}
@@ -132,7 +133,7 @@
     </div> 
    <!-- ----------- Upcoming Assignments on List -->
       <div class="panel panel-primary col"id="assigment_list">
-        <div class="panel-heading" style="margin-left: 5%;"><h3 class="panel-title">Upcoming Assignments on List</h3>
+        <div class="panel-heading" style="margin-left: 5%;"><h3 class="panel-title"><strong>Upcoming Assignments on List</strong></h3><br/>
         </div>
         <div class="panel-body">
         {% if upcoming_assignments is defined and upcoming_assignments|length > 0 %}
@@ -149,12 +150,12 @@
     </div>
   </div> 
 </div>
-<hr/>
+<hr/><br/>
 <div class="row">
 <!----------------Loading locations for creating markers on Map-------->
 
   <div class="panel  panel-primary col" id="result_panel">
-      <div class="panel-heading" style="margin-left: 5%;"><h3 class="panel-title">Locations on Map</h3>
+      <div class="panel-heading" style="margin-left: 5%;"><h3 class="panel-title"><strong>Assignment Locations on Map</strong></h3><br/>
       </div>
       <div class="panel-body">
         <div id="map" name="map" style=" height: 350px;background-color: grey"></div>
@@ -164,7 +165,7 @@
 
 <!----------------- Viiew Assignment Detail-------------->
 {% if detail %}
-    <div class="col-md-8" style="margin-left: 20%">
+    <div class="col-md-9" style="margin-left: 20%; font-size: 18px;">
         <div class="card-body">
             <div class="row">
                <div class="col-md-12">
@@ -237,19 +238,103 @@
                                 </div>
                         </div>
                         <!--------Has Result--------->                    
-
                           <div class="form-group row ">
-                            <label for="result" class="col-3 col-form-label"> Has Result(s) ? </label>
+                            <label for="result" class="col-3 col-form-label"> Did it be finished with result ? </label>
                               <label class="toggle" style="word-spacing: 10px;">
-                                  <input type="radio" id="result" name="result" {% if detail and detail['assignment'].done %} checked {% endif %} > <span class="label-text">Yes</span>
-                                  <input type="radio" id="result" name="result" {% if detail and ( not detail['assignment'].done )%} checked {% endif %}> <span class="label-text">No</span>
+                                  <input type="radio" id="result" name="result" {% if detail and detail['assignment'].done %} checked {% endif %} disabled> <span class="label-text">Yes</span>
+                                  <input type="radio" id="result" name="result" {% if detail and ( not detail['assignment'].done )%} checked {% endif %} disabled> <span class="label-text">No</span>
                               </label>
+                              <!----------- has result------------>
+                                <button class="btn btn-primary" type="button" style="margin-left:5%" id="result" {% if detail and ( not detail['assignment'].done )%} onclick="window.location.href='{{ url_for( 'canvasser.view_result', ass_id = detail['assignment'].id )}}'" disabled="false" {% else %} disabled="true" {% endif %}>See Results</button>
                           </div>
                 </div>
             </div>
         </div>
     </div>
     {% endif %}
+
+<!-------------Result details------------------->
+    <div class="col-md-8" style="margin-left: 20%; font-size: 18px;" >
+      <div class="card-body">
+            <div class="row">
+               <div class="col-md-12">
+                 <h4><i class="fa fa-info-circle fa-lg"></i><span style="padding-left:10px; font-weight: bold;">Detail Result Information</span></h4> 
+                 <hr/>
+                </div>
+            </div>
+             
+            <!------------- For Spoke To --------------------------->
+      <div class="form-group">
+         <i class="fa fa-question-circle" aria-hidden="true" style="padding-right: 10px;"></i><label>How do you rate your overall experience?</label><br/>
+         <div class ="form-check form-check-inline"style="margin-left: 10%;">
+           <label class="container">Yes
+              <input type="radio" name="radio" value="yes" checked disabled>
+              <span class="checkmark"></span>
+          </label>
+          <label class="container">No
+              <input type="radio" name="radio" value="no" disabled>
+              <span class="checkmark"></span>
+          </label>
+         </div>
+      </div>
+      <!-----------------For Rating------------------>
+      <div class="form-group">
+        <i class="fa fa-question-circle" aria-hidden="true" style="padding-right: 10px;"></i><label>How do you rate your overall experience?</label>
+         <div class="row">
+            <div class="col-lg-8 text-center rating-star disabled">
+                  <input type="radio" id="star5" disabled /><label class="full" for="star5" title="Awesome - 5 stars"></label>
+                  <input type="radio" id="star45" disabled /><label class="half" for="star45" title="Pretty good - 4.5 stars"></label>
+                  <input type="radio" id="star4" disabled /><label class="full" for="star4" title="Pretty good - 4 stars"></label>
+                  <input type="radio" id="star35" disabled /><label class="half" for="star35" title="Meh - 3.5 stars"></label>
+                  <input type="radio" id="star3" disabled /><label class = "full" for="star3" title="Meh - 3 stars"></label>
+                  <input type="radio" id="star25" disabled /><label class="half" for="star25" title="Kinda bad - 2.5 stars"></label>
+                  <input type="radio" id="star2" disabled /><label class="full" for="star2" title="Kinda bad - 2 stars"></label>
+                  <input type="radio" id="star15" disabled /><label class="half" for="star15" title="Meh - 1.5 stars"></label>
+                  <input type="radio" id="star1" disabled /><label class = "full" for="star1" title="Sucks big time - 1 star"></label>
+                  <input type="radio" id="starhalf"checked disabled /><label class="half" for="starhal" title="Sucks big time - 0.5 stars"></label>
+          </div>
+        </div>
+      </div>
+<!-------------------- Questionair---------------------------->
+  <hr/>
+      <div class="form-group">
+        <i class="fa fa-question-circle" aria-hidden="true" style="padding-right: 10px;"></i><label>Answers to Questionaires</label>
+      </div>
+      <div class="form-group" style="margin-left: 5%;">
+        <!------------ Q1--------------->
+       <i class="fa fa-quora" style="padding-right: 10px;">:</i><label>Put question here!</label>
+          <div class ="form-check form-check-inline"style="margin-left: 30%;">
+               <label class="container">Yes
+                  <input type="radio" name="q" value="yes" checked disabled>
+                  <span class="checkmark"></span>
+              </label>
+              <label class="container">No
+                  <input type="radio" name="q" value="no" disabled>
+                  <span class="checkmark"></span>
+              </label>
+         </div><br/>
+        <!------------ Q2--------------->
+       <i class="fa fa-quora" style="padding-right: 10px;">:</i><label>Put question here q2!</label>
+          <div class ="form-check form-check-inline"style="margin-left: 30%;">
+               <label class="container">Yes
+                  <input type="radio" name="q2" value="yes" checked disabled>
+                  <span class="checkmark"></span>
+              </label>
+              <label class="container">No
+                  <input type="radio" name="q2" value="no" disabled>
+                  <span class="checkmark"></span>
+              </label>
+         </div>
+      </div>
+    <hr/>
+  <!---------------- Brief Notes----------------------->
+      <div class="form-group">
+         <i class="fa fa-question-circle" aria-hidden="true" style="padding-right: 10px;"></i><label for="comment">comment</label>
+        <textarea class="form-control" rows="5" type="text" id="comment" placeholder="None" style="font-size: 20px;" readonly></textarea>
+      </div>
+            
+        </div>
+    </div>
     <!-- map js files--> 
     <script  src="/static/javascript/canvasser_script/viewAssignment.js"></script> 
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCGuEpRycbTYDCcS6uxiot0x0eSLkpTbiY&libraries=places&callback=initAutocomplete"></script>

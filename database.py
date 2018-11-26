@@ -204,6 +204,12 @@ class Assignment(Base):
     order = Column(Integer, nullable = False)
     ########   Flag to record the assginemtn has done or not
     done = Column(Boolean, nullable=False, default=False)
+    '''
+    one-one relation to result, but i can use many-to-many relation
+    As always, the relationship.backref and backref() functions may be used in lieu of the relationship.back_populates approach;
+     to specify uselist on a backref, use the backref() function:
+    '''
+    assignment_relation = relationship("Result", backref="assignments",cascade="all,save-update,delete-orphan")
 
     UniqueConstraint(canvasser_id, location_id, theDate)
 
@@ -214,6 +220,29 @@ class Assignment(Base):
     def __repr__(self):
         return "<Assignment(location_id='%d', canvasser_id='%s', theDate='%s', order='%d')>" % (self.location_id, self.canvasser_id, self.theDate, self.order)
 
+## One to One relation with Assignment
+## One assignment has one result
+class Result(Base):
+    __tablename__='result'
+
+    id = Column(Integer, primary_key = True)
+    assignment_id = Column(Integer, ForeignKey('assignments.id', onupdate="CASCADE", ondelete="CASCADE"))
+    questions = Column(Text, nullable = True) ## q1,q2,q3,q4,
+    answers = Column(Text, nullable = True)  # 0-no answer, 1- yes answer; 2--no answer
+    ### answer format 0,1,2,0,
+    spoke_to = Column(Boolean, nullable= False, default=False)
+    rating = Column(Float, nullable= False, default=0.0)
+    brief_notes = Column(Text, default="None", nullable=False)
+
+    def __init__(self, questions,answers,spoke_to,rating, brief_notes):
+        self.questions=questions
+        self.answers = answers
+        self.spoke_to = spoke_to
+        self.rating = rating
+        self.brief_notes = brief_notes
+
+    def __repr__(self):
+        return "<Result(result_id='%d', rating='%f', brief_notes='%s')>" % (self.id, self.rating, self.brief_notes)
 
 # For populating the database for testing purposes.
 if __name__ == "__main__":

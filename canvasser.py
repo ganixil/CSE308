@@ -23,6 +23,7 @@ user_email=""
 assignments={}
 past_assignments={}  ## store past assignments which date value less than today
 upcoming_assignments={} ## store past assignments which date value not less than today
+detail={}
 
 today = datetime.date.today()
 
@@ -149,6 +150,8 @@ def view_assignment(u_email):
 		flash("You do not have any assignments")
 		return redirect(url_for('canvasser.canPage', u_name = session['info']['name']))
 	'''if there're some assignments'''
+	past_assignments={}
+	upcoming_assignments={}
 	for ele in assignments:
 		if ele.theDate < today:
 			past_assignments[ele] = assignments[ele]
@@ -163,6 +166,7 @@ def view_assignment(u_email):
 def view_assignment_detail(ass_id):
 	global assignments
 	global user_email
+	global detail
 	print("enter view_assigment detail")
 
 	detail={}
@@ -191,6 +195,16 @@ def view_assignment_detail(ass_id):
 	detail['talking'] = camp.talking
 
 	return render_template('canvasser_html/view_assignment.html',upcoming_assignments= upcoming_assignments, past_assignments= past_assignments, detail=detail)
+
+@bp.route('/view_result/<ass_id>')
+def view_result(ass_id):
+	print("enter view result : canvasser")
+	global upcoming_assignments
+	global past_assignments
+	global detail
+	return render_template('canvasser_html/view_assignment.html',upcoming_assignments= upcoming_assignments, past_assignments= past_assignments, detail=detail)
+
+
 
 # Enter canvas_start html
 @bp.route('/set_start_canvasser')
@@ -247,10 +261,6 @@ def set_canvasser():
 	if current_ass :
 		current_camp_name = db_session.query(CampaignLocation).filter(CampaignLocation.id == current_ass.location_id).first()
 	ass_info['campaign_name'] = current_camp_name.campaign_name
-
-	# print("assignment Info for canvass")
-	# for ele in ass_info:
-	# 	print("%s---> %s" %(ele,ass_info[ele]))
 
 	return render_template('canvasser_html/canvas_start.html', assignments= assignments, ass_info = ass_info)
 

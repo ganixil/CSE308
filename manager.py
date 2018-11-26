@@ -348,15 +348,14 @@ def editCampaign(u_email):
 			duration = request.form.get('duration')  # default = ''
 			managers = request.form.getlist('managers')  ## format = email
 			canvassers = request.form.getlist('canvassers') ## format = email
-			questions = request.form.getlist('question_list')
-			locations = request.form.getlist('location_list')  ## format = address|lat|lng
+			questions_text = request.form['questions_text']  #string (multi-lines)
+			locations_text = request.form['locations_text'] #string (multi-lines)s  ## format = address|lat|lng
+
+
 
 			current_campaign = db_session.query(Campaign).filter(Campaign.name == old_campaign_name).first()
 
-			if new_campaign_name is '':
-				current_campaign.name = old_campaign_name
-			else:
-				current_campaign.name = new_campaign_name
+			
 
 
 			current_campaign.startDate = startDate
@@ -370,6 +369,35 @@ def editCampaign(u_email):
 			current_campaign.campaigns_relation_3 = []
 
 			db_session.commit()
+
+			if new_campaign_name is '':
+				current_campaign.name = old_campaign_name
+			else:
+				current_campaign.name = new_campaign_name
+				
+			questions=[] ### split quqestion with new line into one list 
+			if questions_text != None and questions_text.strip() !="":
+				questions = questions_text.split("\n")
+
+			locations =[]  #### Store valiad locations(address, lat, lng)
+
+			''' Check if locations are valid or not'''
+			if locations_text != "" :
+				 locations_arr = locations_text.split('\n')
+				 for ele in locations_arr:
+				 	if(gmaps.geocode(ele) == []):
+				 		flash("Failed to create campaign, the address("+ele+") is not valid!!")
+				 		return render_template('manager_html/create_campaign.html', managers = all_managers, canvassers = all_canvassers, index = 5)
+				 	lat = gmaps.geocode(ele)[0]['geometry']['location']['lat']
+				 	lng = gmaps.geocode(ele)[0]['geometry']['location']['lng']
+				 	address=gmaps.geocode(ele)[0]['formatted_address']
+				 	test = (address,lat, lng)
+				 	'''Check if there're some repeated locations'''
+				 	if test in locations:
+				 		flash("Failed to create campaign, the address: ("+address+") is repeated!!!")
+				 		return render_template('manager_html/create_campaign.html', managers = all_managers, canvassers = all_canvassers, index = 5)
+				 	else:
+				 		locations.append((address,lat, lng))
 
 			for ele in managers:
 				ele_obj = CampaignManager()
@@ -386,21 +414,21 @@ def editCampaign(u_email):
 
 			''' Add all questions to the newCamp relationship-3'''
 			for ele in questions:
-				ele_obj = Questionnaire(ele)
-				current_campaign.campaigns_relation_3.append(ele_obj)
+				if ele.strip() !="":
+					ele_obj = Questionnaire(ele)
+					current_campaign.campaigns_relation_3.append(ele_obj)
 
 			''' Add all locationto the newCamp relationship-2'''
 			for ele in locations:
-				ele_arr = ele.split('|')
-				ele_obj =  CampaignLocation(ele_arr[0],float(ele_arr[1]), float(ele_arr[2]))
+				ele_obj =  CampaignLocation(ele[0], float(ele[1]), float(ele[2]))
 				current_campaign.campaigns_relation_2.append(ele_obj)
+
 
 			db_session.commit()
 
 			return redirect(url_for('manager.manPage'))
 	else:
 		return render_template('manager_html/edit_campaign.html', all_campaigns = all_campaigns,index = 6)
-
 
 
 ''' Method for deleting Campaing'''
