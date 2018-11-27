@@ -13,7 +13,6 @@
   {% endwith %}
 </script>
 {% endblock %}
-
 <!----------------------BODY PART---------------------------------------------->
 {% block body %}
       <h2 style="text-align: center;padding-top:10px;">Canvassing Assignment Creation</h2>
@@ -26,7 +25,7 @@
     </h5><hr/>
 
     <div style="float: center">
-   <!-- ----------- Locations on the List -->
+   <!-- ----------- Basic Current Today's Assignment------>
       <div class="panel panel-primary col" id="current_assignment">
           <div class="card" style ="margin-left: 5%;">
             <h5 class="card-header">Current Day's Canvassing Assignment</h5>
@@ -35,15 +34,72 @@
               <div>
                   <ul class="list-group list-group-flush">
                     <li class="list-group-item" style="font-weight: bold;"><mark>Campaign Name:</mark>&nbsp&nbsp {{ ass_info['campaign_name'] }} </li>
+
                     <li class="list-group-item" style="font-weight: bold;"><mark>The Date :</mark>&nbsp&nbsp {{ ass_info['current_ass'].theDate }} </li>
-                  </ul><br/>
+
+                    <li class="list-group-item" style="font-weight: bold;"><mark>Do you finish:</mark>&nbsp&nbsp Not Yet </li>
+                  </ul>
               </div>
+           </div>
         </div>
-      </div>
-  </div> 
+    </div><br/>
+    <!--------- Next Location-------------> 
+    <div class="panel  panel-primary col" id="next_location">
+      <div class="panel-body">
+        <div class="card" style ="margin-left: 5%;">
+            <h5 class="card-header"> All Unvisited Locations </h5>
+            <div class="card-body">
+            {% if ass_info['unvisited'] is defined and ass_info['unvisited']|length > 0 %}
+            <form  method="post" action ="{{ url_for('canvasser.change_next_location')}}" role="form">
+      <!------------- Map And Direction Panel----------------------->
+              <div class="form-group form-inline" style="margin-left: 5%;">
+                  <label style="padding-right: 10px; font-weight: bold;" for="start">The start Location:</label>
+                  <input type="text" class="form-control col-md-5" value="{{ ass_info['rec_visited'] }}" id="start" name="start" readonly>
+              </div>
+      <!------ The next location is the fist of unvisited locations--->
+              <div class="form-group form-inline" style="margin-left: 5%;">
+                  <label style="padding-right: 10px; font-weight: bold;" for="next_loc">The next location:</label>
+                  <input type="text" class="form-control col-md-5" value="{{ ass_info['unvisited'][0] }}" id="next_loc" name="next_loc" disabled>
+              </div>
+              <div class="form-group form-inline">
+                <select class="form-control col-8" id="end" name="end" onchange="calcRoute();"required autofocus>
+                     {% for instance in ass_info['unvisited'] %}
+                        <option value="{{instance.id}}|{{instance.assignment_id}}"> #{{instance.order}}: {{ instance.location }}</option>
+                      {% endfor %}
+                  </select>
+                  <button class="btn btn-primary" id="submit" name="submit" type="submit"> <i class="fa fa-plus-circle"></i> Change the Next Location </button>
+              </div>
+          </form>
+          <!------------ Choose Travel Mode ----------------------->
+        <div id="floating-panel">
+          <b>Mode of Travel: </b>
+                <select id="mode"  onchange="calcRoute();">
+                  <option value="DRIVING">Driving</option>
+                  <option value="WALKING">Walking</option>
+                  <option value="BICYCLING">Bicycling</option>
+                  <option value="TRANSIT">Transit</option>
+                </select>
+        </div>
+        <div class="row" style="margin-left: 5%;">
+              <div id="map" name="map"></div>
+              <div class="card" style="margin-left: 2%;">
+                <div class="card-body">
+                    <div id="right-panel"></div>
+                </div>
+            </div>
+        </div>
+          {% else %}
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item" style="font-weight: bold;"><mark>The Next Location:</mark> Without any next locations </li>
+            </ul><br/>
+          {% endif %}
+          </div>
+        </div>
+    </div>
+  </div>
 </div><hr/><br/>
 
-<!-- <script type="text/javascript" src="/static/javascript/canvasser_script/canvas_start.js"></script> -->
+<script type="text/javascript" src="/static/javascript/canvasser_script/create_canvass.js"></script>
 <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCGuEpRycbTYDCcS6uxiot0x0eSLkpTbiY&callback=initMap">
 </script>    

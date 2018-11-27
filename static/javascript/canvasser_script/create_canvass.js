@@ -25,23 +25,30 @@ $(document).ready(function () {
 function calcRoute() {
   var selectedMode = document.getElementById('mode').value;
   var start = document.getElementById('start').value;
+  alert(start);
   var end_select = document.getElementById("end");
   var end = end_select.options[end_select.selectedIndex].innerHTML;
+ alert(end);
   if(start){
-	  var request = {
-	       origin:start,
-	       destination: end,
-	      travelMode: google.maps.TravelMode[selectedMode]
-	  };
+  		if(start != end){
+		 	 var request = {
+		       origin:start,
+		       destination: end,
+		      travelMode: google.maps.TravelMode[selectedMode]
+		  };
 
-	  directionsService.route(request, function(response, status) {
-	    if (status == 'OK') {
-	      directionsDisplay.setDirections(response);
-	    }
-	    else{
-	    	window.alert('Directions request failed due to ' + status);
-	    }
-	  });
+		  directionsService.route(request, function(response, status) {
+		    if (status == 'OK') {
+		      directionsDisplay.setDirections(response);
+		    }
+		    else{
+		    	window.alert('Directions request failed due to ' + status);
+		    }
+		  });
+		}
+		 else{
+		 	return "no directions need to be shown";
+		 }
 	}
 	else{
 		window.alert("Sorry, You did not have any start locations to get the travel directions!!")

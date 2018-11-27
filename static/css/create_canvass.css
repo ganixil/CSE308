@@ -55,7 +55,6 @@ body {
         overflow: auto;
  }
 
-
 @media print {
 #map {
           height: 450px;
