@@ -2,7 +2,7 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for,session
 )
 from werkzeug.exceptions import abort
-from database import db_session, User, CanAva, Role, CampaignCanvasser, Assignment, CampaignLocation, Campaign
+from database import db_session, User, CanAva, Role, CampaignCanvasser, Assignment, CampaignLocation, Campaign, Questionnaire, Result, TaskLocation
 import json
 import logging
 import datetime
@@ -220,10 +220,12 @@ def create_canvass():
 	if not current_assignment:
 		flash("Fail to canvassing assingment creation.  You do not have current today assignment!")
 		return redirect(url_for('canvasser.canPage', u_name = session['info']['name']))
+	
 	''' You have current today's assignment'''
 	### Find the most rec_visited location ###
 	rec_visited = None
 	unvisited = []
+	
 	for ele in current_assignment.assignment_relation_task_loc:
 		if ele.visited:
 			rec_visited = ele
@@ -232,6 +234,12 @@ def create_canvass():
 
 	''' Retrieve Campaign Canvasseer Object to get Campaign Name'''
 	camp_obj =db_session.query(CampaignCanvasser).filter(CampaignCanvasser.id == current_assignment.canvasser_id).first()
+
+	'''Retriving basic Campaign Info from Campaign'''
+	campaign = db_session.query(Campaign).filter(Campaign.name == camp_obj.campaign_name).first()
+
+	questions = db_session.query(Questionnaire).filter(Questionnaire.campaign_name == campaign.name).all()
+
 	if not camp_obj:
 		flash("Fail to canvassing assingment creation.No campaign!!")
 		return redirect(url_for('canvasser.canPage', u_name = session['info']['name']))
@@ -249,6 +257,8 @@ def create_canvass():
 	ass_info['unvisited'] = unvisited
 	ass_info['locations'] = locations
 	ass_info['campaign_name'] = camp_obj.campaign_name
+	ass_info['campaign'] = campaign
+	ass_info['questions'] = questions
 
 	# print("assignemnt Info for canvass")
 	# for ele in ass_info:
@@ -308,6 +318,48 @@ def change_next_location():
 			# assignments.keys() = sorted(assignments.keys(), key=lambda x: x.order)
 		flash("Change Next Location Successfully!!")
 
+	return redirect(url_for("canvasser.create_canvass"))
+
+@bp.route('/submit_result/<location>', methods=['POST'])
+def submit_result(location):
+
+	location = db_session.query(TaskLocation).filter(TaskLocation.id == location).first()
+
+	print(location)
+
+	if request.method == 'POST':
+		spoke_to = request.form['spoke_to']
+		if spoke_to == "0":
+			spoke_to = False
+		elif spoke_to == "1":
+			spoke_to = True
+
+		rating = request.form['rating']
+
+		temp_assign = db_session.query(Assignment).filter(Assignment.id == location.assignment_id).first()
+
+		campaign_name = db_session.query(CampaignCanvasser).filter(CampaignCanvasser.id == temp_assign.canvasser_id).first().campaign_name
+
+		questions = db_session.query(Questionnaire).filter(Questionnaire.campaign_name == campaign_name).all()
+
+		answers = ""
+		for q in questions:
+			answers+=request.form[q.question]
+
+		quest = ""
+		for q in questions:
+			quest+= str(q.id)+","
+
+		brief_note = request.form['brief_note']
+
+		result = Result(quest,answers,spoke_to,rating,brief_note)
+
+		location.taskLocation_relation = result
+		location.visited = True
+
+		db_session.commit()
+		flash("Onto Next Location")
+		return redirect(url_for("canvasser.create_canvass"))
 	return redirect(url_for("canvasser.create_canvass"))
 
 

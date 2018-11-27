@@ -244,8 +244,8 @@ class Result(Base):
     id = Column(Integer, primary_key = True)
     taskLocation_id = Column(Integer, ForeignKey('task_locations.id', onupdate="CASCADE", ondelete="CASCADE"))
     questions = Column(Text, nullable = True) ## q1,q2,q3,q4,
-    answers = Column(Text, nullable = True)  # 0-no answer, 1- yes answer; 2--no answer
-    ### answer format 0,1,2,0,
+    answers = Column(Text, nullable = True)  # 0-no, 1-yes
+    ### answer format 0101
     spoke_to = Column(Boolean, nullable= False, default=False)
     rating = Column(Float, nullable= False, default=0.0)
     brief_notes = Column(Text, default="None", nullable=False)

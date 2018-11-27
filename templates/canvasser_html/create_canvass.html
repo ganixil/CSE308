@@ -2,6 +2,12 @@
 
 {% block header %}
     <link href="/static/css/create_canvass.css" rel="stylesheet">
+    <link rel="stylesheet"  href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/star-rating.css" media="all" rel="stylesheet" type="text/css"/>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="/static/javascript/canvasser_script/star-rating.js" type="text/javascript"></script>    
     <!-- Alert for flash message-->
     <script>
     {% with messages = get_flashed_messages() %}
@@ -36,7 +42,6 @@
                     <li class="list-group-item" style="font-weight: bold;"><mark>Campaign Name:</mark>&nbsp&nbsp {{ ass_info['campaign_name'] }} </li>
 
                     <li class="list-group-item" style="font-weight: bold;"><mark>The Date :</mark>&nbsp&nbsp {{ ass_info['current_ass'].theDate }} </li>
-
                     <li class="list-group-item" style="font-weight: bold;"><mark>Do you finish:</mark>&nbsp&nbsp Not Yet </li>
                   </ul>
               </div>
@@ -56,16 +61,16 @@
             <form  method="post" action ="{{ url_for('canvasser.change_next_location')}}" role="form">
       <!------------- Map And Direction Panel----------------------->
               <div class="form-group form-inline" style="margin-left: 5%;">
-                  <label style="padding-right: 10px; font-weight: bold;" for="start"><mark>The start Location:</mark></label>
+                  <label style="padding-right: 10px; font-weight: bold;" for="start"><mark>The Current Location:</mark></label>
                   <input type="text" class="form-control col-md-5" value="{{ ass_info['rec_visited'].location }}" id="start" name="start" readonly>
               </div>
       <!------ The next location is the fist of unvisited locations--->
               <div class="form-group form-inline" style="margin-left: 5%;">
-                  <label style="padding-right: 10px; font-weight: bold;" for="next_loc"><mark>The next location:</mark></label>
+                  <label style="padding-right: 10px; font-weight: bold;" for="next_loc"><mark>The Next location:</mark></label>
                   <input type="text" class="form-control col-md-5" value="{{ ass_info['unvisited'][0].location}}" id="next_loc" name="next_loc" disabled>
               </div>
               <div class="form-group form-inline" style="margin-left: 5%;">
-                <label style="padding-right: 10px; font-weight: bold;" for="end"><mark>All unvisited Locations:</mark></label>
+                <label style="padding-right: 10px; font-weight: bold;" for="end"><mark>All Unvisited Locations:</mark></label>
                 <select class="form-control col-5" id="end" name="end" onchange="calcRoute();"required autofocus>
                      {% for instance in ass_info['unvisited'] %}
                         <option value="{{instance.id}}|{{instance.assignment_id}}">{{ instance.location }}</option>
@@ -92,6 +97,39 @@
                 </div>
             </div>
         </div>
+        <!-----------------Form for submitting answered questions of the assignned task-------->
+        <div>
+          <form  method="post" action ="{{ url_for('canvasser.submit_result',location=ass_info['unvisited'][0].id)}}" role="form">
+            <div class="form-group">
+              <label style="font-weight: bold;"><h3>Spoke to</h3></label>
+              <br>
+              <label class="row-3"><input type="radio" name="spoke_to" value="1" required>  Yes</label>
+              <label class="row-3"><input type="radio" name="spoke_to" value="0" required>  No</label>
+            </div>
+            <br>
+            <div class="form-group">
+              <label style="font-weight: bold;"><h3>How would you rate this visit</h3></label>
+              <input id="star-rating" value="4" type="number" class="rating" name="rating" min=0 max=5 step=0.1 data-size="lg">
+            </div>
+            {% for questions in ass_info['questions'] %}
+            <div class="form-group" >
+              <label style="font-weight: bold;"><h3>{{questions.question}}</h3></label>
+              <br>
+              <label class="row-3"><input type="radio" name="{{questions.question}}" value="1" required>  Yes</label>
+              <label class="row-3"><input type="radio" name="{{questions.question}}" value="0" required>  No</label>
+            </div>
+            {% endfor %}
+            <div class="form-group">
+              <label style="font-weight: bold;"><h3>Brief Notes:</h3></label>
+              <br>
+              <textarea class="form-control" rows="5"  name="brief_note" placeholder="Input any extra comments abouts this task"></textarea>
+            </div>
+            <div class="form-group">
+               <button class="btn btn-success btn-lg" id="submit" name="submit" type="submit"> <i class="fa fa-plus-circle"></i> Submit Questions and Ratings</button>
+            </div>
+          </form>
+        </div>
+
           {% else %}
             <ul class="list-group list-group-flush">
               <li class="list-group-item" style="font-weight: bold;"><mark>The Next Location:</mark> Without any next locations </li>
@@ -102,6 +140,7 @@
     </div>
   </div>
 </div><hr/><br/>
+
 
 <script type="text/javascript" src="/static/javascript/canvasser_script/create_canvass.js"></script>
 <script async defer
