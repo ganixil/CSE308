@@ -94,7 +94,7 @@ def print_solution(data, routing, assignment):
 
 # assignment creation function
 def makeAssign(locations, duration):
-    formattedLocations = [(l[0] * 69, l[1] * 69) for l in locations]
+    #formattedLocations = [(l[0] * 69, l[1] * 69) for l in locations]
     assignmentCollection = []
     vehicle_id = 0
     globalVar = db_session.query(GlobalVariables).first()
@@ -103,10 +103,10 @@ def makeAssign(locations, duration):
     
 
     # Instantiate the data problem.
-    while(len(formattedLocations) > 1):
-        
+    while(len(locations) > 1):
+        formattedLocations = [(l[0] * 69, l[1] * 69) for l in locations]
         #data = create_data_model(locations)
-        [num_vehicles, depot, locations, dist_matrix] = create_data_model(formattedLocations)
+        [num_vehicles, depot, loca, dist_matrix] = create_data_model(formattedLocations)
         num_locations = len(formattedLocations)
         routing = pywrapcp.RoutingModel(num_locations, num_vehicles, depot)
         dist_callback = CreateDistanceCallback(dist_matrix)
@@ -151,10 +151,10 @@ def makeAssign(locations, duration):
         # remove used locations from the data set before the next mapping iteration
         locElements = []
         for x in range(len(locs)):
-            locElements.append(formattedLocations[locs[x]])
+            locElements.append(locations[locs[x]])
         assignmentCollection.append(locElements)
         for x in range(len(locElements)): 
-            formattedLocations.remove(locElements[x])
+            locations.remove(locElements[x])
     
     return assignmentCollection
 
