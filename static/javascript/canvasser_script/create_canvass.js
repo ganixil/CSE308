@@ -25,13 +25,15 @@ $(document).ready(function () {
 function calcRoute() {
   var selectedMode = document.getElementById('mode').value;
   var start = document.getElementById('start').value;
-  alert(start);
   var end_select = document.getElementById("end");
-  var end = end_select.options[end_select.selectedIndex].innerHTML;
- alert(end);
-  if(start){
-  		if(start != end){
-		 	 var request = {
+  var end = end_select.options[end_select.selectedIndex].text;
+
+  if(start == end){
+  		document.getElementById('submit').disabled = true;
+		document.getElementById('end').disabled = true;
+	}
+  if(start && end){
+		 var request = {
 		       origin:start,
 		       destination: end,
 		      travelMode: google.maps.TravelMode[selectedMode]
@@ -45,10 +47,6 @@ function calcRoute() {
 		    	window.alert('Directions request failed due to ' + status);
 		    }
 		  });
-		}
-		 else{
-		 	return "no directions need to be shown";
-		 }
 	}
 	else{
 		window.alert("Sorry, You did not have any start locations to get the travel directions!!")
