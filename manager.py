@@ -2,7 +2,7 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for
 )
 from werkzeug.exceptions import abort
-from database import db_session, User, Campaign, Role,CampaignLocation,CampaignCanvasser, CampaignManager, Questionnaire, Assignment, GlobalVariables, CanAva
+from database import db_session, User, Campaign, Role,CampaignLocation,CampaignCanvasser, CampaignManager, Questionnaire, Assignment, GlobalVariables, CanAva, TaskLocation
 from sqlalchemy.sql.expression import func
 from gmap import key
 import googlemaps
@@ -31,7 +31,7 @@ def createAssignment(newCamp):
 
 	# get headquarters for starting location for routing algorithm
 	globalVars = db_session.query(GlobalVariables).first()
-	hq = (globalVars.hqX, globalVars.hqY)
+	hq = (0, 0)
 	# get campaign location data
 	locations = []
 	# add the headquarters to the location set
@@ -47,6 +47,7 @@ def createAssignment(newCamp):
 
 	# make assignments with the routing alorithm
 	assignments = makeAssign(locations, newCamp.duration)
+	print("assignments %s" %assignments)
 
 	dates = [] ###### Store the Valid CanAva Objects
 
@@ -66,43 +67,53 @@ def createAssignment(newCamp):
 	mappedAssignments = {}  ### Key = Canvasser'role_id Value = CanAva and assignment
 	while(len(dates) > 0 and len(assignments) > 0):
 		dTemp = dates.pop(0)  #### CanAva
-		aTemp = assignments.pop(0)  #####  Location's lat and lng
+		aTemp = assignments.pop(0)  #####  list of set(lat, lng)
+		print("atemp---> %s" %aTemp)
+
 		if(dTemp.role_id in mappedAssignments):
 			mappedAssignments[dTemp.role_id].append((dTemp,aTemp))
 		else:
 			mappedAssignments[dTemp.role_id] = [(dTemp, aTemp)]
-
 	
 	#if no more assingments then this mapping is possible
 	if(len(assignments) == 0):
 		assignmentPossible = True
 
 	## add assignments to database
-	for ele in mappedAssignments:  ## Key---> Role Id ; Value= the serveral list of [CanAva, assingment]
+	for ele in mappedAssignments:  ## Key---> Role Id ; Value= the serveral list of [(CanAva, assingment),(...)]
 		# ele is the key---> role_id
 		campCanvasser= db_session.query(CampaignCanvasser).filter(CampaignCanvasser.campaign_name == newCamp.name, CampaignCanvasser.role_id == ele).first()
-		for order in range(len(mappedAssignments[ele])):
-			######### Order ---> serveral list of [CanAva, assignment]
-			####### mappedAssignments[ele][order][0]---> get CanAva
-			ass_obj = Assignment(mappedAssignments[ele][order][0].theDate, order)
+		## mappedAssignments[ele]--> sets of (CanAva, assignment)
+		for ele_ass  in range(mappedAssignments[ele]):
+			###### ele_ass =one set (CanAva, assignment)
+			### ele_ass[0] --- CanAva
+			### ele_ass[1] -- assignment
+			ass_obj = Assignment(ele_ass[0].theDate, False)
+			## ele_ass[1] -----[(lat, lng), (lat1, lng1)....]
+			for order in len(ele_ass[1]):
+				lat = ele_ass[1][order][0]
+				print("lat  $s"% lat)
+				lng = ele_ass[1][order][1]
+				## Get location from the campaign location db
+				allCampLocation =db_session.query(CampaignLocation).filter(CampaignLocation.campaign_name == newCamp.name).all()
+				### Get campLocation Object, and retrieve location address string: loc
+				campLocation = [loc for loc in allCampLocation if (math.isclose(loc.lat, lat) and math.isclose(loc.lng, lng))]
+				loc = compLocation.location
+				print("loc %s" %loc)
+				#### Create Task Location Object
+				task_loc_obj = TaskLocation(loc,lat,lng,order)
+				''' Add TaskLocation Object to Assignment Obejct'''
+				ass_obj.assignment_relation_task_loc.append(task_loc_obj)
+
 			''' Add Assignment Object to CampaignCanvasser Obejct'''
 			campCanvasser.canvasser_relation.append(ass_obj)
-
-			####### mappedAssignments[ele][order][1][0]---> get assignment(lat, lng)
-			lat =mappedAssignments[ele][order][1][0][0]  ####### Lat
-			lng = mappedAssignments[ele][order][1][0][1]  ########## lng
-			''' Add Assignment Object to CampaigbLocation Obejct'''
-			allCampLocation =db_session.query(CampaignLocation).filter(CampaignLocation.campaign_name == newCamp.name).all()
-			campLocation = [loc for loc in allCampLocation if (math.isclose(loc.lat, lat) and math.isclose(loc.lng, lng))]
-			campLocation[0].location_relation.append(ass_obj)
 
 			db_session.commit()
 
 			# remove taken dates out of available in the database
 			# Delet(CanAva)
-			db_session.delete(mappedAssignments[ele][order][0])
+			db_session.delete(ele_ass[0])
 			db_session.commit()
-
 
 	return assignmentPossible
 

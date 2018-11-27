@@ -119,8 +119,6 @@ class CampaignLocation(Base):   # Association Table (Campaign + Locations)
     lat = Column(Float,nullable = False)
     lng = Column(Float,nullable = False)
 
-    location_relation=relationship("Assignment", backref="campaign_locations",cascade="all,save-update,delete-orphan")
-
     UniqueConstraint(campaign_name, location)
 
     def __init__(self,  location, lat, lng):
@@ -166,14 +164,10 @@ class GlobalVariables(Base):
     id = Column(Integer, primary_key=True)
     workDayLength = Column(Integer, default = 1, nullable =False)
     averageSpeed = Column(Float, default = 1, nullable = False)
-    hqX = Column(Float, nullable=False)
-    hqY = Column(Float, nullable =False)
 
-    def __init__(self, workDayLength, averageSpeed, hqX, hqY):
+    def __init__(self, workDayLength, averageSpeed):
         self.workDayLength = workDayLength
         self.averageSpeed = averageSpeed
-        self.hqX = hqX
-        self.hqY = hqY
 
     def __repr__(self):
         return "<GlobalVariables(workDayLength='%d', averageSpeed='%f')>" % (self.workDayLength, self.averageSpeed)
@@ -193,15 +187,13 @@ class CanAva(Base):
     def __repr__(self):
         return "<CanAva(role_id='%d', theDate='%s')>" % (self.role_id, self.theDate)
 
-
+###### One canvasser has one task in one day for a specified campaign #######
 class Assignment(Base):
     __tablename__='assignments'
 
     id = Column(Integer, primary_key = True)
     canvasser_id = Column(Integer, ForeignKey('campaign_canvassers.id', onupdate="CASCADE", ondelete="CASCADE"))
-    location_id = Column(Integer, ForeignKey('campaign_locations.id', onupdate="CASCADE", ondelete="CASCADE"))
     theDate = Column(Date, nullable= False)
-    order = Column(Integer, nullable = False)
     ########   Flag to record the assginemtn has done or not
     done = Column(Boolean, nullable=False, default=False)
     '''
@@ -209,16 +201,40 @@ class Assignment(Base):
     As always, the relationship.backref and backref() functions may be used in lieu of the relationship.back_populates approach;
      to specify uselist on a backref, use the backref() function:
     '''
-    assignment_relation = relationship("Result", backref="assignments",cascade="all,save-update,delete-orphan")
+    ##### One assignment has one task, but one task has multiple locations ######
+    assignment_relation_task_loc= relationship("TaskLocation", backref="assignments",cascade="all,save-update,delete-orphan")
+    ##### One assignment has one result  ##########
+    assignment_relation_re = relationship("Result", uselist=False, backref="assignments", cascade="all,save-update,delete-orphan")
 
-    UniqueConstraint(canvasser_id, location_id, theDate)
+    UniqueConstraint(canvasser_id, theDate)
 
-    def __init__(self, theDate,order):
+    def __init__(self,theDate, done):
         self.theDate = theDate
+        self.done = done
+
+    def __repr__(self):
+        return "<Assignment( canvasser_id='%s', theDate='%s')>" % (self.canvasser_id, self.theDate)
+
+####### One Task is a set of locations #############
+class TaskLocation(Base):
+    __tablename__='task_locations'
+
+    id = Column(Integer, primary_key = True)
+    assignment_id=Column(Integer, ForeignKey('assignments.id', onupdate="CASCADE", ondelete="CASCADE"))
+    location = Column(String(100),nullable=False)
+    lat = Column(Float,nullable = False)
+    lng = Column(Float,nullable = False)
+    order = Column(Integer, nullable = False)
+
+    def __init__(self, location, lat, lng, order):
+        self.location = location
+        self.lat = lat
+        self.lng = lng
         self.order = order
 
     def __repr__(self):
-        return "<Assignment(location_id='%d', canvasser_id='%s', theDate='%s', order='%d')>" % (self.location_id, self.canvasser_id, self.theDate, self.order)
+        return "<TaskLocation('id='%d', location='%s', assignment_id='%d', order='%d')>" % (self.id, self.location, self.assignment_id, self.order)
+
 
 ## One to One relation with Assignment
 ## One assignment has one result
@@ -337,7 +353,7 @@ if __name__ == "__main__":
     campaign2.campaigns_relation_2.append(location6)
 
 
-    glo = GlobalVariables(1,1,1,1)
+    glo = GlobalVariables(1,1)
     db_session.add(glo)
     
     db_session.commit()
