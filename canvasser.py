@@ -12,25 +12,20 @@ import re
 # Create canvasser blueprint
 bp = Blueprint('canvasser', __name__, url_prefix='/canvasser')
 
-#### Keep the canvasser's email to be avaliable for getting User, Role Object
-user_email=""
-''' 
-	'asignments'  --- dict : ###### Key = Assignment, Value = (location,lat, lng)
-	Although the order for assignments in DB is base on the value of date
-	However, if the canvasser change the next location to visite. it will change the order.
-	Therefore, i will load the assignments based on the value of assignment.order
-'''
-assignments={}
+''' Global variables '''
+user_email="" #### Keep the canvasser's email to be avaliable for getting User, Role Object #####
+
+''' Key = Assignment Object; Value = List of TaskLocation object'''
+assignments={}  ## store all assignments 
 past_assignments={}  ## store past assignments which date value less than today
-upcoming_assignments={} ## store past assignments which date value not less than today
-detail={}
+upcoming_assignments={} ## store upcoming assignments which date value not less than today
+'''Key = fdsf, Value ='''
+detail={} ### work_for view_detail_assignment
 
-today = datetime.date.today()
+today = datetime.date.today()  ## get today's date yyyy-mm-dd
 
-''' 
-	update_ava() --- update the avaliability dates for the canvasser
-	remove_ava() --- remove the availability dates for the canvasser
-'''
+
+### update the availability dates for the canvasser#######
 @bp.route('/update_ava')
 def update_ava():
 	# Fetching info from the calendar implemented in canvasser
@@ -52,6 +47,7 @@ def update_ava():
 	logging.info("updating availability for email "+user_email+" with "+" the date on "+start)
 	return 'update'
 
+### remove the availability dates for the canvasser ###
 @bp.route('/remove_ava')
 def remove_ava():
 	# Fetching info from the calendar implemented in canvasser
@@ -78,12 +74,18 @@ def remove_ava():
 def canPage(u_name):
 	global user_email
 	global assignments
+	global past_assignments
+	global upcoming_assignments
+	global today
+
 	''' The first time to load assignments for the canvasser'''
 	assignments={}
-
+	past_assignments={}
+	upcoming_assignments={}
+	'''The first time to load canvasser's email'''
 	user_email = session['info']['email']
  
-	#### Query Role from DB  #########
+	#### Query Role Object from DB  #########
 	role_obj = db_session.query(Role).filter(Role.email == user_email, Role.role =='canvasser').first()
 
 	#### Load available dates of the canvasser to the calendar
@@ -98,16 +100,24 @@ def canPage(u_name):
 				'textColor':'black !important',
 				'backgroundColor': "#FF3B30!important"
 				})
-
+	### One Canvasser Role object may have multiple corresponding campaingCanvasser Objects
 	camp_canvassers = db_session.query(CampaignCanvasser).filter(CampaignCanvasser.role_id == role_obj.id).all()
-	######### Load all assigmenets the canvasser to the calendar
+	######### Load all assigmenets, past_assignments, upcoming_assignments ###
 	for ele in camp_canvassers:
 		## Get assignments of this canvasser for one specified Campign
 		ass_obj = db_session.query(Assignment).filter(Assignment.canvasser_id == ele.id).all()
 		for ass in ass_obj:
+			### ass ---> One Assignment object(id, canvasser_id, theDate, done, two relation)
+			###  Sort the TaskLocation list based on the value of the TaskLocation's order
+			task_locs = ass.assignment_relation_task_loc
+			task_locs.sort(key= lambda x: x.order)
 			###  Retrieve location values for getting the marker later in html page
-			location = db_session.query(CampaignLocation).filter(CampaignLocation.id == ass.location_id).first()
-			assignments[ass] =(location.location,location.lat,location.lng)
+			assignments[ass] =ass.assignment_relation_task_loc
+			if ass.theDate < today:
+				past_assignments[ass] = assignments[ass]
+			else:
+				upcoming_assignments[ass] = assignments[ass]
+			### show there're assignments on calendar
 			avails.append({
 				'title':"Have Assignment",
 				'constraint': 'Ass',
@@ -115,17 +125,6 @@ def canPage(u_name):
 				'textColor':'black !important',
 				'backgroundColor': "#7FFFD4 !important"
 				})
-	######### Sort assignments based on the value of the assignments' order
-	if assignments !={}:
-		######## Get all itmes(key, value) of the dict: assignments
-		items = assignments.items()
-		items = sorted(items, key=lambda x: (x[0]).order)
-		###### resign assignments with the new order
-		assignments={}
-		for ele in items:
-			assignments[ele[0]] = ele[1]
-
-		print("canPage: the order of assignments: %s" %assignments.keys())
 
 	if(len(avails) != 0):
 		canvasEvents = json.dumps(avails)
@@ -137,64 +136,65 @@ def canPage(u_name):
 
 
 # Enter viewing upcomming assignment html page
-@bp.route('/view_all_assignment/<u_email>')
+@bp.route('/view_assignment/<u_email>')
 def view_assignment(u_email):
 	global assignments
 	global today
 	global past_assignments
 	global upcoming_assignments
-	print("Enter View Assignment")
 
 	if assignments=={}:
 		'''Without any assignments'''
 		flash("You do not have any assignments")
 		return redirect(url_for('canvasser.canPage', u_name = session['info']['name']))
 	'''if there're some assignments'''
-	past_assignments={}
-	upcoming_assignments={}
-	for ele in assignments:
-		if ele.theDate < today:
-			past_assignments[ele] = assignments[ele]
-		else:
-			upcoming_assignments[ele] = assignments[ele]
-
 	return render_template('canvasser_html/view_assignment.html',upcoming_assignments= upcoming_assignments, past_assignments= past_assignments, detail=None)
 
 
 '''Work For viewingn assignment detail'''
-@bp.route('/view_assignment_detail/<ass_id>')
-def view_assignment_detail(ass_id):
+@bp.route('/view_assignment_detail', methods=('GET', 'POST'))
+def view_assignment_detail():
 	global assignments
 	global user_email
 	global detail
-	print("enter view_assigment detail")
+	global upcoming_assignments
+	global past_assignments
 
-	detail={}
-	''' Retrieve Canvasser Name'''
-	canvasser = db_session.query(User).filter(User.email == user_email).first()
-	detail['canvasser_name'] = canvasser.name
-	''' Retrieve Assignment Object'''
-	assignment = db_session.query(Assignment).filter(Assignment.id == ass_id).first()
-	''' I need info: Canvasser Name; Campaign Name, Date, Location Latitude, Longtitude,
-		Talking Point, Questionnair;
-	'''
-	detail['assignment'] = assignment #### For getting date and order values
+	if request.method == 'POST':
+		print("view assignment detail")
+		ass_id = request.form.get('assignment')
+		if not ass_id:
+			flash("Failed to view assignemnt detail because of the empty value")
+			return redirect(url_for('canvasser.view_assignment', u_email=user_email))
+		if ass_id == "None":
+			return redirect(url_for('canvasser.view_assignment', u_email=user_email))
+		'''Get non-empty Assignment ID'''
+		ass_id = int(ass_id)
+		detail={}
+		''' Retrieve Canvasser Name'''
+		canvasser = db_session.query(User).filter(User.email == user_email).first()
+		detail['canvasser_name'] = canvasser.name
+		''' Retrieve Assignment Object'''
+		ass_obj = db_session.query(Assignment).filter(Assignment.id == ass_id).first()
+		''' 
+			When the key is assignment, the value is assignment object's relation
+		'''
+		detail['assignment'] = ass_obj
+		''' Retrieve Compaign Canvasser object'''
+		campaign_canavsser = db_session.query(CampaignCanvasser).filter(CampaignCanvasser.id == ass_obj.canvasser_id).first()
+		detail['compaign_name'] = campaign_canavsser.campaign_name
+		''' Retrieve multiple TaskLocation Objects'''
+		detail['location'] = ass_obj.assignment_relation_task_loc #### For getting date and order values
 
-	campaign_loc = db_session.query(CampaignLocation).filter(CampaignLocation.id == assignment.location_id).first()
-	detail['campaign_name'] = campaign_loc.campaign_name
+		'''Get Specified Campaign Object'''
+		camp = db_session.query(Campaign).filter(Campaign.name == campaign_canavsser.campaign_name).first()
+		'''Get Questionaire'''
+		detail['questions'] = camp.campaigns_relation_3
+		'''Get Talking Point'''
+		detail['talking'] = camp.talking
+		return render_template('canvasser_html/view_assignment.html',upcoming_assignments= upcoming_assignments, past_assignments= past_assignments, detail=detail)
+	return redirect(url_for('canvasser.view_assignment', u_email=user_email))
 
-	###### loc=(location, lat,lng)
-	loc=(campaign_loc.location, campaign_loc.lat, campaign_loc.lng)
-	detail['location'] = loc ######## detail[2] = (location, lat, lng)
-
-	'''Get Specified Campaign Object'''
-	camp = db_session.query(Campaign).filter(Campaign.name == campaign_loc.campaign_name).first()
-	'''Get Questionaire'''
-	detail['questions'] = camp.campaigns_relation_3
-	'''Get Tlking Point'''
-	detail['talking'] = camp.talking
-
-	return render_template('canvasser_html/view_assignment.html',upcoming_assignments= upcoming_assignments, past_assignments= past_assignments, detail=detail)
 
 @bp.route('/view_result/<ass_id>')
 def view_result(ass_id):
@@ -203,8 +203,6 @@ def view_result(ass_id):
 	global past_assignments
 	global detail
 	return render_template('canvasser_html/view_assignment.html',upcoming_assignments= upcoming_assignments, past_assignments= past_assignments, detail=detail)
-
-
 
 # Enter canvas_start html
 @bp.route('/set_start_canvasser')

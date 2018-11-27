@@ -118,8 +118,6 @@ def createAssignment(newCamp):
 	return assignmentPossible
 
 
-
-
 #function to render the manager page and set the manager page url
 @bp.route('/manpage', methods=('GET', 'POST'))
 def manPage():

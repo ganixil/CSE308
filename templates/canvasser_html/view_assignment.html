@@ -4,48 +4,44 @@
     <!-- Custom styles for this login page -->
     <link href="/static/css/done_canvas.css" rel="stylesheet">
     <link href="/static/css/view_canvasser_ass.css" rel="stylesheet">
-    <!----------Inital location Makers---->
-  <script type="text/javascript">
-    $(document).ready(function () {
-         var past_locations=[];
-         var up_locations=[]
-       // Get past locations
-       {% for instance in past_assignments %}
-          var one_location=[];
-         one_location.push('{{past_assignments[instance][0]}}', '{{past_assignments[instance][1]}}','{{past_assignments[instance][2]}}','{{ instance.id}}');
-         past_locations.push(one_location);
-      {% endfor %}
-      // Get upcoming locations
-      {% for instance in upcoming_assignments %}
-          var one_location=[];
-         one_location.push('{{upcoming_assignments[instance][0]}}', '{{upcoming_assignments[instance][1]}}','{{upcoming_assignments[instance][2]}}','{{ instance.id}}');
-         up_locations.push(one_location);
-      {% endfor %}
+    <!----------The script to inital location Makers---->
+    {% if detail %}
+   <script type="text/javascript">
+      $(document).ready(function () {
+          // Get all locations
+          document.getElementById('submit').disabled=false;
+          var locations=[]
+          {% for instance in detail['location'] %}
+            var one_location=[];
+            one_location.push('{{instance.location}}', '{{instance.lat}}','{{instance.lng}}','{{ instance.order}}');
+            locations.push(one_location);
+         {% endfor %}
 
-      // Generate Map
-       var mapOptions = {
+        // Generate Map
+        var mapOptions = {
             center: new google.maps.LatLng(40.9256538, -73.140943),
             zoom: 13
-        }
-        map = new google.maps.Map(document.getElementById("map"), mapOptions);
-            var infowindow = new google.maps.InfoWindow();
+          }
+          map = new google.maps.Map(document.getElementById("map"), mapOptions);
+              var infowindow = new google.maps.InfoWindow();
 
-    // Inital Markers
-        var marker, i;
-        var bounds = new google.maps.LatLngBounds();
-// Past
-        for (i = 0; i < past_locations.length; i++) { 
+        // Inital Markers
+          var marker, i;
+          var bounds = new google.maps.LatLngBounds();
+
+        // Create one marker for each location
+        for (i = 0; i < locations.length; i++) { 
           marker = new google.maps.Marker({
-            position: new google.maps.LatLng(past_locations[i][1], past_locations[i][2]),
-            label:"Past Assignments:#"+i,
-            title:past_locations[i][0],
+            position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+            label:"#"+ locations[i][3],
+            title: locations[i][0],
             map: map
           });
 
           bounds.extend(marker.getPosition());
           google.maps.event.addListener(marker, 'click', (function(marker, i) {
             return function() {
-              infowindow.setContent(past_locations[i][0]);
+              infowindow.setContent(locations[i][0]);
               infowindow.open(map, marker);
               map.setCenter(marker.getPosition());
               map.setZoom(16);
@@ -53,123 +49,97 @@
               google.maps.event.addListener(infowindow, 'closeclick', function() {
                     map.fitBounds(bounds);
               });
-            var id = past_locations[i][3];
-           {% for instance in past_assignments %}
-            if ( {{instance.id}} == id){
-                 window.location.href = "{{ url_for('canvasser.view_assignment_detail', ass_id = instance.id)}}";
-               }
-          {% endfor %}
-            }
-          })(marker, i));
-        }
-// Upcoming
-         for (i = 0; i < up_locations.length; i++) { 
-          marker = new google.maps.Marker({
-            position: new google.maps.LatLng(up_locations[i][1], up_locations[i][2]),
-            label:"Upcoming Assignments:#"+i,
-            title:up_locations[i][0],
-            map: map
-          });
-
-          bounds.extend(marker.getPosition());
-          google.maps.event.addListener(marker, 'click', (function(marker, i) {
-            return function() {
-              infowindow.setContent(up_locations[i][0]);
-              infowindow.open(map, marker);
-              map.setCenter(marker.getPosition());
-              map.setZoom(16);
-              // If close infowindow, then go back to default mapsetting
-              google.maps.event.addListener(infowindow, 'closeclick', function() {
-                    map.fitBounds(bounds);
-              });
-            var id = up_locations[i][3];
-           {% for instance in upcoming_assignments %}
-            if ( {{instance.id}} == id){
-                 window.location.href = "{{ url_for('canvasser.view_assignment_detail', ass_id = instance.id)}}";
-               }
-          {% endfor %}
             }
           })(marker, i));
         }
         // Let us to see all markers together
-        map.fitBounds(bounds);
-        
+        map.fitBounds(bounds); 
       });
 </script>
+{% endif %}
 
 {% endblock %}
 
 <!----------------------BODY PART---------------------------------------------->
 {% block body %}
-      <h2 style="text-align: center;padding-top:10px;">Assignments</h2>
+      <h2 style="text-align: center;padding-top:10px;">View Assignments</h2>
       <hr/>
     <button class="btn btn-info" type="button" style="margin-left:5%" id="canHome" onclick="window.location.href='{{ url_for( 'canvasser.canPage', u_name = session['info']['name'])}}' ">HomePage</button><br/><br/>
     <!-------------Basic Instruction--------------->
      <h4 style="margin-left:5%"><span style="padding-left:5px; font-weight: bold;">Basic Instructions : </span></h4>
-     <h5 style="margin-left:10%">You have two ways to see your assigment details<br/>
+     <h5 style="margin-left:10%">Select a canvassing assignment from the list below to see details<br/>
         <ul>
-              <li>Select from assignements list</li>
-              <li> Click the location marker on the map</li>
+              <li>Include a map with markers at the locations</li>
+              <li>Include a list wit addresses of the locations</li>
         </ul>  
     </h5><hr/>
-    <div class="row">
-   <!-- ----------- Past Assignments in list -->
-      <div class="panel panel-primary col"id="assigment_list">
-        <div class="panel-heading" style="margin-left: 5%;"><h3 class="panel-title"><strong>Past assignments on List</strong></h3><br/>
-        </div>
-        <div class="panel-body">
-          {% if past_assignments is defined and past_assignments|length > 0 %}
-          <ul class="list-group">
-             {% for instance in past_assignments %}
-            <a style="color:black !important;" class="list-group-item btn btn-info" value="{{ instance.id}}" href="{{ url_for('canvasser.view_assignment_detail', ass_id = instance.id)}}"><strong>Assignment #{{instance.order}}:</strong> {{past_assignments[instance][0]}} ({{past_assignments[instance][1]}},{{past_assignments[instance][2]}} )</a>
-          {% endfor %}
-        </ul>
-        {% else %}
-          <div class="alert alert-warning" role="alert" style="margin-left: 1%;">
-            <i class="fa fa-2x fa-info-circle"></i><span style ='margin-left: 1%; font-weight: bold; font-size: 18px; color: black;'>No past assignments</span>
+    <form id="assignment_form" method="post" action="{{ url_for('canvasser.view_assignment_detail')}}" role="form">
+    <!-- ----------- All Assignments on List -->
+        <div class="form-group">
+            <h2 for="assignment" style="margin-left: 2%;"><span class="badge badge-pill badge-success">All assignments (including past and upcoming) (select one) :</span></h2>
+            <br/>
+            <div class="row">
+              <select class="form-control col-6" id="assignment" name="assignment" onchange="toggle_btn()" required autofocus>
+              <!------ Past Assignment------->
+              <option value="None">Choose...</option> 
+              <optgroup label="Past Assignment: ">
+                {% if past_assignments is defined and past_assignments|length > 0 %}
+                {% for instance in past_assignments %}
+               <!-------instance = Assignment object----------->
+                  <option value="{{instance.id}}">Assignment #{{instance.id}} on {{instance.theDate}}</option>
+                {% endfor %}
+                {% endif %}
+              </optgroup>
+              <!------ Upcoming Assignment------->
+              <optgroup label="Upcoming Assignment: ">
+                {% if upcoming_assignments is defined and upcoming_assignments|length > 0 %}
+                  {% for instance in upcoming_assignments %}
+               <!-------instance = Assignment object----------->
+                  <option value="{{instance.id}}">Assignment #{{instance.id}} on {{instance.theDate}}</option>
+                  {% endfor %}
+                {% endif %}
+              </optgroup>
+              </select>
+              <button class="btn btn-primary" style="margin-left: 1%;" name="submit" id="submit" type="submit"> See details </button>
             </div>
-        {% endif %}
-     </div>
-    </div> 
-   <!-- ----------- Upcoming Assignments on List -->
-      <div class="panel panel-primary col"id="assigment_list">
-        <div class="panel-heading" style="margin-left: 5%;"><h3 class="panel-title"><strong>Upcoming Assignments on List</strong></h3><br/>
         </div>
-        <div class="panel-body">
-        {% if upcoming_assignments is defined and upcoming_assignments|length > 0 %}
-          <ul class="list-group">
-               {% for instance in upcoming_assignments %}
-                 <a style="color:black !important;" class="list-group-item btn btn-info" value="{{  instance.id}}" href="{{ url_for('canvasser.view_assignment_detail', ass_id = instance.id)}}"><strong>Assignment #{{instance.order}}:</strong> {{upcoming_assignments[instance][0]}} ({{upcoming_assignments[instance][1]}},{{upcoming_assignments[instance][2]}} )</a>
-             {% endfor %}
-        </ul>
-        {% else %} 
-          <div class="alert alert-warning" role="alert">
-              <i class="fa fa-2x fa-info-circle"></i><span style ="margin-left: 1%; font-size: 18px; font-weight: bold; color: black;">No upcoming assignments</span>
-          </div>
-      {% endif %}
-    </div>
-  </div> 
-</div>
-<hr/><br/>
-<div class="row">
-<!----------------Loading locations for creating markers on Map-------->
+    </form>
+    <br/><hr/><br/>
 
-  <div class="panel  panel-primary col" id="result_panel">
-      <div class="panel-heading" style="margin-left: 5%;"><h3 class="panel-title"><strong>Assignment Locations on Map</strong></h3><br/>
+  <!----------- Begin here to show assignment information----------->
+{% if detail %}
+<h2 style="margin-left: 2%; text-align: center;"> <u>The Assignment On: {{detail['assignment'].theDate }}</u></h2>
+<h2 style="margin-left: 2%; margin-bottom: 1%;"><span class="badge badge-pill badge-success">The detail assignment for locations :</span></h2>
+  <div class="row">
+<!----------------Locations on List------->
+<div class="panel panel-primary col" id="result_panel1" style="margin-left: 1%;">
+      <div class="panel-heading" style="margin-left: 5%;"><h3 class="panel-title"><strong>Locations on List:</strong></h3>
       </div>
       <div class="panel-body">
-        <div id="map" name="map" style=" height: 350px;background-color: grey"></div>
+          <ul class="list-group">
+            {% for ele in detail['location'] %}
+                <a href="#" class="list-group-item list-group-item-action list-group-item-light">#{{ele.order}}: {{ele.location}} (lat= {{ele.lat}}, lng={{ele.lng}})</a>
+            {% endfor %}
+        </ul>
       </div>
-  </div> 
-</div>
-
-<!----------------- Viiew Assignment Detail-------------->
-{% if detail %}
-    <div class="col-md-9" style="margin-left: 20%; font-size: 18px;">
+    </div> 
+<!----------------Locations on Map------->
+  <div class="panel panel-primary col" id="result_panel" style="margin-right: 1%;">
+      <div class="panel-heading" style="margin-left: 5%;"><h3 class="panel-title"><strong>Locations on Map:</strong></h3>
+      </div>
+      <div class="panel-body">
+        <div id="map" name="map" style=" height: 300px;background-color: grey"></div>
+      </div>
+    </div> 
+  </div>
+<br/><hr/>
+<!----- Basic information------>
+<h2 style="margin-left: 2%; margin-bottom: 1%;"><span class="badge badge-pill badge-success">The detail assignment for basic information :</span></h2>
+    <div class="col-md-9" style="margin-left: 20%; font-size: 20px;">
         <div class="card-body">
             <div class="row">
                <div class="col-md-12">
-                 <h4><i class="fa fa-info-circle fa-lg"></i><span style="padding-left:10px; font-weight: bold;">Assignment Information</span></h4> 
+                 <h4><i class="fa fa-info-circle fa-lg"></i><span style="padding-left:10px; font-weight: bold;">Basic Information</span></h4> 
                  <hr/>
                 </div>
             </div>
@@ -180,49 +150,21 @@
                         <div class="form-group row">
                           <label for="username" class="col-3 col-form-label">Canvasser's Name:</label> 
                             <div class="col-6">
-                                <input id="username" name="username" placeholder="Canvaser Name" class="form-control here" {% if detail %} value="{{ detail['canvasser_name'] }}" {% endif %} readonly type="text">
+                                <input id="username" name="username" class="form-control here" {% if detail %} value="{{ detail['canvasser_name'] }}" {% endif %} readonly type="text">
                                 </div>
                         </div>
                         <!--------Campaingn Name--------->  
                         <div class="form-group row">
                           <label for="campName" class="col-3 col-form-label">Campaign Name:</label> 
                             <div class="col-6">
-                                <input id="campName" name="campName" placeholder="Campagin Name" class="form-control here" {% if detail %} value="{{ detail['campaign_name'] }}" {% endif %} readonly type="text"> 
-                                </div>
-                        </div>
-                        <!---------Date------------>
-                        <div class="form-group row">
-                                <label for="date" class="col-3 col-form-label">Date:</label> 
-                                <div class="col-8">
-                                  <input id="date" name="date" placeholder="Assignment Date" class="form-control" type="text" {% if detail %} value="{{ detail['assignment'].theDate }}" {% endif %} readonly>
-                                </div>
-                        </div>
-                        <!---------Location Address------------>
-                        <div class="form-group row">
-                                <label for="location" class="col-3 col-form-label">Location:</label> 
-                                <div class="col-8">
-                                  <input id="location" name="location" placeholder="Assignment Location" class="form-control" type="text" {% if detail %} value="{{ detail['location'][0] }}" {% endif %} readonly>
-                                </div>
-                        </div>                        
-                         <!---------Lat------------>
-                        <div class="form-group row">
-                                <label for="lat" class="col-3 col-form-label">Latitude:</label> 
-                                <div class="col-8">
-                                  <input id="lat" name="lat" placeholder="Location Lat" class="form-control" type="text" {% if detail %} value="{{ detail['location'][1] }}" {% endif %} readonly>
-                                </div>
-                        </div>
-                         <!---------Lng------------>
-                        <div class="form-group row">
-                                <label for="lng" class="col-3 col-form-label">Longtitude:</label> 
-                                <div class="col-8">
-                                  <input id="lng" name="lng" placeholder="Location Lng" class="form-control" type="text" {% if detail %} value="{{ detail['location'][2] }}" {% endif %} readonly>
-                                </div>
-                        </div>
+                                <input id="campName" name="campName" class="form-control here" placeholder="None" {% if detail %} value="{{ detail['compaign_name'] }}" {% endif %} readonly type="text"> 
+                              </div>
+                        </div>                      
                         <!---------Talking Point--------->
                         <div class="form-group row">
                                 <label for="talking" class="col-3 col-form-label">Talking Point</label> 
                                 <div class="col-8">
-                                  <input id="talking" name="talking" placeholder="Without Talking Point" class="form-control" type="text" {% if detail %} value="{{ detail['talking'] }}" {% endif %} readonly>
+                                  <input id="talking" name="talking" placeholder="None" class="form-control" type="text" {% if detail %} value="{{ detail['talking'] }}" {% endif %} readonly>
                                 </div>
                         </div>
 
@@ -237,24 +179,14 @@
                                   </select>
                                 </div>
                         </div>
-                        <!--------Has Result--------->                    
-                          <div class="form-group row ">
-                            <label for="result" class="col-3 col-form-label"> Did it be finished with result ? </label>
-                              <label class="toggle" style="word-spacing: 10px;">
-                                  <input type="radio" id="result" name="result" {% if detail and detail['assignment'].done %} checked {% endif %} disabled> <span class="label-text">Yes</span>
-                                  <input type="radio" id="result" name="result" {% if detail and ( not detail['assignment'].done )%} checked {% endif %} disabled> <span class="label-text">No</span>
-                              </label>
-                              <!----------- has result------------>
-                                <button class="btn btn-primary" type="button" style="margin-left:5%" id="result" {% if detail and ( not detail['assignment'].done )%} onclick="window.location.href='{{ url_for( 'canvasser.view_result', ass_id = detail['assignment'].id )}}'" disabled="false" {% else %} disabled="true" {% endif %}>See Results</button>
-                          </div>
                 </div>
             </div>
         </div>
     </div>
-    {% endif %}
-
-<!-------------Result details------------------->
-    <div class="col-md-8" style="margin-left: 20%; font-size: 18px;" >
+  <!-------- Has Result---------------->
+{% if detail['assignment'].done %} 
+  <!-------------Result details------------------->
+    <div class="col-md-9" style="margin-left: 20%; font-size: 20px;" >
       <div class="card-body">
             <div class="row">
                <div class="col-md-12">
@@ -265,7 +197,7 @@
              
             <!------------- For Spoke To --------------------------->
       <div class="form-group">
-         <i class="fa fa-question-circle" aria-hidden="true" style="padding-right: 10px;"></i><label>How do you rate your overall experience?</label><br/>
+         <i class="fa fa-question-circle" aria-hidden="true" style="padding-right: 10px;"></i><label>Did you spoke to anyone?</label><br/>
          <div class ="form-check form-check-inline"style="margin-left: 10%;">
            <label class="container">Yes
               <input type="radio" name="radio" value="yes" checked disabled>
@@ -291,12 +223,11 @@
                   <input type="radio" id="star2" disabled /><label class="full" for="star2" title="Kinda bad - 2 stars"></label>
                   <input type="radio" id="star15" disabled /><label class="half" for="star15" title="Meh - 1.5 stars"></label>
                   <input type="radio" id="star1" disabled /><label class = "full" for="star1" title="Sucks big time - 1 star"></label>
-                  <input type="radio" id="starhalf"checked disabled /><label class="half" for="starhal" title="Sucks big time - 0.5 stars"></label>
+                  <input type="radio" id="starhalf" disabled /><label class="half" for="starhal" title="Sucks big time - 0.5 stars"></label>
           </div>
         </div>
       </div>
 <!-------------------- Questionair---------------------------->
-  <hr/>
       <div class="form-group">
         <i class="fa fa-question-circle" aria-hidden="true" style="padding-right: 10px;"></i><label>Answers to Questionaires</label>
       </div>
@@ -304,8 +235,12 @@
         <!------------ Q1--------------->
        <i class="fa fa-quora" style="padding-right: 10px;">:</i><label>Put question here!</label>
           <div class ="form-check form-check-inline"style="margin-left: 30%;">
+               <label class="container">Without
+                  <input type="radio" name="q" value="without" checked disabled>
+                  <span class="checkmark"></span>
+              </label>
                <label class="container">Yes
-                  <input type="radio" name="q" value="yes" checked disabled>
+                  <input type="radio" name="q" value="yes" disabled>
                   <span class="checkmark"></span>
               </label>
               <label class="container">No
@@ -314,28 +249,38 @@
               </label>
          </div><br/>
         <!------------ Q2--------------->
-       <i class="fa fa-quora" style="padding-right: 10px;">:</i><label>Put question here q2!</label>
+       <i class="fa fa-quora" style="padding-right: 10px;">:</i><label>Put question here!</label>
           <div class ="form-check form-check-inline"style="margin-left: 30%;">
+               <label class="container">Without
+                  <input type="radio" name="q1" value="without" checked disabled>
+                  <span class="checkmark"></span>
+              </label>
                <label class="container">Yes
-                  <input type="radio" name="q2" value="yes" checked disabled>
+                  <input type="radio" name="q1" value="yes" disabled>
                   <span class="checkmark"></span>
               </label>
               <label class="container">No
-                  <input type="radio" name="q2" value="no" disabled>
+                  <input type="radio" name="q1" value="no" disabled>
                   <span class="checkmark"></span>
               </label>
-         </div>
+         </div><br/>
       </div>
-    <hr/>
   <!---------------- Brief Notes----------------------->
       <div class="form-group">
-         <i class="fa fa-question-circle" aria-hidden="true" style="padding-right: 10px;"></i><label for="comment">comment</label>
-        <textarea class="form-control" rows="5" type="text" id="comment" placeholder="None" style="font-size: 20px;" readonly></textarea>
+         <i class="fa fa-question-circle" aria-hidden="true" style="padding-right: 10px;"></i><label for="comment">Comment</label>
+        <textarea class="form-control" rows="5" type="text" id="comment" placeholder="None" readonly></textarea>
       </div>
             
         </div>
     </div>
+    {% else %}
+      <div class="alert alert-warning" role="alert" style="margin-left: 20%;">
+          <i class="fa fa-2x fa-info-circle"></i><span style ='margin-left: 1%; font-size: 18px; color: black;'>Without Any Results</span>
+    </div>
+    {% endif %}
+    <hr/>
+    {% endif %}
     <!-- map js files--> 
-    <script  src="/static/javascript/canvasser_script/viewAssignment.js"></script> 
+    <script src="/static/javascript/canvasser_script/view_assignment.js" ></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCGuEpRycbTYDCcS6uxiot0x0eSLkpTbiY&libraries=places&callback=initAutocomplete"></script>
 {%  endblock %}

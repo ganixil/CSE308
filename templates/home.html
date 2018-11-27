@@ -55,7 +55,7 @@
 <div id="signup-modal" class="modal" {% if index|int == 1 %} style="display: block" {% else %} style="display: none;" {% endif %}>
   <span onclick="window.location.href='{{ url_for('auth.home', index = 0) }}'" class="close" title="Close">&times;</span>
 
-  <form class="form-horizontal" id ="signup-form" enctype="multipart/form-data" method="post" action = "{{ url_for('auth.signup') }}" role="form">
+  <form class="form-horizontal" id="signup-form" enctype="multipart/form-data" method="post" action="{{ url_for('auth.signup') }}" role="form">
      <div class="row">
     <!-------------Avatar Part---------------------->
       <div class="col-md-3">
