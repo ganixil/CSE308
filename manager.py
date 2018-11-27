@@ -10,7 +10,7 @@ from assignmentCreator import makeAssign
 import datetime
 from datetime import date
 import math
-
+from locking import theLock
 
 #link google map
 gmaps = googlemaps.Client(key = key)
@@ -224,6 +224,7 @@ def createCampaign(u_email):
 
 	''' For submit button'''
 	if request.method == 'POST':
+		theLock.acquire()
 		campaign_name = request.form['name'] # string
 		startDate = request.form['start_date'] #string 2018-11-26
 		endDate = request.form['end_date'] 
@@ -239,6 +240,7 @@ def createCampaign(u_email):
 
 		if not (campaign_name and startDate and endDate and duration and locations):
 			flash("Failed to create campaign, there're empty values!!")
+			theLock.release()
 			return render_template('manager_html/create_campaign.html', managers = all_managers, canvassers = all_canvassers, index = 5)
 		## No empty
 		## Add campaign's creator
@@ -256,6 +258,7 @@ def createCampaign(u_email):
 			 for ele in locations_arr:
 			 	if(gmaps.geocode(ele) == []):
 			 		flash("Failed to create campaign, the address("+ele+") is not valid!!")
+			 		theLock.release()
 			 		return render_template('manager_html/create_campaign.html', managers = all_managers, canvassers = all_canvassers, index = 5)
 			 	lat = gmaps.geocode(ele)[0]['geometry']['location']['lat']
 			 	lng = gmaps.geocode(ele)[0]['geometry']['location']['lng']
@@ -264,6 +267,7 @@ def createCampaign(u_email):
 			 	'''Check if there're some repeated locations'''
 			 	if test in valid_locations:
 			 		flash("Failed to create campaign, the address: ("+address+") is repeated!!!")
+			 		theLock.release()
 			 		return render_template('manager_html/create_campaign.html', managers = all_managers, canvassers = all_canvassers, index = 5)
 			 	else:
 			 		valid_locations.append((address,lat, lng))
@@ -274,6 +278,7 @@ def createCampaign(u_email):
 		check_camp = db_session.query(Campaign).filter(Campaign.name == campaign_name).first()
 		if(check_camp):
 			flash("This Campaign Name already exists, please enter the unique campaign name!")
+			theLock.release()
 			return render_template('manager_html/create_campaign.html', managers = all_managers, canvassers = all_canvassers, index = 5)
 		''' New Campaign Object'''
 		newCamp = Campaign(campaign_name,startDate,endDate,talking,int(duration))
@@ -310,6 +315,7 @@ def createCampaign(u_email):
 			flash("Create Campagin successfully, but did not make compeletely assingments !")
 		else:
 			flash("Create Compaingn and make compeletely assignments successfully !")
+		theLock.release()
 		return redirect(url_for('manager.manPage'))
 
 	return render_template('manager_html/create_campaign.html', managers = all_managers, canvassers = all_canvassers, index = 5)
