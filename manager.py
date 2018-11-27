@@ -89,24 +89,23 @@ def createAssignment(newCamp):
 			### ele_ass[0] --- CanAva
 			### ele_ass[1] -- assignment
 			ass_obj = Assignment(ele_ass[0].theDate, False)
+
 			## ele_ass[1] -----[(lat, lng), (lat1, lng1)....]
 			for order in range(len(ele_ass[1])):
-				lat = ele_ass[1][order][0]
-				print("lat")
-				print(lat)
+				lat = ele_ass[1][order][0] 
 				lng = ele_ass[1][order][1]
 				## Get location from the campaign location db
 				allCampLocation =db_session.query(CampaignLocation).filter(CampaignLocation.campaign_name == newCamp.name).all()
 				### Get campLocation Object, and retrieve location address string: loc
+				''' campLocation = [one campaignLocation object]'''
 				campLocation = [loc for loc in allCampLocation if (math.isclose(loc.lat, lat) and math.isclose(loc.lng, lng))]
-				loc = compLocation.location
-				print("loc %s" %loc)
-				#### Create Task Location Object
+				loc = campLocation[0].location
+				#### Create Task Location Object  #########
 				task_loc_obj = TaskLocation(loc,lat,lng,order)
 				''' Add TaskLocation Object to Assignment Obejct'''
 				ass_obj.assignment_relation_task_loc.append(task_loc_obj)
 
-			''' Add Assignment Object to CampaignCanvasser Obejct'''
+			''' Add the new created Assignment Object to CampaignCanvasser Obejct'''
 			campCanvasser.canvasser_relation.append(ass_obj)
 
 			db_session.commit()

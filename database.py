@@ -115,7 +115,7 @@ class CampaignLocation(Base):   # Association Table (Campaign + Locations)
 
     id = Column(Integer, primary_key = True)
     campaign_name = Column(String(80),ForeignKey('campaigns.name', onupdate="CASCADE", ondelete="CASCADE") )
-    location = Column(String(160),nullable=False)
+    location = Column(String(200),nullable=False)
     lat = Column(Float,nullable = False)
     lng = Column(Float,nullable = False)
 
@@ -163,7 +163,7 @@ class GlobalVariables(Base):
 
     id = Column(Integer, primary_key=True)
     workDayLength = Column(Integer, default = 1, nullable =False)
-    averageSpeed = Column(Float, default = 1, nullable = False)
+    averageSpeed = Column(Float, default = 1.0, nullable = False)
 
     def __init__(self, workDayLength, averageSpeed):
         self.workDayLength = workDayLength
@@ -221,7 +221,7 @@ class TaskLocation(Base):
 
     id = Column(Integer, primary_key = True)
     assignment_id=Column(Integer, ForeignKey('assignments.id', onupdate="CASCADE", ondelete="CASCADE"))
-    location = Column(String(100),nullable=False)
+    location = Column(String(200),nullable=False)
     lat = Column(Float,nullable = False)
     lng = Column(Float,nullable = False)
     order = Column(Integer, nullable = False)
@@ -288,16 +288,6 @@ if __name__ == "__main__":
     user3.users_relation= [role4, role5]  # user3 = canvasser+ manager
     user4.users_relation=[role6, role7, role8] # user4 = admin +  canvasser + manager
 
-    canAva_1 = CanAva('2018-11-15')
-    canAva_2 = CanAva('2018-11-16')
-    canAva_3 = CanAva('2018-11-16')
-    canAva_4 = CanAva('2018-11-17')
-
-    role4.roles_relation_2.append(canAva_1)
-    role4.roles_relation_2.append(canAva_2)
-
-    role7.roles_relation_2.append(canAva_3)
-    role7.roles_relation_2.append(canAva_4)
 
 
     campaign1 = Campaign("sell compaing1", "2018-11-1" , "2018-11-20","talk something",5)
@@ -353,7 +343,7 @@ if __name__ == "__main__":
     campaign2.campaigns_relation_2.append(location6)
 
 
-    glo = GlobalVariables(1,1)
+    glo = GlobalVariables(360,60)
     db_session.add(glo)
     
     db_session.commit()
