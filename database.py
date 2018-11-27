@@ -115,7 +115,7 @@ class CampaignLocation(Base):   # Association Table (Campaign + Locations)
 
     id = Column(Integer, primary_key = True)
     campaign_name = Column(String(80),ForeignKey('campaigns.name', onupdate="CASCADE", ondelete="CASCADE") )
-    location = Column(String(80),nullable=False)
+    location = Column(String(160),nullable=False)
     lat = Column(Float,nullable = False)
     lng = Column(Float,nullable = False)
 

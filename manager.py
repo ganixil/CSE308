@@ -84,15 +84,16 @@ def createAssignment(newCamp):
 		# ele is the key---> role_id
 		campCanvasser= db_session.query(CampaignCanvasser).filter(CampaignCanvasser.campaign_name == newCamp.name, CampaignCanvasser.role_id == ele).first()
 		## mappedAssignments[ele]--> sets of (CanAva, assignment)
-		for ele_ass  in range(mappedAssignments[ele]):
+		for ele_ass  in mappedAssignments[ele]:
 			###### ele_ass =one set (CanAva, assignment)
 			### ele_ass[0] --- CanAva
 			### ele_ass[1] -- assignment
 			ass_obj = Assignment(ele_ass[0].theDate, False)
 			## ele_ass[1] -----[(lat, lng), (lat1, lng1)....]
-			for order in len(ele_ass[1]):
+			for order in range(len(ele_ass[1])):
 				lat = ele_ass[1][order][0]
-				print("lat  $s"% lat)
+				print("lat")
+				print(lat)
 				lng = ele_ass[1][order][1]
 				## Get location from the campaign location db
 				allCampLocation =db_session.query(CampaignLocation).filter(CampaignLocation.campaign_name == newCamp.name).all()
