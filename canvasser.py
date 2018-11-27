@@ -211,11 +211,13 @@ def create_canvass():
 
 	ass_info={} 
 
+
 	current_assignment=None  ## Keep current day's assignment
 	for ele in assignments:
 		if ele.theDate == today:
 			current_assignment = ele
 			break;
+
 
 	if not current_assignment:
 		flash("Fail to canvassing assingment creation.  You do not have current today assignment!")
@@ -322,10 +324,9 @@ def change_next_location():
 
 @bp.route('/submit_result/<location>', methods=['POST'])
 def submit_result(location):
-
+	global assignments
 	location = db_session.query(TaskLocation).filter(TaskLocation.id == location).first()
 
-	print(location)
 
 	if request.method == 'POST':
 		spoke_to = request.form['spoke_to']
@@ -358,8 +359,31 @@ def submit_result(location):
 		location.visited = True
 
 		db_session.commit()
+
+		assignments = {}
+		user_email = session['info']['email']
+		#### Query Role Object from DB  #########
+		role_obj = db_session.query(Role).filter(Role.email == user_email, Role.role =='canvasser').first()
+		### One Canvasser Role object may have multiple corresponding campaingCanvasser Objects
+		camp_canvassers = db_session.query(CampaignCanvasser).filter(CampaignCanvasser.role_id == role_obj.id).all()
+		######### Load all assigmenets, past_assignments, upcoming_assignments ###
+		for ele in camp_canvassers:
+			## Get assignments of this canvasser for one specified Campign
+			ass_obj = db_session.query(Assignment).filter(Assignment.canvasser_id == ele.id).all()
+			for ass in ass_obj:
+				### ass ---> One Assignment object(id, canvasser_id, theDate, done, two relation)
+				###  Sort the TaskLocation list based on the value of the TaskLocation's order
+				task_locs = ass.assignment_relation_task_loc
+				task_locs.sort(key= lambda x: x.order)
+				###  Retrieve location values for getting the marker later in html page
+				assignments[ass] =ass.assignment_relation_task_loc
+				if ass.theDate < today:
+					past_assignments[ass] = assignments[ass]
+				else:
+					upcoming_assignments[ass] = assignments[ass]
+					
 		flash("Onto Next Location")
-		return redirect(url_for("canvasser.create_canvass"))
+
 	return redirect(url_for("canvasser.create_canvass"))
 
 
