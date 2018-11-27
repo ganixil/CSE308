@@ -179,105 +179,18 @@
                                   </select>
                                 </div>
                         </div>
+                        <!--------Has Done?-------->                    
+                          <div class="form-group row ">
+                            <label for="done" class="col-3 col-form-label"> Did you done? </label>
+                              <label class="toggle" style="word-spacing: 10px;">
+                                  <input type="radio" id="done" name="done" {% if detail and detail['assignment'].done %} checked {% endif %} disabled> <span class="label-text">Yes</span>
+                                  <input type="radio" id="done" name="done" {% if detail and ( not detail['assignment'].done )%} checked {% endif %} disabled> <span class="label-text">No</span>
+                              </label>
+                        </div>
                 </div>
             </div>
         </div>
     </div>
-  <!-------- Has Result---------------->
-{% if detail['assignment'].done %} 
-  <!-------------Result details------------------->
-    <div class="col-md-9" style="margin-left: 20%; font-size: 20px;" >
-      <div class="card-body">
-            <div class="row">
-               <div class="col-md-12">
-                 <h4><i class="fa fa-info-circle fa-lg"></i><span style="padding-left:10px; font-weight: bold;">Detail Result Information</span></h4> 
-                 <hr/>
-                </div>
-            </div>
-             
-            <!------------- For Spoke To --------------------------->
-      <div class="form-group">
-         <i class="fa fa-question-circle" aria-hidden="true" style="padding-right: 10px;"></i><label>Did you spoke to anyone?</label><br/>
-         <div class ="form-check form-check-inline"style="margin-left: 10%;">
-           <label class="container">Yes
-              <input type="radio" name="radio" value="yes" checked disabled>
-              <span class="checkmark"></span>
-          </label>
-          <label class="container">No
-              <input type="radio" name="radio" value="no" disabled>
-              <span class="checkmark"></span>
-          </label>
-         </div>
-      </div>
-      <!-----------------For Rating------------------>
-      <div class="form-group">
-        <i class="fa fa-question-circle" aria-hidden="true" style="padding-right: 10px;"></i><label>How do you rate your overall experience?</label>
-         <div class="row">
-            <div class="col-lg-8 text-center rating-star disabled">
-                  <input type="radio" id="star5" disabled /><label class="full" for="star5" title="Awesome - 5 stars"></label>
-                  <input type="radio" id="star45" disabled /><label class="half" for="star45" title="Pretty good - 4.5 stars"></label>
-                  <input type="radio" id="star4" disabled /><label class="full" for="star4" title="Pretty good - 4 stars"></label>
-                  <input type="radio" id="star35" disabled /><label class="half" for="star35" title="Meh - 3.5 stars"></label>
-                  <input type="radio" id="star3" disabled /><label class = "full" for="star3" title="Meh - 3 stars"></label>
-                  <input type="radio" id="star25" disabled /><label class="half" for="star25" title="Kinda bad - 2.5 stars"></label>
-                  <input type="radio" id="star2" disabled /><label class="full" for="star2" title="Kinda bad - 2 stars"></label>
-                  <input type="radio" id="star15" disabled /><label class="half" for="star15" title="Meh - 1.5 stars"></label>
-                  <input type="radio" id="star1" disabled /><label class = "full" for="star1" title="Sucks big time - 1 star"></label>
-                  <input type="radio" id="starhalf" disabled /><label class="half" for="starhal" title="Sucks big time - 0.5 stars"></label>
-          </div>
-        </div>
-      </div>
-<!-------------------- Questionair---------------------------->
-      <div class="form-group">
-        <i class="fa fa-question-circle" aria-hidden="true" style="padding-right: 10px;"></i><label>Answers to Questionaires</label>
-      </div>
-      <div class="form-group" style="margin-left: 5%;">
-        <!------------ Q1--------------->
-       <i class="fa fa-quora" style="padding-right: 10px;">:</i><label>Put question here!</label>
-          <div class ="form-check form-check-inline"style="margin-left: 30%;">
-               <label class="container">Without
-                  <input type="radio" name="q" value="without" checked disabled>
-                  <span class="checkmark"></span>
-              </label>
-               <label class="container">Yes
-                  <input type="radio" name="q" value="yes" disabled>
-                  <span class="checkmark"></span>
-              </label>
-              <label class="container">No
-                  <input type="radio" name="q" value="no" disabled>
-                  <span class="checkmark"></span>
-              </label>
-         </div><br/>
-        <!------------ Q2--------------->
-       <i class="fa fa-quora" style="padding-right: 10px;">:</i><label>Put question here!</label>
-          <div class ="form-check form-check-inline"style="margin-left: 30%;">
-               <label class="container">Without
-                  <input type="radio" name="q1" value="without" checked disabled>
-                  <span class="checkmark"></span>
-              </label>
-               <label class="container">Yes
-                  <input type="radio" name="q1" value="yes" disabled>
-                  <span class="checkmark"></span>
-              </label>
-              <label class="container">No
-                  <input type="radio" name="q1" value="no" disabled>
-                  <span class="checkmark"></span>
-              </label>
-         </div><br/>
-      </div>
-  <!---------------- Brief Notes----------------------->
-      <div class="form-group">
-         <i class="fa fa-question-circle" aria-hidden="true" style="padding-right: 10px;"></i><label for="comment">Comment</label>
-        <textarea class="form-control" rows="5" type="text" id="comment" placeholder="None" readonly></textarea>
-      </div>
-            
-        </div>
-    </div>
-    {% else %}
-      <div class="alert alert-warning" role="alert" style="margin-left: 20%;">
-          <i class="fa fa-2x fa-info-circle"></i><span style ='margin-left: 1%; font-size: 18px; color: black;'>Without Any Results</span>
-    </div>
-    {% endif %}
     <hr/>
     {% endif %}
     <!-- map js files--> 

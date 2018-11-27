@@ -196,71 +196,56 @@ def view_assignment_detail():
 	return redirect(url_for('canvasser.view_assignment', u_email=user_email))
 
 
-@bp.route('/view_result/<ass_id>')
-def view_result(ass_id):
-	print("enter view result : canvasser")
-	global upcoming_assignments
-	global past_assignments
-	global detail
-	return render_template('canvasser_html/view_assignment.html',upcoming_assignments= upcoming_assignments, past_assignments= past_assignments, detail=detail)
 
-# Enter canvas_start html
-@bp.route('/set_start_canvasser')
-def set_canvasser():
+# Enter create_canvass html
+@bp.route('/create_canvass')
+def create_canvass():
 	global assignments
 	global user_email
 	global today
 
-	'''
-		use ass_info to organize assignments : current day's assignment, 
-		next location assignment, most recently visted assignmnet
-	'''
 	ass_info={} 
 
-	current_ass=None  ## Keep current day's assignment
-	next_ass=None   ## Keep the next location need to be visted in default
-	'''Retrieve the today's assignment from global variable 'assignments'''
+	current_assignment=None  ## Keep current day's assignment
 	for ele in assignments:
 		if ele.theDate == today:
-			current_ass = ele
-		elif ele.theDate > today:
-			next_ass = ele
-			break
+			current_assignment = ele
+			break;
 
-	visited_ass =None     # Record the most recently visited location
-	next_locations=[]  ###### Record all next locations need to be visited
-	for ele in assignments:  ######### the order based on the Assignment's order
-		if ele.done:
-			''' Find the most recently visited location '''
-			visited_ass = ele
-		if ele.theDate > today:
-			next_locations.append(ele)
+	if not current_assignment:
+		flash("Fail to canvassing assingment creation.  You do not have current today assignment!")
+		return redirect(url_for('canvasser.canPage', u_name = session['info']['name']))
+	''' You have current today's assignment'''
+	### Find the most rec_visited location ###
+	rec_visited = None
+	unvisited = []
+	for ele in current_assignment.assignment_relation_task_loc:
+		if ele.visited:
+			rec_visited = ele
+		else:
+			unvisited.append(ele)
 
-	''' if there's one assignment on today, it means we need to find the detailed travel directions from this location to next location
-		    if there's without any assignment on today, it means we need to find the detailed travel direction from the most
-		    	visited location to next location
-		    if no visited assignments, and no current day's assigments, then we do not need to get any travel direction
+	''' Retrieve Campaign Canvasseer Object to get Campaign Name'''
+	camp_obj =db_session.query(CampaignCanvasser).filter(CampaignCanvasser.id == current_assignment.canvasser_id).first()
+	if not camp_obj:
+		flash("Fail to canvassing assingment creation.No campaign!!")
+		return redirect(url_for('canvasser.canPage', u_name = session['info']['name']))
+	''' 
+	the simplest assumption is that each canvasser starts the work day at the first location in the assigned task.
+	if there's only one location in the assignment, then no travelled direction need to be shown
 	'''
-	if visited_ass == None:
-		if current_ass:
-			visited_ass = current_ass
+	locations = current_assignment.assignment_relation_task_loc
 
-	visited_ass = current_ass
-	ass_info['current_ass'] = current_ass
-	ass_info['next_ass'] = next_ass
-	ass_info['visited_ass'] = visited_ass
-	ass_info['next_locations'] = next_locations
+	ass_info['current_ass'] = current_assignment
+	ass_info['rec_visited'] = rec_visited
+	ass_info['unvisited'] = unvisited
+	ass_info['locations'] = locations
+	ass_info['campaign_name'] = camp_obj.campaign_name
 
 	print("assignemnt Info for canvass")
 	for ele in ass_info:
 		print("%s---> %s" %(ele,ass_info[ele]))
-	''' Get Current assignment's Campaign Name'''
-	current_camp_name =""
-	if current_ass :
-		current_camp_name = db_session.query(CampaignLocation).filter(CampaignLocation.id == current_ass.location_id).first()
-	ass_info['campaign_name'] = current_camp_name.campaign_name
-
-	return render_template('canvasser_html/canvas_start.html', assignments= assignments, ass_info = ass_info)
+	return render_template('canvasser_html/create_canvass.html', ass_info = ass_info)
 
 
 # Enter canvas_start html
@@ -322,3 +307,11 @@ def change_next_location():
 @bp.route('/done_canvas/<ass_id>')
 def done_canvasser(ass_id):
 	return render_template('canvasser_html/done_canvas.html')
+
+@bp.route('/view_result/<ass_id>')
+def view_result(ass_id):
+	print("enter view result : canvasser")
+	global upcoming_assignments
+	global past_assignments
+	global detail
+	return render_template('canvasser_html/view_assignment.html',upcoming_assignments= upcoming_assignments, past_assignments= past_assignments, detail=detail)

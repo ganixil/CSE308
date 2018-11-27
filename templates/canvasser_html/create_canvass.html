@@ -1,0 +1,50 @@
+{% extends "header.html" %}
+
+{% block header %}
+    <link href="/static/css/create_canvass.css" rel="stylesheet">
+    <!-- Alert for flash message-->
+    <script>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+       {% for msg in messages%}
+             alert('{{ msg}}');
+             {% endfor %}
+     {% endif %}
+  {% endwith %}
+</script>
+{% endblock %}
+
+<!----------------------BODY PART---------------------------------------------->
+{% block body %}
+      <h2 style="text-align: center;padding-top:10px;">Canvassing Assignment Creation</h2>
+      <hr/>
+    <button class="btn btn-info" type="button" style="margin-left:5%" id="canHome" onclick="window.location.href='{{ url_for( 'canvasser.canPage', u_name = session['info']['name'])}}' ">HomePage</button><br/><br/>
+    <!-------------Basic Instruction--------------->
+     <h5 style="margin-left:5%"><span style="padding-left:5px; font-weight: bold;">Basic Instructions : </span></h5>
+        <h5 style="margin-left:10%"> This is you current day's canvassing assignement. the next location to visit will be shown in recommended order </h5>
+        <h5 style="margin-left:10%"> You can manually change the next location by selecting it from a list of unvisited locations</h5> 
+    </h5><hr/>
+
+    <div style="float: center">
+   <!-- ----------- Locations on the List -->
+      <div class="panel panel-primary col" id="current_assignment">
+          <div class="card" style ="margin-left: 5%;">
+            <h5 class="card-header">Current Day's Canvassing Assignment</h5>
+            <div class="card-body" style ="margin-left: 5%;">
+              <h5 class="card-title btn btn-secondary btn-block">Assignment Details</h5>
+              <div>
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item" style="font-weight: bold;"><mark>Campaign Name:</mark>&nbsp&nbsp {{ ass_info['campaign_name'] }} </li>
+                    <li class="list-group-item" style="font-weight: bold;"><mark>The Date :</mark>&nbsp&nbsp {{ ass_info['current_ass'].theDate }} </li>
+                  </ul><br/>
+              </div>
+        </div>
+      </div>
+  </div> 
+</div><hr/><br/>
+
+<!-- <script type="text/javascript" src="/static/javascript/canvasser_script/canvas_start.js"></script> -->
+<script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCGuEpRycbTYDCcS6uxiot0x0eSLkpTbiY&callback=initMap">
+</script>    
+{%  endblock %}

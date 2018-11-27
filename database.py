@@ -194,18 +194,11 @@ class Assignment(Base):
     id = Column(Integer, primary_key = True)
     canvasser_id = Column(Integer, ForeignKey('campaign_canvassers.id', onupdate="CASCADE", ondelete="CASCADE"))
     theDate = Column(Date, nullable= False)
-    ########   Flag to record the assginemtn has done or not
+    ########   Flag to check if the assginment is done or not
     done = Column(Boolean, nullable=False, default=False)
-    '''
-    one-one relation to result, but i can use many-to-many relation
-    As always, the relationship.backref and backref() functions may be used in lieu of the relationship.back_populates approach;
-     to specify uselist on a backref, use the backref() function:
-    '''
-    ##### One assignment has one task, but one task has multiple locations ######
-    assignment_relation_task_loc= relationship("TaskLocation", backref="assignments",cascade="all,save-update,delete-orphan")
-    ##### One assignment has one result  ##########
-    assignment_relation_re = relationship("Result", uselist=False, backref="assignments", cascade="all,save-update,delete-orphan")
 
+    ##### One assignment is like one task, but one task has multiple locations ######
+    assignment_relation_task_loc= relationship("TaskLocation", backref="assignments",cascade="all,save-update,delete-orphan")
     UniqueConstraint(canvasser_id, theDate)
 
     def __init__(self,theDate, done):
@@ -225,6 +218,14 @@ class TaskLocation(Base):
     lat = Column(Float,nullable = False)
     lng = Column(Float,nullable = False)
     order = Column(Integer, nullable = False)
+    visited = Column(Boolean, nullable=False, default=False)
+
+    UniqueConstraint(assignment_id, location)
+    UniqueConstraint(assignment_id, lat, lng)
+
+    ##### One specified location has one result  ##########
+    taskLocation_relation = relationship("Result", uselist=False, backref="task_locations", cascade="all,save-update,delete-orphan")
+
 
     def __init__(self, location, lat, lng, order):
         self.location = location
@@ -236,13 +237,12 @@ class TaskLocation(Base):
         return "<TaskLocation('id='%d', location='%s', assignment_id='%d', order='%d')>" % (self.id, self.location, self.assignment_id, self.order)
 
 
-## One to One relation with Assignment
-## One assignment has one result
+## With One to One relation to TaskLocation
 class Result(Base):
     __tablename__='result'
 
     id = Column(Integer, primary_key = True)
-    assignment_id = Column(Integer, ForeignKey('assignments.id', onupdate="CASCADE", ondelete="CASCADE"))
+    taskLocation_id = Column(Integer, ForeignKey('task_locations.id', onupdate="CASCADE", ondelete="CASCADE"))
     questions = Column(Text, nullable = True) ## q1,q2,q3,q4,
     answers = Column(Text, nullable = True)  # 0-no answer, 1- yes answer; 2--no answer
     ### answer format 0,1,2,0,
