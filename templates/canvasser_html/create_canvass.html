@@ -49,25 +49,29 @@
         <div class="card" style ="margin-left: 5%;">
             <h5 class="card-header"> All Unvisited Locations </h5>
             <div class="card-body">
+              <div class="alert alert-success" role="alert">
+          <i class="fa fa-2x fa-info-circle"></i><span style ='margin-left: 1%; font-size: 18px; color: black;'>If you did not visited any locations, you cannot change the next location.  </span>
+    </div>
             {% if ass_info['unvisited'] is defined and ass_info['unvisited']|length > 0 %}
             <form  method="post" action ="{{ url_for('canvasser.change_next_location')}}" role="form">
       <!------------- Map And Direction Panel----------------------->
               <div class="form-group form-inline" style="margin-left: 5%;">
-                  <label style="padding-right: 10px; font-weight: bold;" for="start">The start Location:</label>
-                  <input type="text" class="form-control col-md-5" value="{{ ass_info['rec_visited'] }}" id="start" name="start" readonly>
+                  <label style="padding-right: 10px; font-weight: bold;" for="start"><mark>The start Location:</mark></label>
+                  <input type="text" class="form-control col-md-5" value="{{ ass_info['rec_visited'].location }}" id="start" name="start" readonly>
               </div>
       <!------ The next location is the fist of unvisited locations--->
               <div class="form-group form-inline" style="margin-left: 5%;">
-                  <label style="padding-right: 10px; font-weight: bold;" for="next_loc">The next location:</label>
-                  <input type="text" class="form-control col-md-5" value="{{ ass_info['unvisited'][0] }}" id="next_loc" name="next_loc" disabled>
+                  <label style="padding-right: 10px; font-weight: bold;" for="next_loc"><mark>The next location:</mark></label>
+                  <input type="text" class="form-control col-md-5" value="{{ ass_info['unvisited'][0].location}}" id="next_loc" name="next_loc" disabled>
               </div>
-              <div class="form-group form-inline">
-                <select class="form-control col-8" id="end" name="end" onchange="calcRoute();"required autofocus>
+              <div class="form-group form-inline" style="margin-left: 5%;">
+                <label style="padding-right: 10px; font-weight: bold;" for="end"><mark>All unvisited Locations:</mark></label>
+                <select class="form-control col-5" id="end" name="end" onchange="calcRoute();"required autofocus>
                      {% for instance in ass_info['unvisited'] %}
-                        <option value="{{instance.id}}|{{instance.assignment_id}}"> #{{instance.order}}: {{ instance.location }}</option>
+                        <option value="{{instance.id}}|{{instance.assignment_id}}">{{ instance.location }}</option>
                       {% endfor %}
                   </select>
-                  <button class="btn btn-primary" id="submit" name="submit" type="submit"> <i class="fa fa-plus-circle"></i> Change the Next Location </button>
+                  <button class="btn btn-primary" style="margin-left: 1%;" id="submit" name="submit" type="submit">Change the Next Location </button>
               </div>
           </form>
           <!------------ Choose Travel Mode ----------------------->
@@ -82,7 +86,7 @@
         </div>
         <div class="row" style="margin-left: 5%;">
               <div id="map" name="map"></div>
-              <div class="card" style="margin-left: 2%;">
+              <div class="card" style="margin-left: 1%;">
                 <div class="card-body">
                     <div id="right-panel"></div>
                 </div>

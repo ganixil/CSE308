@@ -18,11 +18,10 @@ body {
 	font-size: 22px;
 }
 
-
 #floating-panel {
         position: absolute;
         left: 25%;
-        margin-top: 5%;
+        margin-top: 1%;
         z-index: 1;
         background-color: #fff;
         padding: 8px;
@@ -33,21 +32,21 @@ body {
       }
 
 #map {
-		width:55%;
-        height: 480px;
+		    width:55%;
+        height: 450px;
       }
 
 #right-panel {
         font-family: 'Roboto','sans-serif';
-        line-height: 30px;
+        line-height: 25px;
 }
 
 #right-panel select, #right-panel input {
-        font-size: 15px;
+        font-size: 16px;
       }
 
 #right-panel i {
-        font-size: 12px;
+        font-size: 16px;
      }
 
  #right-panel {
@@ -57,7 +56,7 @@ body {
 
 @media print {
 #map {
-          height: 450px;
+         height: 450px;
          margin-left: 5%;
         }
 #right-panel {
