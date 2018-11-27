@@ -8,6 +8,7 @@ import logging
 import datetime
 import time
 import re
+from locking import theLock
 
 # Create canvasser blueprint
 bp = Blueprint('canvasser', __name__, url_prefix='/canvasser')
@@ -28,6 +29,7 @@ today = datetime.date.today()  ## get today's date yyyy-mm-dd
 ### update the availability dates for the canvasser#######
 @bp.route('/update_ava')
 def update_ava():
+	theLock.acquire()
 	# Fetching info from the calendar implemented in canvasser
 	title = request.args.get('title')
 	start = request.args.get('start')
@@ -45,11 +47,13 @@ def update_ava():
 	db_session.commit()
 
 	logging.info("updating availability for email "+user_email+" with "+" the date on "+start)
+	theLock.release()
 	return 'update'
 
 ### remove the availability dates for the canvasser ###
 @bp.route('/remove_ava')
 def remove_ava():
+	theLock.acquire()
 	# Fetching info from the calendar implemented in canvasser
 	title = request.args.get('title')
 	start = request.args.get('start')
@@ -66,6 +70,7 @@ def remove_ava():
 	db_session.commit()
 
 	logging.info("delete available date for email "+user_email+" with "+" the date on "+start)
+	theLock.release()
 	return 'remove'
 
 

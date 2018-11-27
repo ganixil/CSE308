@@ -10,7 +10,7 @@ from assignmentCreator import makeAssign
 import datetime
 from datetime import date
 import math
-
+from locking import theLock
 
 #link google map
 gmaps = googlemaps.Client(key = key)
@@ -160,6 +160,27 @@ def viewCampaign():
 			questions.append(ele)
 		camp_ele.append(questions) # camp_ele[4] = questions
 
+		
+		''' Retrieve Campaign Canvasseer Object to get Campaign Name'''
+		cans = db_session.query(CampaignCanvasser).filter(CampaignCanvasser.campaign_name == obj.name).all()
+		'''Gets All Assignemnt object for this Campaign'''
+		assignment_list =[]
+		for c in cans:
+			assignedCanvasser = db_session.query(Assignment).filter(Assignment.canvasser_id == c.id).all()
+			for a in assignedCanvasser:
+				assignment_list.append(a)
+
+		'''Gets all location from Assignment'''
+		location_obj = []
+		for a in assignment_list:
+			loc = db_session.query(TaskLocation).filter(TaskLocation.assignment_id == a.id).all()
+			for l in loc:
+				tup = (l.location, l.visited)
+				location_obj.append(tup)
+		camp_ele.append(location_obj)
+
+		print(location_obj)
+
 		camp[obj.name] = camp_ele
 	return render_template('manager_html/view_campaign.html', camp=camp, name = None, camp_list = [], index =0 )
 
@@ -177,6 +198,8 @@ def viewCampaignDetail():
 		return render_template('manager_html/view_campaign.html', camp=camp, name = campaign_name, camp_list = camp[campaign_name][3], index =3)
 	elif (name == "Questions"):
 		return render_template('manager_html/view_campaign.html', camp=camp, name = campaign_name, camp_list = camp[campaign_name][4], index =4)
+	elif (name == "Assignments"):
+		return render_template('manager_html/view_campaign.html', camp=camp, name = campaign_name, camp_list = camp[campaign_name][5], index =5)
 	else:
 		return render_template('manager_html/view_campaign.html', camp=camp, name = None, camp_list =[], index = 0)
 
@@ -201,6 +224,7 @@ def createCampaign(u_email):
 
 	''' For submit button'''
 	if request.method == 'POST':
+		theLock.acquire()
 		campaign_name = request.form['name'] # string
 		startDate = request.form['start_date'] #string 2018-11-26
 		endDate = request.form['end_date'] 
@@ -216,6 +240,7 @@ def createCampaign(u_email):
 
 		if not (campaign_name and startDate and endDate and duration and locations):
 			flash("Failed to create campaign, there're empty values!!")
+			theLock.release()
 			return render_template('manager_html/create_campaign.html', managers = all_managers, canvassers = all_canvassers, index = 5)
 		## No empty
 		## Add campaign's creator
@@ -233,6 +258,7 @@ def createCampaign(u_email):
 			 for ele in locations_arr:
 			 	if(gmaps.geocode(ele) == []):
 			 		flash("Failed to create campaign, the address("+ele+") is not valid!!")
+			 		theLock.release()
 			 		return render_template('manager_html/create_campaign.html', managers = all_managers, canvassers = all_canvassers, index = 5)
 			 	lat = gmaps.geocode(ele)[0]['geometry']['location']['lat']
 			 	lng = gmaps.geocode(ele)[0]['geometry']['location']['lng']
@@ -241,6 +267,7 @@ def createCampaign(u_email):
 			 	'''Check if there're some repeated locations'''
 			 	if test in valid_locations:
 			 		flash("Failed to create campaign, the address: ("+address+") is repeated!!!")
+			 		theLock.release()
 			 		return render_template('manager_html/create_campaign.html', managers = all_managers, canvassers = all_canvassers, index = 5)
 			 	else:
 			 		valid_locations.append((address,lat, lng))
@@ -251,6 +278,7 @@ def createCampaign(u_email):
 		check_camp = db_session.query(Campaign).filter(Campaign.name == campaign_name).first()
 		if(check_camp):
 			flash("This Campaign Name already exists, please enter the unique campaign name!")
+			theLock.release()
 			return render_template('manager_html/create_campaign.html', managers = all_managers, canvassers = all_canvassers, index = 5)
 		''' New Campaign Object'''
 		newCamp = Campaign(campaign_name,startDate,endDate,talking,int(duration))
@@ -287,6 +315,7 @@ def createCampaign(u_email):
 			flash("Create Campagin successfully, but did not make compeletely assingments !")
 		else:
 			flash("Create Compaingn and make compeletely assignments successfully !")
+		theLock.release()
 		return redirect(url_for('manager.manPage'))
 
 	return render_template('manager_html/create_campaign.html', managers = all_managers, canvassers = all_canvassers, index = 5)

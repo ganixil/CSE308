@@ -74,6 +74,9 @@
                 <li class="nav-item">
                       <a class="nav-link" id="question-tab" href="#"><input id ="show_que" type ="submit" name="action" {% if index == 4 %} class ="active_nav" {% endif %} value="Questions"></a>
                 </li>
+                <li class="nav-item">
+                      <a class="nav-link" id="assign-tab" href="#"><input id ="show_assign" type ="submit" name="action" {% if index == 5 %} class ="active_nav" {% endif %} value="Assignments"></a>
+                </li>
                </ul>
             </form>
            </div>
@@ -142,6 +145,36 @@
               </tbody>
             </table>
         </div>
+
+        <div class="table-responsive">
+                <table id = "other3-table" cellspacing="0" width="100%" class="table table-striped table-bordered table-hove" data-cache = "false" {% if index == 5 %} style ="display: block;" {% else %} style ="display:none;" {% endif %}>
+               <thead class="thead-dark">
+                  <tr >
+                      <th  class = "col">Assignment</th>
+                      <th  class = "col">Visited</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% if camp_list|length > 0 %}
+                    {% for ele in camp_list %}
+                       <tr >
+                         
+                         {% if ele[1] == True %}
+                            <td  style="background-color: #b8ffad" class = "col">{{ ele[0] }}</td>
+                            <td  style="background-color: #b8ffad" class = "col"> Yes </td>
+                         {% else %}
+                            <td  style="background-color: #ff9389" class = "col">{{ ele[0] }}</td>
+                            <td  style="background-color: #ff9389" class = "col"> No </td>
+                         {% endif %}
+                      </tr>
+                     {% endfor %}
+                  {% endif %}
+              </tbody>
+            </table>
+        </div>
+
+
+
        </div>
     </div>
   {% block script %}
