@@ -26,7 +26,7 @@
     </h5><hr/>
 
     <div style="float: center">
-   <!-- ----------- Locations on the List -->
+   <!-- ----------- Assignment Overview -->
       <div class="panel panel-primary col" id="current_assignment">
           <div class="card" style ="margin-left: 5%;">
             <h5 class="card-header">Current Day's Canvassing Assignment</h5>
@@ -36,11 +36,19 @@
                   <ul class="list-group list-group-flush">
                     <li class="list-group-item" style="font-weight: bold;"><mark>Campaign Name:</mark>&nbsp&nbsp {{ ass_info['campaign_name'] }} </li>
                     <li class="list-group-item" style="font-weight: bold;"><mark>The Date :</mark>&nbsp&nbsp {{ ass_info['current_ass'].theDate }} </li>
+                    <li class="list-group-item" style="font-weight: bold;"><mark>Talking :</mark>&nbsp&nbsp {{ ass_info['campaign'].talking}} </li>
+                    <li class="list-group-item" style="font-weight: bold;"><mark>Duration of Each Task :</mark>&nbsp&nbsp {{ ass_info['campaign'].duration}} </li>
                   </ul><br/>
               </div>
+              <h5 class="card-title btn btn-secondary btn-block">Assignment Location</h5>
+              <div>
+                  <label style="font-weight: bold;"><mark>Current Location:</mark>&nbsp&nbsp {{ ass_info['rec_visited'].location }} </lable>
+              </div>
+
         </div>
       </div>
-  </div> 
+    </div> 
+
 </div><hr/><br/>
 
 <!-- <script type="text/javascript" src="/static/javascript/canvasser_script/canvas_start.js"></script> -->

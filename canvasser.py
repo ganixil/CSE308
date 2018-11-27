@@ -215,10 +215,13 @@ def create_canvass():
 	if not current_assignment:
 		flash("Fail to canvassing assingment creation.  You do not have current today assignment!")
 		return redirect(url_for('canvasser.canPage', u_name = session['info']['name']))
+	
 	''' You have current today's assignment'''
 	### Find the most rec_visited location ###
 	rec_visited = None
 	unvisited = []
+	rec_visited = current_assignment.assignment_relation_task_loc[0]
+	
 	for ele in current_assignment.assignment_relation_task_loc:
 		if ele.visited:
 			rec_visited = ele
@@ -227,6 +230,10 @@ def create_canvass():
 
 	''' Retrieve Campaign Canvasseer Object to get Campaign Name'''
 	camp_obj =db_session.query(CampaignCanvasser).filter(CampaignCanvasser.id == current_assignment.canvasser_id).first()
+
+	'''Retriving basic Campaign Info from Campaign'''
+	campaign = db_session.query(Campaign).filter(Campaign.name == camp_obj.campaign_name).first()
+
 	if not camp_obj:
 		flash("Fail to canvassing assingment creation.No campaign!!")
 		return redirect(url_for('canvasser.canPage', u_name = session['info']['name']))
@@ -241,6 +248,7 @@ def create_canvass():
 	ass_info['unvisited'] = unvisited
 	ass_info['locations'] = locations
 	ass_info['campaign_name'] = camp_obj.campaign_name
+	ass_info['campaign'] = campaign
 
 	print("assignemnt Info for canvass")
 	for ele in ass_info:
