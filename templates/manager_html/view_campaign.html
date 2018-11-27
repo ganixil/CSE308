@@ -59,7 +59,7 @@
        <div class="container" id ="detail-container" {% if index|int > 0 %} style ="display: block;" {% else %} style ="display:none;" {% endif %}>
             <div>
               <form method="post" action ="{{ url_for('manager.viewCampaignDetail') }}">
-                <label style ="font-weight: bold; font-size: 16px;" id= "detail-title"> <span style ="font-size: 22px"> Details For Compaign:</span> (Click on buttons below for specified detials) </label>
+                <label style ="font-weight: bold; font-size: 16px;" id= "detail-title"> <span style ="font-size: 22px"> Details For Compaign:</span> (Click on buttons below for specified details) </label>
                 <input name ="campaign-name" class="form-control" style ="background-color:#89B4E0; font-weight: bold; font-size: 22px;" id ="campaign-name" {% if name %} value = "{{ name }}" {% endif %} >
                 <ul class="nav justify-content-center" id="myTab" role="tablist">
                   <li>
