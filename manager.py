@@ -483,17 +483,8 @@ def delete(campName):
     return redirect(url_for('manager.viewCampaign'))
 
 
-@bp.route('/view_assignment', methods=['GET','POST'])
-def viewAssignment():
-	print("Enter View Assignment \n")
-	return render_template('manager_html/edit_campaign.html', camp=camp, name = None, camp_list = [], index = 0)
 
-@bp.route('/edit_assignment', methods=['GET','POST'])
-def editAssignment():
-	print("Enter Edit Assignment \n")
-	return render_template('manager_html/edit_assignment.html', camp=camp, name = None, camp_list = [], index = 0)
-
-@bp.route('/view_result', methods=['GET','POST'])
+@bp.route('/view_result', methods=('GET','POST'))
 def viewResult():
 	print("Enter Edit Assignment \n")
-	return render_template('manager_html/edit_assignment.html', camp=camp, name = None, camp_list = [], index = 0)
+	return render_template('manager_html/view_result.html', camp=camp, name = None, camp_list = [], index = 0)
