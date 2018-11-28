@@ -17,7 +17,6 @@
             one_location.push('{{instance.location}}', '{{instance.lat}}','{{instance.lng}}','{{ instance.order}}');
             locations.push(one_location);
          {% endfor %}
-
         // Generate Map
         var mapOptions = {
             center: new google.maps.LatLng(40.9256538, -73.140943),
@@ -25,11 +24,9 @@
           }
           map = new google.maps.Map(document.getElementById("map"), mapOptions);
               var infowindow = new google.maps.InfoWindow();
-
         // Inital Markers
           var marker, i;
           var bounds = new google.maps.LatLngBounds();
-
         // Create one marker for each location
         for (i = 0; i < locations.length; i++) { 
           marker = new google.maps.Marker({
@@ -38,7 +35,6 @@
             title: locations[i][0],
             map: map
           });
-
           bounds.extend(marker.getPosition());
           google.maps.event.addListener(marker, 'click', (function(marker, i) {
             return function() {
