@@ -11,7 +11,7 @@ import pymysql
 # 'mysql+pymysql://username:password@address:port/databaseName'
 # Connect to the database with the database connection string
 # engine = create_engine('mysql+pymysql://xiangyiliu:111308288@mysql3.cs.stonybrook.edu:3306/xiangyiliu', convert_unicode=True)
-engine = create_engine('mysql+pymysql://root:1969@localhost:3306/cse308', convert_unicode=True)
+engine = create_engine('mysql+pymysql://xiangli5:110445032@mysql3.cs.stonybrook.edu:3306/xiangli5', convert_unicode=True)
 db_session = scoped_session(sessionmaker(autocommit=False, autoflush=False,bind=engine))
 # Make the sqlalchemy object relation mapper base class
 Base = declarative_base()
