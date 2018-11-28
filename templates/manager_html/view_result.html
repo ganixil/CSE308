@@ -5,13 +5,13 @@
     <link href="/static/css/done_canvas.css" rel="stylesheet">
     <link href="/static/css/view_canvasser_ass.css" rel="stylesheet">
     <!----------The script to inital location Makers---->
-    {% if detail %}
+    {% if locations %}
    <script type="text/javascript">
       $(document).ready(function () {
           // Get all locations
           document.getElementById('submit').disabled=false;
           var locations=[]
-          {% for instance in detail['location'] %}
+          {% for instance in locations %}
             var one_location=[];
             one_location.push('{{instance.location}}', '{{instance.lat}}','{{instance.lng}}','{{ instance.order}}');
             locations.push(one_location);
@@ -70,9 +70,57 @@
         </ul>  
     </h5><hr/>
     
-    <br/><hr/><br/>
+    <form id="assignment_form" method="post" action="{{ url_for('manager.view_result')}}" role="form">
+    <!-- ----------- All Assignments on List -->
+        <div class="form-group">
+            <h2 for="assignment" style="margin-left: 2%;"><span class="badge badge-pill badge-success">All assignments (select one) :</span></h2>
+            <br/>
+            <div class="row">
+              <select class="form-control col-6" id="assignment" name="assignment" onchange="toggle_btn()" required autofocus>
 
+                <option value="None">Choose...</option> 
+                <!------ Upcoming Assignment------->
+                <optgroup label="All Assignments: ">
+                    {% for assign in assign_info %}
+                 <!-------instance = Assignment object----------->
+                    <option value="{{assign[0]}}">Assignment #{{assign[0]}} on {{assign[3]}}</option>
+                    {% endfor %}
+                </optgroup>
+              </select>
+              <button class="btn btn-primary" style="margin-left: 1%;" name="submit" id="submit" type="submit"> See details </button>
+            </div>
+        </div>
+    </form>
+    <br/><hr/><br/>
   <!----------- Begin here to show assignment information----------->
+<h2 style="margin-left: 2%; text-align: center;"> <u>The Assignment On: {{assignment.theDate}} for Campaign: {{campaign.name}}</u></h2>
+
+<h2 style="margin-left: 2%; text-align: center;"> <u>The Assignment is {% if assignment.done %}Done{%else%}Not Done{%endif%}</u></h2>
+
+
+<h2 style="margin-left: 2%; margin-bottom: 1%;"><span class="badge badge-pill badge-success">The detail assignment for locations :</span></h2>
+  <div class="row">
+<!----------------Locations on List------->
+<div class="panel panel-primary col" id="result_panel1" style="margin-left: 1%;">
+      <div class="panel-heading" style="margin-left: 5%;"><h3 class="panel-title"><strong>Locations on List:</strong></h3>
+      </div>
+      <div class="panel-body">
+          <ul class="list-group">
+           {% for ele in locations %}
+                <a href="#" class="list-group-item list-group-item-action list-group-item-light">#{{ele.order}}: {{ele.location}} (lat= {{ele.lat}}, lng={{ele.lng}})</a>
+            {% endfor %}
+        </ul>
+      </div>
+    </div> 
+<!----------------Locations on Map------->
+  <div class="panel panel-primary col" id="result_panel" style="margin-right: 1%;">
+      <div class="panel-heading" style="margin-left: 5%;"><h3 class="panel-title"><strong>Locations on Map:</strong></h3>
+      </div>
+      <div class="panel-body">
+        <div id="map" name="map" style=" height: 300px;background-color: grey"></div>
+      </div>
+    </div> 
+  </div>
 <br/><hr/>
 <!----- Basic information------>
 <div class="container" id ="detail-container" >
@@ -88,7 +136,7 @@
               </thead>
               <tbody>
                  
-                    {% for assign in assignment %}
+                    {% for assign in assign_info %}
                        <tr >
                          <td  class = "col">{{ assign[0] }}</td>
                          <td  class = "col">{{ assign[1] }}</td>

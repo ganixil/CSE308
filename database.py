@@ -106,10 +106,7 @@ class Questionnaire(Base):
     def __init__(self, question):
        self.question = question
 
-    def __repr__(self):
-        return "<Questionnaire(Campaign name='%s', question='%s')>" % (self.campaign_name, self.question)
 
-    
 class CampaignLocation(Base):   # Association Table (Campaign + Locations)
     __tablename__ = 'campaign_locations'
 
@@ -243,11 +240,11 @@ class Result(Base):
 
     id = Column(Integer, primary_key = True)
     taskLocation_id = Column(Integer, ForeignKey('task_locations.id', onupdate="CASCADE", ondelete="CASCADE"))
-    questions = Column(Text, nullable = True) ## q1,q2,q3,q4,
-    answers = Column(Text, nullable = True)  # 0-no, 1-yes
-    ### answer format 0101
+    questions = Column(Text, nullable = True) ## q1|q2|q3|q4
+    answers = Column(Text, nullable = True)  # 0-no, 1-yes, 2-without
+    ### answer format 0|1|0|1
     spoke_to = Column(Boolean, nullable= False, default=False)
-    rating = Column(Float, nullable= False, default=0.0)
+    rating = Column(Integer, nullable= False, default=0)
     brief_notes = Column(Text, default="None", nullable=False)
 
     def __init__(self, questions,answers,spoke_to,rating, brief_notes):

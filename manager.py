@@ -506,14 +506,11 @@ def delete(campName):
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 @bp.route('/view_result', methods=('GET','POST'))
-def viewResult():
-	
+def view_result():
 
-	
 	assign_obj = db_session.query(Assignment).all()
 	assign_info = []
 	for a in assign_obj:
-		
 		locationCount = len(db_session.query(TaskLocation).filter(TaskLocation.assignment_id == a.id ).all())
 		canvas = db_session.query(CampaignCanvasser).filter(CampaignCanvasser.id  == a.canvasser_id ).first()
 		camp = db_session.query(Campaign).filter(canvas.campaign_name == Campaign.name).first()
@@ -521,8 +518,30 @@ def viewResult():
 		tup = (a.id, locationCount, duration, a.theDate)
 		assign_info.append(tup)
 
+	if request.method == 'POST':
+		assign_id = request.form['assignment']
 
-	return render_template('manager_html/view_result.html', assignment=assign_info)
+		assignment = db_session.query(Assignment).filter(Assignment.id == int(assign_id)).first()
+
+		locations = db_session.query(TaskLocation).filter(TaskLocation.assignment_id == int(assign_id)).all()
+
+		campaign_name = db_session.query(CampaignCanvasser).filter(CampaignCanvasser.id == assignment.canvasser_id).first().campaign_name
+
+		campaign = db_session.query(Campaign).filter(Campaign.name == campaign_name).first()
+
+		if campaign.done:
+			result= []
+			for l in locations:
+				result.append(db_session.query(Result).filter(Result.taskLocation_id == l.id).first())
+			print(result)
+
+
+
+
+		return render_template('manager_html/view_result.html', assign_info=assign_info, locations = locations, assignment = assignment, campaign = campaign)
+
+
+	return render_template('manager_html/view_result.html', assign_info=assign_info)
 
 @bp.route('/view_assignment_detail', methods=('GET', 'POST'))
 def view_assignment_detail():
