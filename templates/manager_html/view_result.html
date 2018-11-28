@@ -4,6 +4,7 @@
     <!-- Custom styles for this login page -->
     <link href="/static/css/done_canvas.css" rel="stylesheet">
     <link href="/static/css/view_canvasser_ass.css" rel="stylesheet">
+     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <!----------The script to inital location Makers---->
     {% if locations %}
    <script type="text/javascript">
@@ -57,7 +58,40 @@
       });
 </script>
 {% endif %}
+{% if assignment %}
+<script type="text/javascript">
+      // Load Charts and the corechart package.
+      google.charts.load('current', {'packages':['corechart']});
 
+      // Draw the pie chart when Charts is loaded.
+      
+
+      {% for i in range(statistic['questions']|length)%}
+      google.charts.setOnLoadCallback(drawChart{{i}});
+      function drawChart{{i}}() {
+
+        
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Question');
+        data.addColumn('number', 'NumOfAnswers');
+        data.addRows([
+          ['Yes', {{statistic['answers'][i][0]}}],
+          ['No', {{statistic['answers'][i][1]}}],
+          ['Do not Care', {{statistic['answers'][i][2]}}]
+        ]);
+
+        
+        var options = {title:'{{statistic['questions'][i]}}',
+                       width:400,
+                       height:300};
+
+        // Instantiate and draw the chart
+        var chart = new google.visualization.PieChart(document.getElementById("{{statistic['questions'][i]}}"));
+        chart.draw(data, options);
+      }
+       {% endfor %}
+</script>
+{% endif %}
 {% endblock %}
 
 <!----------------------BODY PART---------------------------------------------->
@@ -97,9 +131,9 @@
     </form>
     <br/><hr/><br/>
   <!----------- Begin here to show assignment information----------->
-<h2 style="margin-left: 2%; text-align: center;"> <u>The Assignment On: {{assignment.theDate}} for Campaign: {{campaign.name}}</u></h2>
+<h2 style="margin-left: 2%; text-align: center;"> <u>The Assignment On:{% if assignment %} {{assignment.theDate}} for Campaign: {{campaign.name}} {%endif%}</u></h2>
 
-<h2 style="margin-left: 2%; text-align: center;"> <u>The Assignment is {% if assignment.done %}Done{%else%}Not Done{%endif%}</u></h2>
+<h2 style="margin-left: 2%; text-align: center;"> <u>The Assignment is {% if assignment %}{% if assignment.done %}Done{%else%}Not Done{%endif%}{%endif%}</u></h2>
 
 
 <h2 style="margin-left: 2%; margin-bottom: 1%;"><span class="badge badge-pill badge-success">The detail assignment for locations :</span></h2>
@@ -126,6 +160,16 @@
     </div> 
   </div>
 <br/><hr/>
+<!----- Statistic of this assignment---->
+{% if assignment %}
+<div class="container">
+  {% for q in statistic['questions']%}
+    <div class="d-flex" id="{{q}}"></div>
+    <br>
+  {% endfor %}
+</div>
+<br/><hr/>
+{% endif %}
 <!----- Basic information------>
 <div class="container" id ="detail-container" >
         <div class="table-responsive">
@@ -153,9 +197,11 @@
             </table>
         </div>
 </div>
-    <hr/>
-   
+<hr/>
+
+
     <!-- map js files--> 
+   
     <script src="/static/javascript/canvasser_script/view_assignment.js" ></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCGuEpRycbTYDCcS6uxiot0x0eSLkpTbiY&libraries=places&callback=initAutocomplete"></script>
 {%  endblock %}
