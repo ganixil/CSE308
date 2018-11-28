@@ -61,7 +61,6 @@ def createAssignment(newCamp):
 
 	# make assignments with the routing alorithm
 	assignments = makeAssign(locations, newCamp.duration)
-	print(assignments)
 	#print("assignments %s" %assignments)
 
 	dates = [] ###### Store the Valid CanAva Objects
@@ -132,6 +131,82 @@ def createAssignment(newCamp):
 
 	return assignmentPossible
 
+
+''' Create Assignment for one Campaing'''
+def re_CreateAssignment(Camp):
+	global assignments
+	'''
+	Camp---> campaign Object
+	'''
+	# flag for marking the assignment the campaign as possible
+	assignmentPossible = False
+
+	dates = [] ###### Store the Valid CanAva Objects
+
+	''' Get all Campaign Canvassers'''
+	camp_canvassers = newCamp.campaigns_relation_1
+	for ele in camp_canvassers:
+		''' Get all this Campaign Canvasser's all avaliable dates'''
+		canDates = db_session.query(CanAva).filter(CanAva.role_id == ele.role_id).all()
+		for ele_ava in canDates:
+			if ele_ava.theDate >= startDate and ele_ava.theDate <= endDate:
+				dates.append(ele_ava)
+
+	'''sort dates by earliest available CanAva objects'''
+	dates.sort(key= lambda d: d.theDate)
+
+	# assign assignments to dates
+	mappedAssignments = {}  ### Key = Canvasser'role_id Value = CanAva and assignment
+	while(len(dates) > 0 and len(assignments) > 0):
+		dTemp = dates.pop(0)  #### CanAva
+		aTemp = assignments.pop(0)  #####  list of set(lat, lng)
+		#print("atemp---> %s" %aTemp)
+
+		if(dTemp.role_id in mappedAssignments):
+			mappedAssignments[dTemp.role_id].append((dTemp,aTemp))
+		else:
+			mappedAssignments[dTemp.role_id] = [(dTemp, aTemp)]
+	
+	#if no more assingments then this mapping is possible
+	if(len(assignments) == 0):
+		assignmentPossible = True
+
+	## add assignments to database
+	for ele in mappedAssignments:  ## Key---> Role Id ; Value= the serveral list of [(CanAva, assingment),(...)]
+		# ele is the key---> role_id
+		campCanvasser= db_session.query(CampaignCanvasser).filter(CampaignCanvasser.campaign_name == newCamp.name, CampaignCanvasser.role_id == ele).first()
+		## mappedAssignments[ele]--> sets of (CanAva, assignment)
+		for ele_ass  in mappedAssignments[ele]:
+			###### ele_ass =one set (CanAva, assignment)
+			### ele_ass[0] --- CanAva
+			### ele_ass[1] -- assignment
+			ass_obj = Assignment(ele_ass[0].theDate, False)
+
+			## ele_ass[1] -----[(lat, lng), (lat1, lng1)....]
+			for order in range(len(ele_ass[1])):
+				lat = ele_ass[1][order][0] 
+				lng = ele_ass[1][order][1]
+				## Get location from the campaign location db
+				allCampLocation =db_session.query(CampaignLocation).filter(CampaignLocation.campaign_name == newCamp.name).all()
+				### Get campLocation Object, and retrieve location address string: loc
+				''' campLocation = [one campaignLocation object]'''
+				campLocation = [loc for loc in allCampLocation if (math.isclose(loc.lat, lat) and math.isclose(loc.lng, lng))]
+				loc = campLocation[0].location
+				#### Create Task Location Object  #########
+				task_loc_obj = TaskLocation(loc,lat,lng,order)
+				''' Add TaskLocation Object to Assignment Obejct'''
+				ass_obj.assignment_relation_task_loc.append(task_loc_obj)
+
+			''' Add the new created Assignment Object to CampaignCanvasser Obejct'''
+			campCanvasser.canvasser_relation.append(ass_obj)
+			db_session.commit()
+
+			# remove taken dates out of available in the database
+			# Delet(CanAva)
+			db_session.delete(ele_ass[0])
+			db_session.commit()
+
+	return assignmentPossible
 
 #function to render the manager page and set the manager page url
 @bp.route('/manpage', methods=('GET', 'POST'))
@@ -406,11 +481,8 @@ def editCampaign(u_email):
 			questions_text = request.form['questions_text']  #string (multi-lines)
 			locations_text = request.form['locations_text'] #string (multi-lines)s  ## format = address|lat|lng
 
-
-
 			current_campaign = db_session.query(Campaign).filter(Campaign.name == old_campaign_name).first()
 
-			
 			current_campaign.startDate = startDate
 			current_campaign.endDate = endDate
 			current_campaign.talking = talking
@@ -477,6 +549,8 @@ def editCampaign(u_email):
 				current_campaign.campaigns_relation_2.append(ele_obj)
 
 			db_session.commit()
+
+			current_campaign=re_CreateAssignment(Camp):
 
 			return redirect(url_for('manager.manPage'))
 	else:
