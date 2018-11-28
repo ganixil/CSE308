@@ -532,7 +532,7 @@ def view_result():
 		if campaign.done:
 			result= []
 			for l in locations:
-				result.append(db_session.query(Result).filter(Result.taskLocation_id == l.id).first()
+				result.append(db_session.query(Result).filter(Result.taskLocation_id == l.id).first())
 			print(result)
 
 
