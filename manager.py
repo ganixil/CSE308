@@ -2,7 +2,7 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for,session
 )
 from werkzeug.exceptions import abort
-from database import db_session, User, Campaign, Role,CampaignLocation,CampaignCanvasser, CampaignManager, Questionnaire, Assignment, GlobalVariables, CanAva, TaskLocation
+from database import db_session, User, Campaign, Role,CampaignLocation,CampaignCanvasser, CampaignManager, Questionnaire, Assignment, GlobalVariables, CanAva, TaskLocation, Result
 from sqlalchemy.sql.expression import func
 from gmap import key
 import googlemaps
@@ -11,6 +11,7 @@ import datetime
 from datetime import date
 import math
 from locking import theLock
+import logging
 
 user_email="" #### Keep the canvasser's email to be avaliable for getting User, Role Object #####
 
@@ -61,7 +62,7 @@ def createAssignment(newCamp):
 
 	# make assignments with the routing alorithm
 	assignments = makeAssign(locations, newCamp.duration)
-	print("assignments %s" %assignments)
+	#print("assignments %s" %assignments)
 
 	dates = [] ###### Store the Valid CanAva Objects
 
@@ -82,7 +83,7 @@ def createAssignment(newCamp):
 	while(len(dates) > 0 and len(assignments) > 0):
 		dTemp = dates.pop(0)  #### CanAva
 		aTemp = assignments.pop(0)  #####  list of set(lat, lng)
-		print("atemp---> %s" %aTemp)
+		#print("atemp---> %s" %aTemp)
 
 		if(dTemp.role_id in mappedAssignments):
 			mappedAssignments[dTemp.role_id].append((dTemp,aTemp))
@@ -193,7 +194,6 @@ def viewCampaign():
 				location_obj.append(tup)
 		camp_ele.append(location_obj)
 
-		print(location_obj)
 
 		camp[obj.name] = camp_ele
 	return render_template('manager_html/view_campaign.html', camp=camp, name = None, camp_list = [], index =0 )
@@ -529,16 +529,53 @@ def view_result():
 
 		campaign = db_session.query(Campaign).filter(Campaign.name == campaign_name).first()
 
-		if campaign.done:
+		statistic = {}
+		if assignment.done:
 			result= []
 			for l in locations:
 				result.append(db_session.query(Result).filter(Result.taskLocation_id == l.id).first())
-			print(result)
+			
+			sum_rating= 0
+			answers = []
+			question_length = 0
+			
+			for r in result:
+				sum_rating += r.rating
+				answers.append(r.answers.split('|')[:-1])
+				question_length = len(r.answers.split('|')[:-1])
+
+			questions = result[0].questions.split('|')[:-1]
+			###fixing the answer list###
+			answers_fix =[]
+			for i in range(question_length):
+				answers_fix.append([item[i] for item in answers])
+
+			answers = []
+			for af in answers_fix:
+				yes = 0
+				no = 0
+				dontcare = 0
+				for a in af:
+					if a == "0":
+						no+=1
+					elif a == "1":
+						yes+=1
+					elif a == "2":
+						dontcare+=1
+				answers.append([yes,no,dontcare])
+			
+
+
+			avg_rating = sum_rating/len(result)
+
+			statistic['avg_rating'] = avg_rating
+			statistic['answers'] = answers #answer are in list format of [yes #, no #, dontcare #]
+			statistic['questions'] = questions
 
 
 
 
-		return render_template('manager_html/view_result.html', assign_info=assign_info, locations = locations, assignment = assignment, campaign = campaign)
+		return render_template('manager_html/view_result.html', assign_info=assign_info, locations = locations, assignment = assignment, campaign = campaign,statistic = statistic)
 
 
 	return render_template('manager_html/view_result.html', assign_info=assign_info)

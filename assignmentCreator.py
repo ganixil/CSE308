@@ -67,7 +67,7 @@ def create_distance_callback(data):
 def add_distance_dimension(routing, distance_callback):
     # Add Global Span constraint
     distance = 'Distance'
-    maximum_distance = 9999999  # Maximum distance per vehicle.
+    maximum_distance = 9999999999  # Maximum distance per vehicle.
     routing.AddDimension(distance_callback, 0, maximum_distance, True, distance)
     distance_dimension = routing.GetDimensionOrDie(distance)
     # Try to minimize the max distance among vehicles.
