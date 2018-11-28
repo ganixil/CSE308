@@ -529,6 +529,15 @@ def view_result():
 
 		campaign = db_session.query(Campaign).filter(Campaign.name == campaign_name).first()
 
+		if campaign.done:
+			result= []
+			for l in locations:
+				result.append(db_session.query(Result).filter(Result.taskLocation_id == l.id).first())
+			print(result)
+
+
+
+
 		return render_template('manager_html/view_result.html', assign_info=assign_info, locations = locations, assignment = assignment, campaign = campaign)
 
 
