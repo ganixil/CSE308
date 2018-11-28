@@ -103,6 +103,7 @@ $(document).ready(function () {
        $('#locations_text').linenumbers({col_width:'75px'});
 });
 
+// For creating compaigns
 function validDates(){
      var start_date = document.getElementById('start_date');
      var end_date = document.getElementById('end_date');
@@ -119,6 +120,29 @@ function validDates(){
           }else if(start_obj.getTime() > end_obj.getTime()){
                   start_date.value =today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
                   end_date.value='';
+               alert("Invalid Date Setttings, please make sure dates should start from current date, and in valid ranges!!");
+          }
+
+     }
+}
+
+// for editing campaigns
+function validDates1(date1, date2){
+     var start_date = document.getElementById('start_date');
+     var end_date = document.getElementById('end_date');
+     // If Both dates are not empty, check if they are invalid
+     if(start_date.value && end_date.value){
+          start = start_date.value.replace(/-/g,'/');
+          end = end_date.value.replace(/-/g,'/');
+          start_obj = new Date(start);
+          end_obj = new Date(end);
+          if(start_obj.getTime() < today.getTime()){
+                start_date.value =today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
+                end_date.value=date1;
+               alert("Invalid Date Setttings, please make sure dates should start from current date, and in valid ranges!!");
+          }else if(start_obj.getTime() > end_obj.getTime()){
+                  start_date.value =today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
+                  end_date.value=date2;
                alert("Invalid Date Setttings, please make sure dates should start from current date, and in valid ranges!!");
           }
 
@@ -221,7 +245,7 @@ function check_locations(){
 function  check_submit(){
      var name = document.getElementById('name');
      if (name.value == ""){
-        alert("Failed to create, Please type one Campaign Name");
+        alert("Failed to submit, Please type one Campaign Name");
         return false;
      }
 
@@ -235,7 +259,7 @@ function  check_submit(){
       }
     }
     if(! has_managers){
-        alert("Failed to create, Please select at least one manager!!");
+        alert("Failed to submit, Please select at least one manager!!");
         return false;
     }
     // Check if there're some canvassers
@@ -248,17 +272,31 @@ function  check_submit(){
       }
     }
     if(!has_canvassers){
-       alert("Failed to create, Please select at least one canvasser!!");
+       alert("Failed to submit, Please select at least one canvasser!!");
        return false;
     }
     var locations = document.getElementById('locations_text').value;
     if(locations.trim() == ""){
-      alert("Failed to create, Please add at least one location !!");
+      alert("Failed to submit,Please add at least one location !!");
     }
     // Check repeated questions 
     if(check_questions()== false || check_locations() == false){
           return false;
     }
+
+    // check values for editing campaign
+    var duration = document.getElementById('duration').value;
+    if (not(duration && duration.trim() != "")){
+        alert("Failed to submit,No empty duration");
+        return false;
+      }
+
+     var start_date = document.getElementById('start_date');
+     var end_date = document.getElementById('end_date');
+     if ((! start_date) || (!end_date)){
+        alert("Failed to submit,No empty start_date, end_date");
+        return false;
+     }
     return true;
 
 }

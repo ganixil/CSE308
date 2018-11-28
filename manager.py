@@ -340,7 +340,6 @@ def createCampaign(u_email):
 @bp.route('/edit_campaign/<u_email>', methods=['GET','POST'])
 def editCampaign(u_email):
 	global assignments
-	print(assignments)
 	''' Retrieve all Campaigns fistlly'''
 	all_campaigns = db_session.query(Campaign).all()
 	''' Key is 'email', Value is 'name'''
@@ -397,7 +396,7 @@ def editCampaign(u_email):
 		elif request.form['submit'] == 'submit_change':
 
 			old_campaign_name = request.form['campaign_list']
-			new_campaign_name = request.form['campaign_name']
+			new_campaign_name = request.form['name']
 			startDate = request.form['start_date']
 			endDate = request.form['end_date']
 			talking = request.form['talking']
