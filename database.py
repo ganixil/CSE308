@@ -285,7 +285,7 @@ if __name__ == "__main__":
     admin_4 = Role('admin')
     canvasser_2 = Role('canvasser')
     manager_2 = Role('manager')
-    user3.users_relation=[admin_4,canvasser_2, manager_2]
+    user4.users_relation=[admin_4,canvasser_2, manager_2]
 
     ### 13 managers
     user5 = User('cool_can1@c.com', p1, 'Cool Canvasser1', 'None')

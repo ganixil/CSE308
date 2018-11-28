@@ -66,58 +66,6 @@ $(document).ready(function(){    // Instantiate UI tabs vertical
 
     });
 
-    $(".edit").click(function(){  //Add One New User
-        $("#edit").show();
-        $("#edit").trigger('click');
-        $("#reset").prop( "disabled", true);
-        $("#user-title").text("Edit Selected User");
-        var index = this.closest('tr').rowIndex;
-        var name = $('#user-table tr:eq('+index+') td:eq(0)').text();
-        $('#name').prop("value", name.trim());
-
-        var email = $('#user-table tr:eq('+index+') td:eq(1)').text();
-        $('#email').prop("value", email.trim());
-        var url = "/admin/edit/"+ email;
-
-        $("#user-form").prop("action", url); 
-        $('#password').prop('disabled', true);
-        $('#confirm-password').prop('disabled', true);
-        $('#toggle-password').prop('disabled', true);
-        $('#toggle-confirm-password').prop('disabled', true);
-
-        var role_text = $('#user-table tr:eq('+index+') td:eq(2)').text(); 
-        var roles = role_text.split(",");
-      $('#check-admin').prop('checked', false);
-      $('#check-manager').prop('checked', false);
-      $('#check-canvasser').prop('checked', false);
-      if (roles != null){
-         for (i = 0; i < roles.length; i++)  { 
-            var role = roles[i].replace(/\s+/g, '');
-            if(role == "admin"){
-              $('#check-admin').prop('checked', true);
-                 }
-            else if(role == "manager"){
-                 $('#check-manager').prop('checked',true);
-              }
-            else if(role == "canvasser"){
-                $('#check-canvasser').prop('checked',true);
-             } 
-        } 
-    }
-     var avatar= $('#user-table tr:eq('+index+') td:eq(3)').text();
-     if(avatar.trim()=='None'){
-         $('#avatar').prop('src',"/static/image/profile/avatar.png");
-     }
-    else{
-        var im = avatar.trim();
-        if (im != null ){
-            var s = "/static/image/profile/" + im ;
-            $('#avatar').prop('src', s);
-        }
-      }
-    });
-
- 
     $("#cancel").click(function(){  // Go back to user table
         $("#users").trigger('click');
         $("#edit").hide();  
@@ -190,5 +138,108 @@ $(document).ready(function(){    // Instantiate UI tabs vertical
         $("#file").trigger("change");
    });
 
-
 });
+
+function editTable(p){
+        $("#edit").show();
+        $("#edit").trigger('click');
+        $("#reset").prop( "disabled", true);
+        $("#user-title").text("Edit Selected User");
+        var index = p.closest('tr').rowIndex;
+        var name = $('#user-table tr:eq('+index+') td:eq(0)').text();
+        $('#name').prop("value", name.trim());
+
+        var email = $('#user-table tr:eq('+index+') td:eq(1)').text();
+        $('#email').prop("value", email.trim());
+        var url = "/admin/edit/"+ email;
+
+        $("#user-form").prop("action", url); 
+        $('#password').prop('disabled', true);
+        $('#confirm-password').prop('disabled', true);
+        $('#toggle-password').prop('disabled', true);
+        $('#toggle-confirm-password').prop('disabled', true);
+
+        var role_text = $('#user-table tr:eq('+index+') td:eq(2)').text(); 
+        var roles = role_text.split(",");
+      $('#check-admin').prop('checked', false);
+      $('#check-manager').prop('checked', false);
+      $('#check-canvasser').prop('checked', false);
+      if (roles != null){
+         for (i = 0; i < roles.length; i++)  { 
+            var role = roles[i].replace(/\s+/g, '');
+            if(role == "admin"){
+              $('#check-admin').prop('checked', true);
+                 }
+            else if(role == "manager"){
+                 $('#check-manager').prop('checked',true);
+              }
+            else if(role == "canvasser"){
+                $('#check-canvasser').prop('checked',true);
+             } 
+        } 
+    }
+     var avatar= $('#user-table tr:eq('+index+') td:eq(3)').text();
+     if(avatar.trim()=='None'){
+         $('#avatar').prop('src',"/static/image/profile/avatar.png");
+     }
+    else{
+        var im = avatar.trim();
+        if (im != null ){
+            var s = "/static/image/profile/" + im ;
+            $('#avatar').prop('src', s);
+        }
+      }
+
+};
+
+    // $(".edit").on('click',function() {  //Add One New User
+    //     $("#edit").show();
+    //     $("#edit").trigger('click');
+    //     $("#reset").prop( "disabled", true);
+    //     $("#user-title").text("Edit Selected User");
+    //     var index = this.closest('tr').rowIndex;
+    //     alert(index)
+    //     var name = $('#user-table tr:eq('+index+') td:eq(0)').text();
+    //     $('#name').prop("value", name.trim());
+
+    //     var email = $('#user-table tr:eq('+index+') td:eq(1)').text();
+    //     $('#email').prop("value", email.trim());
+    //     var url = "/admin/edit/"+ email;
+
+    //     $("#user-form").prop("action", url); 
+    //     $('#password').prop('disabled', true);
+    //     $('#confirm-password').prop('disabled', true);
+    //     $('#toggle-password').prop('disabled', true);
+    //     $('#toggle-confirm-password').prop('disabled', true);
+
+    //     var role_text = $('#user-table tr:eq('+index+') td:eq(2)').text(); 
+    //     var roles = role_text.split(",");
+    //   $('#check-admin').prop('checked', false);
+    //   $('#check-manager').prop('checked', false);
+    //   $('#check-canvasser').prop('checked', false);
+    //   if (roles != null){
+    //      for (i = 0; i < roles.length; i++)  { 
+    //         var role = roles[i].replace(/\s+/g, '');
+    //         if(role == "admin"){
+    //           $('#check-admin').prop('checked', true);
+    //              }
+    //         else if(role == "manager"){
+    //              $('#check-manager').prop('checked',true);
+    //           }
+    //         else if(role == "canvasser"){
+    //             $('#check-canvasser').prop('checked',true);
+    //          } 
+    //     } 
+    // }
+    //  var avatar= $('#user-table tr:eq('+index+') td:eq(3)').text();
+    //  if(avatar.trim()=='None'){
+    //      $('#avatar').prop('src',"/static/image/profile/avatar.png");
+    //  }
+    // else{
+    //     var im = avatar.trim();
+    //     if (im != null ){
+    //         var s = "/static/image/profile/" + im ;
+    //         $('#avatar').prop('src', s);
+    //     }
+    //   }
+    // });
