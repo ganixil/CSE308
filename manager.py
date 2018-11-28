@@ -525,6 +525,12 @@ def view_result():
 
 		locations = db_session.query(TaskLocation).filter(TaskLocation.assignment_id == int(assign_id)).all()
 
+		###query for all results with the location###
+		task_results = []
+		for l in locations:
+			task_results.append(l.taskLocation_relation)
+
+
 		campaign_name = db_session.query(CampaignCanvasser).filter(CampaignCanvasser.id == assignment.canvasser_id).first().campaign_name
 
 		campaign = db_session.query(Campaign).filter(Campaign.name == campaign_name).first()
@@ -575,7 +581,7 @@ def view_result():
 
 
 
-		return render_template('manager_html/view_result.html', assign_info=assign_info, locations = locations, assignment = assignment, campaign = campaign,statistic = statistic)
+		return render_template('manager_html/view_result.html', assign_info=assign_info, locations = locations, assignment = assignment, campaign = campaign,statistic = statistic,task_results = task_results)
 
 
 	return render_template('manager_html/view_result.html', assign_info=assign_info)

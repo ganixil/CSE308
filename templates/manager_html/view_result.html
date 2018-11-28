@@ -27,12 +27,58 @@
         // Inital Markers
           var marker, i;
           var bounds = new google.maps.LatLngBounds();
+
+          var ratings = []
+          {% for instance in task_results %}
+            ratings.push(parseFloat('{{instance.rating}}'));
+          {% endfor %}
         // Create one marker for each location
+
+        var iconBase = '/static/image/pins/';
+        var icons = {
+          0: {
+            icon: iconBase + 'icon0.png'
+          },
+          0.5: {
+            icon: iconBase + 'icon0.5.png'
+          },
+          1: {
+            icon: iconBase + 'icon1.png'
+          },
+          1.5: {
+            icon: iconBase + 'icon1.5.png'
+          },
+          2: {
+            icon: iconBase + 'icon2.png'
+          },
+          2.5: {
+            icon: iconBase + 'icon2.5.png'
+          },
+          3: {
+            icon: iconBase + 'icon3.png'
+          },
+          3.5: {
+            icon: iconBase + 'icon3.5.png'
+          },
+          4: {
+            icon: iconBase + 'icon4.png'
+          },
+          4.5: {
+            icon: iconBase + 'icon4.5.png'
+          },
+          5: {
+            icon: iconBase + 'icon5.png'
+          },
+        };
         for (i = 0; i < locations.length; i++) { 
           marker = new google.maps.Marker({
             position: new google.maps.LatLng(locations[i][1], locations[i][2]),
             label:"#"+ locations[i][3],
             title: locations[i][0],
+            icon: {
+              scaledSize: new google.maps.Size(22, 32),
+              url: icons[ratings[i]].icon
+            },
             map: map
           });
           bounds.extend(marker.getPosition());
@@ -155,7 +201,14 @@
       </div>
     </div> 
   </div>
-<br/><hr/>
+<br/>
+
+<div class="container">
+  <img src="/static/image/color_rating_1.png" class="img-fluid"/>
+</div>
+<hr/>
+
+<
 <!----- Statistic of this assignment---->
 {% if assignment %}
 <div class="container">
