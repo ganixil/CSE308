@@ -3,13 +3,13 @@
 {% block header %}
 <!--Customer Part-->
     <link rel="stylesheet" href="/static/css/bs_css/dataTables.bootstrap.min.css">
-    <link rel="stylesheet" href="/static/css/js_css/jquery.dataTables.min.css"> 
+    <link rel="stylesheet" href="/static/css/js_css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="/static/css/bs_css/bootstrapValidator.min.css"/> 
     <script src="/static/css/bs_css/select2.css"></script>  
-    
     <script src="/static/jquery/jquery.dataTables.min.js"></script>
-
     <script src="/static/javascript/bs_js/dataTables.bootstrap4.min.js"></script>
     <script src="/static/javascript/bs_js/select2.js"></script>
+    <script type="text/javascript" src="/static/javascript/bs_js/bootstrapValidator.min.js"></script>
 
     <link href="/static/css/admin.css" rel="stylesheet">
     <script src="/static/javascript/admin_script/admin.js"></script>
@@ -48,18 +48,19 @@
       </p>
     </div>
   <!--------------Form For Gloabl Varaibles------------------>
-    <form id="global" method="post" action ="{{ url_for('admin.adminPage', u_name = session['info']['name'])}}">
+    <form id="global" method="post" action ="{{ url_for('admin.adminPage', u_name = session['info']['name'])}}" data-bv-feedbackicons-valid="fa fa-ok fa-2x"
+    data-bv-feedbackicons-invalid="fa fa-times fa-2x" data-bv-feedbackicons-validating="fa fa-refresh fa-2x">
         <div class="form-group" style="font-size: 18px;">
           <label for="avgworkday" name ="workday_title"><strong> Average Work Day Length: </strong></label>
-          <div class="row" style="margin-left: 1%;">
-            <input class="form-control col-9" type="number" id="avgworkday" name="workday" min="60" max="780" placeholder="Workday Length should be between 60 and 780 minutes" {% if (session['params'])[0] %} value="{{(session['params'])[0]}}" {% else %} value="60" {% endif %} required /><span style="margin-left: 1%; font-weight: bold">Minutes</span>
+          <div class="row inputContainer" style="margin-left: 1%;">
+            <input class="form-control col-9" type="number" step="1" id="avgworkday" name="workday" data-bind="value:avgworkday" min="60" max="780" placeholder="Workday Length should be between 60 and 780 minutes" {% if (session['params'])[0] %} value="{{(session['params'])[0]}}" {% else %} value="60" {% endif %} data-bv-integer-message="The value is not an integer" required /><span style="margin-left: 2%; font-weight: bold">Minutes</span>
           </div>  
         </div>
 
         <div class="form-group" style="font-size: 18px;">
             <label for="avgmovspeed" name="workspeed_title"><strong>Average Canvasser Movement Speed: </strong></label>
-            <div class="row" style="margin-left: 1%;">
-              <input class="form-control col-9" type="number" step="0.001" min="0.01" max="2.00" id="avgmovspeed" name="movspeed" placeholder="Average Speed should be between the float from 0.01 to 2.00" {% if (session['params'])[1] %} value="{{(session['params'])[1]}}" {% else %} value="0.01" {% endif %} required /><span style="margin-left: 1%; font-weight: bold">Mile(s)/Minutes</span>
+            <div class="row inputContainer" style="margin-left: 1%;">
+              <input class="form-control col-9" type="number" step="0.001" min="0.01" max="2.00" id="avgmovspeed" name="movspeed" placeholder="Average Speed should be between the float from 0.001 to 2" {% if (session['params'])[1] %} value="{{(session['params'])[1]}}" {% else %} value="0.001" {% endif %} required /><span style="margin-left: 1%; font-weight: bold">Mile(s)/Minutes</span>
             </div>
         </div>
         

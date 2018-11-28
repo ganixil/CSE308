@@ -10,6 +10,13 @@ body{
 	margin: 10px 5% 10px 5%;
 }
 
+
+#global .inputContainer .form-control-feedback {
+    margin-left: 2%;
+    color: red;
+}
+
+
 #change{
 	padding: 0;
 	border: none;

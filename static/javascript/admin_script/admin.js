@@ -1,5 +1,7 @@
 var reset = 0;
 $(document).ready(function(){    // Instantiate UI tabs vertical
+
+     $("#global").bootstrapValidator();
      $( "#tabs-collapsible" ).tabs({
             collapsible: true
         });
