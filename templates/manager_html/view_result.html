@@ -32,6 +32,7 @@
           {% for instance in task_results %}
             ratings.push(parseFloat('{{instance.rating}}'));
           {% endfor %}
+
         // Create one marker for each location
 
         var iconBase = '/static/image/pins/';
@@ -75,10 +76,12 @@
             position: new google.maps.LatLng(locations[i][1], locations[i][2]),
             label:"#"+ locations[i][3],
             title: locations[i][0],
+            {% if assignment.done %}
             icon: {
               scaledSize: new google.maps.Size(22, 32),
               url: icons[ratings[i]].icon
             },
+            {% endif %}
             map: map
           });
           bounds.extend(marker.getPosition());
@@ -208,7 +211,6 @@
 </div>
 <hr/>
 
-<
 <!----- Statistic of this assignment---->
 {% if assignment %}
 <div class="container">

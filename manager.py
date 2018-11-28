@@ -551,6 +551,14 @@ def view_result():
 				question_length = len(r.answers.split('|')[:-1])
 
 			questions = result[0].questions.split('|')[:-1]
+
+			temq = []
+			for q in questions:
+				temq.append(q.rstrip())
+
+			questions = temq
+			print(questions)
+
 			###fixing the answer list###
 			answers_fix =[]
 			for i in range(question_length):
