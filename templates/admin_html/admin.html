@@ -49,39 +49,21 @@
     </div>
   <!--------------Form For Gloabl Varaibles------------------>
     <form id="global" method="post" action ="{{ url_for('admin.adminPage', u_name = session['info']['name'])}}">
-        <div class="form-group">
-          <label for="avgworkday"  name ="workday_title"> Average Work Day Length: </label>
-          <select class="form-control" id="avgworkday" type="workday" name = "workday">
-              <option value="1" {% if (session['params'])[0]|int == 60 %} selected="selected" {% endif %}>1 hours</option>
-              <option value="2" {% if (session['params'])[0]|int == 120 %} selected="selected" {% endif%}>2 hours</option>
-              <option value="3" {% if (session['params'])[0]|int == 180 %} selected="selected"{% endif %}>3 hours</option>
-              <option value="4" {%if (session['params'])[0]|int == 240 %} selected="selected" {% endif %}>4 hours</option>
-              <option value="5" {%if (session['params'])[0]|int == 300 %} selected="selected"  {% endif %}>5 hours</option>
-              <option value="6" {%if (session['params'])[0]|int == 360%} selected="selected"  {% endif %}>6 hours</option>
-              <option value="7" {%if (session['params'])[0]|int == 420 %} selected="selected"  {% endif %}>7 hours</option>
-              <option value="8" {%if (session['params'])[0]|int == 480 %} selected="selected"  {% endif %}>8 hours</option>
-              <option value="9" {%if (session['params'])[0]|int == 540 %} selected="selected"  {% endif %}>9 hours</option>
-              <option value="10" {%if (session['params'])[0]|int == 600 %} selected="selected"  {% endif %}>10 hours</option> 
-              <option value="11" {%if (session['params'])[0]|int == 660 %} selected="selected"  {% endif %}>11 hours</option>
-              <option value="12" {%if (session['params'])[0]|int == 720 %} selected="selected"  {% endif %}>12 hours</option>
-              </select>
-          </div>
-              <div class="form-group">
-                <label for="avgmovspeed" ame ="workspeed_title">Average Canvasser Movement Speed: </label>
-                  <select class="form-control" id="avgmovspeed" type="movspeed" name="movspeed">
-                    <option value="5" {% if (session['params'])[1] == (5/60) %} selected="selected" {% endif %}>5 mile/hour</option>
-                    <option value="10" {% if (session['params'])[1] == (10/60) %} selected="selected" {% endif %}>10 miles/hour</option>
-                    <option value="15" {% if (session['params'])[1] == (15/60) %} selected="selected" {% endif %}>15 miles/hour</option>
-                    <option value="20" {% if (session['params'])[1] == (20/60) %} selected="selected" {% endif %}>20 miles/hour</option>
-                    <option value="25" {% if (session['params'])[1] == (25/60) %} selected="selected" {% endif %}>25 miles/hour</option>
-                    <option value="30" {% if (session['params'])[1] == (30/60) %} selected="selected" {% endif %}>30 miles/hour</option>
-                    <option value="35" {% if (session['params'])[1] == (35/60) %} selected="selected" {% endif %}>35 miles/hour</option>
-                    <option value="40" {% if (session['params'])[1] == (40/60) %} selected="selected" {% endif %}>40 miles/hour</option>
-                    <option value="45" {% if (session['params'])[1] == (45/60) %} selected="selected" {% endif %}>45 miles/hour</option>
-                    <option value="50" {% if (session['params'])[1] == (50/60) %} selected="selected" {% endif %}>50 miles/hour</option>
-                  </select>
-              </div>
-              <button type="submit" class="btn btn-primary" id ="globalButton" > Change </button>
+        <div class="form-group" style="font-size: 18px;">
+          <label for="avgworkday" name ="workday_title"><strong> Average Work Day Length: </strong></label>
+          <div class="row" style="margin-left: 1%;">
+            <input class="form-control col-9" type="number" id="avgworkday" name="workday" min="60" max="780" placeholder="Workday Length should be between 60 and 780 minutes" {% if (session['params'])[0] %} value="{{(session['params'])[0]}}" {% else %} value="60" {% endif %} required /><span style="margin-left: 1%; font-weight: bold">Minutes</span>
+          </div>  
+        </div>
+
+        <div class="form-group" style="font-size: 18px;">
+            <label for="avgmovspeed" name="workspeed_title"><strong>Average Canvasser Movement Speed: </strong></label>
+            <div class="row" style="margin-left: 1%;">
+              <input class="form-control col-9" type="number" step="0.001" min="0.01" max="2.0" id="avgmovspeed" name="movspeed" placeholder="Average Speed should be between the float from 0.01 to 2.0" {% if (session['params'])[1] %} value="{{(session['params'])[1]}}" {% else %} value="0.01" {% endif %} required /><span style="margin-left: 1%; font-weight: bold">Mile(s)/Minutes</span>
+            </div>
+        </div>
+        
+        <button type="submit" class="btn btn-primary" id ="globalButton" > Change </button>
       </form>
   </div>
 

@@ -41,24 +41,22 @@ def adminPage(u_name):
         for role_ele in ele.users_relation:
             instance['roles'].append(role_ele.role)
         users[ele.email]= instance
-        print("User: %s ----> %s" %(ele.email, users[ele.email]))
     ################ Work For Changing GLoabl Parameters############################
     if request.method == 'POST':  
-        workday = int(request.form['workday'])##### Integer in hour
-        movspeed = int(request.form['movspeed'])  ############ Interger in miles/hour
+        workday = int(request.form['workday'])##### Integer in minutes
+        movspeed = float(request.form['movspeed'])  ############ Interger in miles/minutes
         params = GlobalVariables.query.first()
         commmit = False
-        workday = workday *60   ########### Covert hour to minutes
         if workday != session['params'][0]:         ######### Store it to DB in minutes
             session['params'][0] = workday
             commmit = True
             params.workDayLength = workday
 
-        movspeed = movspeed / 60  ############ Convert miles/hour to miles/ minute
         if movspeed != session['params'][1]:
             commmit = True
             session['params'][1] = movspeed
             params.averageSpeed = movspeed
+
         ############### If changes made, commit it to DB ###########################
         if commmit:
             db_session.commit()
