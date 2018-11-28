@@ -315,8 +315,7 @@ def change_next_location():
 			old_order = all_unvisited[0].order
 			## Get the order of the new next location
 			new_order = task_loc.order
-			print(old_order)
-			print(new_order)
+
 			if(old_order != new_order):
 				for ele in all_unvisited:
 					if ele.order < new_order:
@@ -377,7 +376,19 @@ def submit_result(location):
 		location.visited = True
 
 		db_session.commit()
-					
-		flash("Submit Result Successfully! Go to next location.")
+
+		''' Check if we finish all locations'''
+		all_locations = db_session.query(TaskLocation).filter(TaskLocation.assignment_id == temp_assign.id).all()
+		check_done = True
+		for ele in all_locations:
+			if not ele.visited:
+				check_done = False
+				break
+		if check_done:
+			temp_assign.done = True
+			db_session.commit()
+			flash("Submit Result Successfully! And no more visited locations")
+		else:
+			flash("Submit Result Successfully! Go to next location.")
 
 	return redirect(url_for("canvasser.create_canvass"))
