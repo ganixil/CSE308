@@ -30,7 +30,6 @@ def home(index):
 def signup():
     error = None
     if request.method == 'POST': 
-        print("Enter Post for signup")
         file = None
         filename = None
         if 'file' in request.files:
@@ -67,9 +66,8 @@ def signup():
             role = Role('canvasser')
             new_user.users_relation.append(role)
         db_session.commit() 
-        print ("new user-----> %s" %new_user)
         flash("Create one new account Successfully!!")
-    return redirect(url_for('auth.home',index = 1))
+    return redirect(url_for('auth.home',index = 0))
 
 @bp.route('/home/login',  methods=('GET', 'POST'))
 def login():

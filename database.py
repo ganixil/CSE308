@@ -10,7 +10,8 @@ import pymysql
 # Database connection string example
 # 'mysql+pymysql://username:password@address:port/databaseName'
 # Connect to the database with the database connection string
-engine = create_engine('mysql+pymysql://xiangyiliu:111308288@mysql3.cs.stonybrook.edu:3306/xiangyiliu', convert_unicode=True)
+# engine = create_engine('mysql+pymysql://xiangyiliu:111308288@mysql3.cs.stonybrook.edu:3306/xiangyiliu', convert_unicode=True)
+engine = create_engine('mysql+pymysql://root:1969@localhost:3306/cse308', convert_unicode=True)
 db_session = scoped_session(sessionmaker(autocommit=False, autoflush=False,bind=engine))
 # Make the sqlalchemy object relation mapper base class
 Base = declarative_base()
@@ -29,7 +30,7 @@ class User(Base):
     email = Column(String(80), primary_key=True)
     password = Column(String(255), nullable=False)
     name = Column(String(80), nullable=False)
-    avatar = Column(String(80), nullable=True, default ="None")
+    avatar = Column(String(160), nullable=True, default ="None")
     ##########  One User Can Have Multiple Roles(Canvasser, Admin, Managers)
     users_relation = relationship('Role', backref='users', cascade="all,save-update,delete-orphan", lazy = True)
 
@@ -101,7 +102,7 @@ class Questionnaire(Base):
 
     id = Column(Integer, primary_key = True)
     campaign_name = Column(String(80),ForeignKey('campaigns.name', onupdate="CASCADE", ondelete="CASCADE"))
-    question = Column(String(100),nullable = False)
+    question = Column(String(160),nullable = False)
 
     def __init__(self, question):
        self.question = question
@@ -260,84 +261,108 @@ class Result(Base):
 # For populating the database for testing purposes.
 if __name__ == "__main__":
     init_db()
-    p1 = generate_password_hash('password')
-    user1 =User('user1@c.com', p1, 'User1', 'user1.jpg')
-    user2 = User('user2@c.com', p1, 'User2','user2.png')
-    user3 = User('user3@c.com', p1, 'User3', None)
-    user4 = User('user4@c.com', p1, 'User4', None)
+    p1 = generate_password_hash('1234')
+    ### Two with admin only
+    user1 = User('cool_admin1@c.com', p1, 'Cool Admin1', 'None')
+    user2 = User('cool_admin2@c.com', p1, 'Cool Admin2', 'None')
     db_session.add(user1)
     db_session.add(user2)
+
+    admin_1 = Role('admin')
+    admin_2 = Role('admin')
+    user1.users_relation=[admin_1]
+    user2.users_relation=[admin_2]
+
+    ### Two with admin/manager/canvasser
+    user3 = User('cool_all1@c.com', p1, 'Cool All1', 'None')
     db_session.add(user3)
+    admin_3 = Role('admin')
+    canvasser_1 = Role('canvasser')
+    manager_1 = Role('manager')
+    user3.users_relation=[admin_3,canvasser_1, manager_1]
+
+    user4 = User('cool_all2@c.com', p1, 'Cool All2', 'None')
     db_session.add(user4)
+    admin_4 = Role('admin')
+    canvasser_2 = Role('canvasser')
+    manager_2 = Role('manager')
+    user3.users_relation=[admin_4,canvasser_2, manager_2]
 
-    role = Role('admin')
-    role1= Role('manager')
-    role2 = Role('canvasser')
-    role3= Role('manager')
-    role4= Role('canvasser')
-    role5 = Role('manager')
-    role6 = Role('admin')
-    role7 = Role('canvasser')
-    role8 = Role('manager')
+    ### 13 managers
+    user5 = User('cool_can1@c.com', p1, 'Cool Canvasser1', 'None')
+    db_session.add(user5)
+    canvasser_3 = Role('canvasser')
+    user5.users_relation=[canvasser_3]
 
-    user1.users_relation=[role, role1] # user1 = admin + manager
-    user2.users_relation=[role2, role3] # user2 = manager + canvasser
-    user3.users_relation= [role4, role5]  # user3 = canvasser+ manager
-    user4.users_relation=[role6, role7, role8] # user4 = admin +  canvasser + manager
+    user6 = User('cool_can2@c.com', p1, 'Cool Canvasser2', 'None')
+    db_session.add(user6)
+    canvasser_4 = Role('canvasser')
+    user6.users_relation=[canvasser_4]
 
+    user7 = User('cool_can3@c.com', p1, 'Cool Canvasser3', 'None')
+    db_session.add(user7)
+    canvasser_5 = Role('canvasser')
+    user7.users_relation=[canvasser_5]
 
+    user8 = User('cool_can4@c.com', p1, 'Cool Canvasser4', 'None')
+    db_session.add(user8)
+    canvasser_6 = Role('canvasser')
+    user8.users_relation=[canvasser_6]
 
-    campaign1 = Campaign("sell compaing1", "2018-11-1" , "2018-11-20","talk something",5)
-    campaign2 = Campaign("election compaing2", "2018-11-5", "2018-11-25","say something",5)
-    db_session.add(campaign1)
-    db_session.add(campaign2)
+    user9 = User('cool_can5@c.com', p1, 'Cool Canvasser5', 'None')
+    db_session.add(user9)
+    canvasser_7 = Role('canvasser')
+    user9.users_relation=[canvasser_7]
 
+    user10 = User('cool_can6@c.com', p1, 'Cool Canvasser6', 'None')
+    db_session.add(user10)
+    canvasser_8 = Role('canvasser')
+    user10.users_relation=[canvasser_8]
 
-    campM1= CampaignManager() # (role1 + campaign1 ) ---user1
-    campM2= CampaignManager() # (role8 + campaign1) ---- user4
-    campM3= CampaignManager() # (role3 + campaign2)  ---- user2
-    campM4= CampaignManager() # (role5 + campaign2)  ---- user3
+    user11 = User('cool_can7@c.com', p1, 'Cool Canvasser7', 'None')
+    db_session.add(user11)
+    canvasser_9 = Role('canvasser')
+    user11.users_relation=[canvasser_9]
 
-    role1.roles_relation.append(campM1) 
-    role8.roles_relation.append(campM1) 
-    role3.roles_relation.append(campM2) 
-    role5.roles_relation.append(campM2) 
+    user12 = User('cool_can8@c.com', p1, 'Cool Canvasser8', 'None')
+    db_session.add(user12)
+    canvasser_10 = Role('canvasser')
+    user12.users_relation=[canvasser_10]
 
-    campaign1.campaigns_relation.append(campM1) 
-    campaign1.campaigns_relation.append(campM2)
-    campaign2.campaigns_relation.append(campM2)
-    campaign2.campaigns_relation.append(campM2)
+    user13 = User('cool_can9@c.com', p1, 'Cool Canvasser9', 'None')
+    db_session.add(user13)
+    canvasser_11= Role('canvasser')
+    user13.users_relation=[canvasser_11]
 
+    user14 = User('cool_can10@c.com', p1, 'Cool Canvasser10', 'None')
+    db_session.add(user14)
+    canvasser_12 = Role('canvasser')
+    user14.users_relation=[canvasser_12]
 
-    campCan1= CampaignCanvasser()  # (role2 + campaign1)  --->user2
-    campCan2= CampaignCanvasser() # (role4 + campaign2)  ---> user3 
-    campCan3= CampaignCanvasser()  # (role2  + campaign2)  --->user1
-    campCan4= CampaignCanvasser() #  (role7 + campaign2)  ---> user4
+    user15 = User('cool_can11@c.com', p1, 'Cool Canvasser11', 'None')
+    db_session.add(user15)
+    canvasser_13 = Role('canvasser')
+    user15.users_relation=[canvasser_13]
 
-    role2.roles_relation_1.append(campCan1)
-    role4.roles_relation_1.append(campCan2)  
-    role2.roles_relation_1.append(campCan3) 
-    role7.roles_relation_1.append(campCan4) 
+    user16 = User('cool_can12@c.com', p1, 'Cool Canvasser12', 'None')
+    db_session.add(user16)
+    manager_14 = Role('canvasser')
+    user16.users_relation=[manager_14]
 
-    campaign1.campaigns_relation_1.append(campCan1) 
-    campaign2.campaigns_relation_1.append(campCan2) 
-    campaign2.campaigns_relation_1.append(campCan3)
-    campaign2.campaigns_relation_1.append(campCan4)
+    user17 = User('cool_can13@c.com', p1, 'Cool Canvasser13', 'None')
+    db_session.add(user17)
+    canvasser_15 = Role('canvasser')
+    user17.users_relation=[canvasser_15]
 
+    user18 = User('cool_man1@c.com', p1, 'Cool Manager1', 'None')
+    db_session.add(user18)
+    manager_3 = Role('manager')
+    user18.users_relation=[manager_3]
 
-    location1= CampaignLocation("Stony Brook University, Nicolls Road, Stony Brook, NY, USA",40.915089,-73.115936) # location1 + campaign1
-    location2 = CampaignLocation("39 FAWN LN N SOUTH SETAUKET NY 11720", 40.900930,-73.072380) # location2 + campaign1
-    location3 = CampaignLocation("160 Mark Tree Road, Centereach, NY",40.867069,-73.085403) # location2 + campaign1
-    campaign1.campaigns_relation_2.append(location1)
-    campaign1.campaigns_relation_2.append(location2)
-    campaign1.campaigns_relation_2.append(location3)
-
-    location4= CampaignLocation("Stony Brook University, Nicolls Road, Stony Brook, NY, USA",40.915089,-73.115936) # location1 + campaign2
-    location5 = CampaignLocation("39 FAWN LN N SOUTH SETAUKET NY 11720", 40.900930,-73.072380) # location2 + campaign2
-    location6 = CampaignLocation("160 Mark Tree Road, Centereach, NY",40.867069,-73.085403) # location2 + campaign2
-    campaign2.campaigns_relation_2.append(location4)
-    campaign2.campaigns_relation_2.append(location5)
-    campaign2.campaigns_relation_2.append(location6)
+    user19 = User('cool_man2@c.com', p1, 'Cool Manager2', 'None')
+    db_session.add(user19)
+    manager_4 = Role('manager')
+    user19.users_relation=[manager_4]
 
 
     glo = GlobalVariables(360,60)
