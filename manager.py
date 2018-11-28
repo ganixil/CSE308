@@ -1,5 +1,5 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for
+    Blueprint, flash, g, redirect, render_template, request, url_for,session
 )
 from werkzeug.exceptions import abort
 from database import db_session, User, Campaign, Role,CampaignLocation,CampaignCanvasser, CampaignManager, Questionnaire, Assignment, GlobalVariables, CanAva, TaskLocation
@@ -11,6 +11,20 @@ import datetime
 from datetime import date
 import math
 from locking import theLock
+
+user_email="" #### Keep the canvasser's email to be avaliable for getting User, Role Object #####
+
+''' Key = Assignment Object; Value = List of TaskLocation object'''
+assignments={}  ## store all assignments 
+past_assignments={}  ## store past assignments which date value less than today
+upcoming_assignments={} ## store upcoming assignments which date value not less than today
+'''Key = fdsf, Value ='''
+detail={} ### work_for view_detail_assignment
+
+today = datetime.date.today()  ## get today's date yyyy-mm-dd
+
+
+
 
 #link google map
 gmaps = googlemaps.Client(key = key)
@@ -484,7 +498,71 @@ def delete(campName):
 
 
 
+# @bp.route('/view_result', methods=('GET','POST'))
+# def viewResult():
+# 	print("Enter Edit Assignment \n")
+# 	return render_template('manager_html/view_result.html', camp=camp, name = None, camp_list = [], index = 0)
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 @bp.route('/view_result', methods=('GET','POST'))
 def viewResult():
-	print("Enter Edit Assignment \n")
-	return render_template('manager_html/view_result.html', camp=camp, name = None, camp_list = [], index = 0)
+	
+
+	
+	assign_obj = db_session.query(Assignment).all()
+	assign_info = []
+	for a in assign_obj:
+		
+		locationCount = len(db_session.query(TaskLocation).filter(TaskLocation.assignment_id == a.id ).all())
+		canvas = db_session.query(CampaignCanvasser).filter(CampaignCanvasser.id  == a.canvasser_id ).first()
+		camp = db_session.query(Campaign).filter(canvas.campaign_name == Campaign.name).first()
+		duration = camp.duration
+		tup = (a.id, locationCount, duration, a.theDate)
+		assign_info.append(tup)
+
+
+	return render_template('manager_html/view_result.html', assignment=assign_info)
+
+@bp.route('/view_assignment_detail', methods=('GET', 'POST'))
+def view_assignment_detail():
+	global assignments
+	global user_email
+	global detail
+	global upcoming_assignments
+	global past_assignments
+
+	if request.method == 'POST':
+		print("view assignment detail")
+		ass_id = request.form.get('assignment')
+		if not ass_id:
+			flash("Failed to view assignemnt detail because of the empty value")
+			return redirect(url_for('manager.manPage'))
+		if ass_id == "None":
+			return  redirect(url_for('manager.manPage'))
+		'''Get non-empty Assignment ID'''
+		ass_id = int(ass_id)
+		detail={}
+		''' Retrieve Canvasser Name'''
+		canvasser = db_session.query(User).filter(User.email == user_email).first()
+		detail['canvasser_name'] = canvasser.name
+		''' Retrieve Assignment Object'''
+		ass_obj = db_session.query(Assignment).filter(Assignment.id == ass_id).first()
+		''' 
+			When the key is assignment, the value is assignment object's relation
+		'''
+		detail['assignment'] = ass_obj
+		''' Retrieve Compaign Canvasser object'''
+		campaign_canavsser = db_session.query(CampaignCanvasser).filter(CampaignCanvasser.id == ass_obj.canvasser_id).first()
+		detail['compaign_name'] = campaign_canavsser.campaign_name
+		''' Retrieve multiple TaskLocation Objects'''
+		detail['location'] = ass_obj.assignment_relation_task_loc #### For getting date and order values
+
+		'''Get Specified Campaign Object'''
+		camp = db_session.query(Campaign).filter(Campaign.name == campaign_canavsser.campaign_name).first()
+		'''Get Questionaire'''
+		detail['questions'] = camp.campaigns_relation_3
+		'''Get Talking Point'''
+		detail['talking'] = camp.talking
+		return render_template('manager_html/view_result.html',upcoming_assignments= upcoming_assignments, past_assignments= past_assignments, detail=detail)
+	return redirect(url_for('manager.manPage'))
