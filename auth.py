@@ -139,7 +139,7 @@ def profile(u_email):
     result = None
     file = None
     filename = session['info']['avatar']
-    print(session['info'])
+
     if request.method == "POST":
         name = request.form['name']
         email = request.form['email']
@@ -182,8 +182,9 @@ def profile(u_email):
             result = "Saved Successfully"
         else:
             result ="Nothing Changes !! "
+        ## if not set, Flask  will not send the updated session cookis to the client
         session.modified = True
-        print(session['info'])
+
     return render_template('profile.html', u_email = u_email, result = result)
 
 @bp.route("/profile/homepage")
