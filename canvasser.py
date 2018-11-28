@@ -322,34 +322,44 @@ def change_next_location():
 
 	return redirect(url_for("canvasser.create_canvass"))
 
+####location--- TaskLocation.id
 @bp.route('/submit_result/<location>', methods=['POST'])
 def submit_result(location):
 	global assignments
+	global user_email
 	location = db_session.query(TaskLocation).filter(TaskLocation.id == location).first()
 
-
 	if request.method == 'POST':
-		spoke_to = request.form['spoke_to']
+		### Retrieve the data "spoke to"
+		spoke_to = request.form['spoke_to'] ## value = 0/1
 		if spoke_to == "0":
 			spoke_to = False
 		elif spoke_to == "1":
 			spoke_to = True
-
-		rating = request.form['rating']
-
+		#### Retrieve the data "rating"
+		rating = 0
+		rating = request.form['rating'] # value = 0.5/1/1.5/.../5
+		rating = float(rating)
+		print("rating %f" %rating)
+		### Retrieve the Assignment Data from DB
 		temp_assign = db_session.query(Assignment).filter(Assignment.id == location.assignment_id).first()
-
-		campaign_name = db_session.query(CampaignCanvasser).filter(CampaignCanvasser.id == temp_assign.canvasser_id).first().campaign_name
-
+		### Retrieve the Campaingn Canavsser from DB
+		campaign_name=None
+		campaign_canavsser = db_session.query(CampaignCanvasser).filter(CampaignCanvasser.id == temp_assign.canvasser_id).first()
+		if campaign_canavsser:
+			campaign_name = campaign_canavsser.campaign_name
+		### Retrieve Question String list from DB
 		questions = db_session.query(Questionnaire).filter(Questionnaire.campaign_name == campaign_name).all()
 
 		answers = ""
-		for q in questions:
-			answers+=request.form[q.question]
-
 		quest = ""
 		for q in questions:
-			quest+= str(q.id)+","
+			s=str(q.id)
+			qq = request.form[s]
+			##### 0|1|2|2|1.........
+			answers += (qq + "|")
+			### did you here?|did you like?|... 
+			quest  += (str(q.question) +"|")
 
 		brief_note = request.form['brief_note']
 
@@ -361,7 +371,6 @@ def submit_result(location):
 		db_session.commit()
 
 		assignments = {}
-		user_email = session['info']['email']
 		#### Query Role Object from DB  #########
 		role_obj = db_session.query(Role).filter(Role.email == user_email, Role.role =='canvasser').first()
 		### One Canvasser Role object may have multiple corresponding campaingCanvasser Objects
@@ -382,7 +391,7 @@ def submit_result(location):
 				else:
 					upcoming_assignments[ass] = assignments[ass]
 					
-		flash("Onto Next Location")
+		flash("Submit Result Successfully! Go to next location.")
 
 	return redirect(url_for("canvasser.create_canvass"))
 

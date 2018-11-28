@@ -32,7 +32,7 @@ body {
       }
 
 #map {
-		    width:55%;
+		    width:80%;
         height: 450px;
       }
 
@@ -50,13 +50,14 @@ body {
      }
 
  #right-panel {
-        height: 450px;
+        height: auto;
         overflow: auto;
  }
 
 @media print {
 #map {
          height: 450px;
+
          margin-left: 5%;
         }
 #right-panel {
