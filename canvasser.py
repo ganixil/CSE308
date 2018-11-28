@@ -242,7 +242,9 @@ def create_canvass():
 	if not current_assignment:
 		flash("Fail to canvassing assingment creation.  You do not have current today assignment!")
 		return redirect(url_for('canvasser.canPage', u_name = session['info']['name']))
-	
+	if current_assignment.done:
+		flash("You do not have any more canvassing assignment today!!")
+		return redirect(url_for('canvasser.canPage', u_name = session['info']['name']))
 	''' You have current today's assignment'''
 	### Find the most rec_visited location ###
 	rec_visited = None
@@ -255,7 +257,6 @@ def create_canvass():
 			unvisited.append(ele)
 	### sort unvisited 
 	unvisited.sort(key= lambda x: x.order)
-	print(unvisited)
 
 	''' Retrieve Campaign Canvasseer Object to get Campaign Name'''
 	camp_obj =db_session.query(CampaignCanvasser).filter(CampaignCanvasser.id == current_assignment.canvasser_id).first()
@@ -285,9 +286,6 @@ def create_canvass():
 	ass_info['campaign'] = campaign
 	ass_info['questions'] = questions
 
-	# print("assignemnt Info for canvass")
-	# for ele in ass_info:
-	# 	print("%s---> %s" %(ele,ass_info[ele]))
 	return render_template('canvasser_html/create_canvass.html', ass_info = ass_info)
 
 
@@ -329,6 +327,7 @@ def change_next_location():
 
 	return redirect(url_for("canvasser.create_canvass"))
 
+
 ####location--- TaskLocation.id
 @bp.route('/submit_result/<location>', methods=['POST'])
 def submit_result(location):
@@ -346,8 +345,7 @@ def submit_result(location):
 		#### Retrieve the data "rating"
 		rating = 0
 		if 'rating' in request.form:
-			rating = request.form['rating'] # value = 0.5/1/1.5/.../5
-		rating = float(rating)
+			rating = request.form['rating'] # value = 1/.../5
 		### Retrieve the Assignment Data from DB
 		temp_assign = db_session.query(Assignment).filter(Assignment.id == location.assignment_id).first()
 		### Retrieve the Campaingn Canavsser from DB
@@ -388,6 +386,8 @@ def submit_result(location):
 			temp_assign.done = True
 			db_session.commit()
 			flash("Submit Result Successfully! And no more visited locations")
+			return redirect(url_for('canvasser.canPage', u_name = session['info']['name']))
+
 		else:
 			flash("Submit Result Successfully! Go to next location.")
 
