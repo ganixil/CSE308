@@ -1,0 +1,113 @@
+{% extends "header.html" %}
+
+{% block header %}
+    <!-- Custom styles for this login page -->
+    <link href="/static/css/done_canvas.css" rel="stylesheet">
+    <link href="/static/css/view_canvasser_ass.css" rel="stylesheet">
+    <!----------The script to inital location Makers---->
+    {% if detail %}
+   <script type="text/javascript">
+      $(document).ready(function () {
+          // Get all locations
+          document.getElementById('submit').disabled=false;
+          var locations=[]
+          {% for instance in detail['location'] %}
+            var one_location=[];
+            one_location.push('{{instance.location}}', '{{instance.lat}}','{{instance.lng}}','{{ instance.order}}');
+            locations.push(one_location);
+         {% endfor %}
+
+        // Generate Map
+        var mapOptions = {
+            center: new google.maps.LatLng(40.9256538, -73.140943),
+            zoom: 13
+          }
+          map = new google.maps.Map(document.getElementById("map"), mapOptions);
+              var infowindow = new google.maps.InfoWindow();
+
+        // Inital Markers
+          var marker, i;
+          var bounds = new google.maps.LatLngBounds();
+
+        // Create one marker for each location
+        for (i = 0; i < locations.length; i++) { 
+          marker = new google.maps.Marker({
+            position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+            label:"#"+ locations[i][3],
+            title: locations[i][0],
+            map: map
+          });
+
+          bounds.extend(marker.getPosition());
+          google.maps.event.addListener(marker, 'click', (function(marker, i) {
+            return function() {
+              infowindow.setContent(locations[i][0]);
+              infowindow.open(map, marker);
+              map.setCenter(marker.getPosition());
+              map.setZoom(16);
+              // If close infowindow, then go back to default mapsetting
+              google.maps.event.addListener(infowindow, 'closeclick', function() {
+                    map.fitBounds(bounds);
+              });
+            }
+          })(marker, i));
+        }
+        // Let us to see all markers together
+        map.fitBounds(bounds); 
+      });
+</script>
+{% endif %}
+
+{% endblock %}
+
+<!----------------------BODY PART---------------------------------------------->
+{% block body %}
+      <h2 style="text-align: center;padding-top:10px;">View Assignments</h2>
+      <hr/>
+    <button class="btn btn-info" type="button" style="margin-left:5%" id="canHome" onclick="window.location.href='{{ url_for( 'manager.manPage')}}' ">Home Page</button><br/><br/>
+    <!-------------Basic Instruction--------------->
+     <h4 style="margin-left:5%"><span style="padding-left:5px; font-weight: bold;">Basic Instructions : </span></h4>
+     <h5 style="margin-left:10%">Select a canvassing assignment from the list below to see details<br/>
+        <ul>
+              <li>Include a map with markers at the locations</li>
+              <li>Include a list wit addresses of the locations</li>
+        </ul>  
+    </h5><hr/>
+    
+    <br/><hr/><br/>
+
+  <!----------- Begin here to show assignment information----------->
+<br/><hr/>
+<!----- Basic information------>
+<div class="container" id ="detail-container" >
+        <div class="table-responsive">
+              <table id = "other2-table col-6" cellspacing="0" width="100%" class="table table-striped table-bordered table-hove" data-cache = "false" >
+               <thead class="thead-dark">
+                  <tr >
+                      <th  class = "col-2">Assignment</th>
+                      <th  class = "col-1">Number of Locations</th>
+                      <th  class = "col-1">Duration</th>
+                      <th  class = "col-1">Date</th>
+                  </tr>
+              </thead>
+              <tbody>
+                 
+                    {% for assign in assignment %}
+                       <tr >
+                         <td  class = "col">{{ assign[0] }}</td>
+                         <td  class = "col">{{ assign[1] }}</td>
+                         <td  class = "col">{{ assign[2] }}</td>
+                         <td  class = "col">{{ assign[3] }}</td>
+                      </tr>
+                     {% endfor %}
+                  
+              </tbody>
+            </table>
+        </div>
+</div>
+    <hr/>
+   
+    <!-- map js files--> 
+    <script src="/static/javascript/canvasser_script/view_assignment.js" ></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCGuEpRycbTYDCcS6uxiot0x0eSLkpTbiY&libraries=places&callback=initAutocomplete"></script>
+{%  endblock %}
