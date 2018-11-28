@@ -75,6 +75,8 @@ class Campaign(Base):
     endDate = Column(Date, nullable=False)
     talking = Column(Text, default="None", nullable= True) 
     duration = Column(Integer, default = 0, nullable=True)
+    ## Mark if the compaign start some assingment or not
+    start = Column(Boolean, default=False, nullable= False)
 
     ########## One Campaign has multiple Managers##############
     campaigns_relation= relationship("CampaignManager", backref = "campaigns",cascade="all,save-update,delete-orphan")
