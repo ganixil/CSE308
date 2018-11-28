@@ -209,6 +209,27 @@ def create_canvass():
 	global user_email
 	global today
 
+	assignments = {}
+	#### Query Role Object from DB  #########
+	role_obj = db_session.query(Role).filter(Role.email == user_email, Role.role =='canvasser').first()
+	### One Canvasser Role object may have multiple corresponding campaingCanvasser Objects
+	camp_canvassers = db_session.query(CampaignCanvasser).filter(CampaignCanvasser.role_id == role_obj.id).all()
+	######### Load all assigmenets, past_assignments, upcoming_assignments ###
+	for ele in camp_canvassers:
+		## Get assignments of this canvasser for one specified Campign
+		ass_obj = db_session.query(Assignment).filter(Assignment.canvasser_id == ele.id).all()
+		for ass in ass_obj:
+			### ass ---> One Assignment object(id, canvasser_id, theDate, done, two relation)
+			###  Sort the TaskLocation list based on the value of the TaskLocation's order
+			task_locs = ass.assignment_relation_task_loc
+			task_locs.sort(key= lambda x: x.order)
+			###  Retrieve location values for getting the marker later in html page
+			assignments[ass] =ass.assignment_relation_task_loc
+			if ass.theDate < today:
+				past_assignments[ass] = assignments[ass]
+			else:
+				upcoming_assignments[ass] = assignments[ass]
+
 	ass_info={} 
 
 
@@ -217,7 +238,6 @@ def create_canvass():
 		if ele.theDate == today:
 			current_assignment = ele
 			break;
-
 
 	if not current_assignment:
 		flash("Fail to canvassing assingment creation.  You do not have current today assignment!")
@@ -233,6 +253,9 @@ def create_canvass():
 			rec_visited = ele
 		else:
 			unvisited.append(ele)
+	### sort unvisited 
+	unvisited.sort(key= lambda x: x.order)
+	print(unvisited)
 
 	''' Retrieve Campaign Canvasseer Object to get Campaign Name'''
 	camp_obj =db_session.query(CampaignCanvasser).filter(CampaignCanvasser.id == current_assignment.canvasser_id).first()
@@ -275,50 +298,35 @@ def change_next_location():
 		global assignments
 		print("Change Next Location")
 
-		# next_ass_str = request.form['next_loc']
-		# next_ass_arr = re.split(r'[()]', next_ass_str) ##[address_value, id, space]
-		# next_ass_id = int(next_ass_arr[1])
-		# '''Retrieve orgin next assignment object from next_ass_id'''
-		# next_ass_obj = db_session.query(Assignment).filter(Assignment.id == next_ass_id).first()
+		if request.method == 'POST':
+			## format : TaskLocation.id|TaskLocation.assignment_id
+			next_location = request.form['end']
+			(task_id, ass_id) = next_location.split('|')
 
-		# ass_id = request.form.get('end')
-		# ''' Retrieve assignment object from ass_id'''
-		# ass_obj = db_session.query(Assignment).filter(Assignment.id == int(ass_id)).first()
-		# if ass_obj == None:
-		# 	flash("This assignment does not exist")
-		# 	return redirect(url_for("canvasser.set_canvasser"))
-
-		# old_order = int(next_ass_obj.order)### to mark the original next location
-		# new_order=int(ass_obj.order)  ### to mark which location we selected
-
-
-		# ''' Use to store the assignments which their order not less than the original next assignment's order'''
-		# if(old_order != new_order):
-		# 	''' Just think about the situation which we change the next location to anther one'''
-		# 	other_ass =[] 
-		# 	for ele in assignments:
-		# 		if ele.order >= old_order:
-		# 			other_ass.append(ele)
-
-		# 	for ele in other_ass:
-		# 		if ele.order < new_order:
-		# 			ele_obj = db_session.query(Assignment).filter(Assignment.id == ele.id).first()
-		# 			ele_obj.order += 1
-
-		# 	## The selected next location should be the first of the upcoming assignments
-		# 	ass_obj.order = int(old_order)
-		# 	db_session.commit()
-		# 	# ''' Reload assignments: same to the canPage'''
-		# 	assignments={}
-		# 	role_obj = db_session.query(Role).filter(Role.email == user_email, Role.role =='canvasser').first()
-		# 	camp_canvassers = db_session.query(CampaignCanvasser).filter(CampaignCanvasser.role_id == role_obj.id).all()
-		# 	for ele in camp_canvassers:
-		# 		ass_obj = db_session.query(Assignment).filter(Assignment.canvasser_id == ele.id).all()
-		# 		for ass in ass_obj:
-		# 			location = db_session.query(CampaignLocation).filter(CampaignLocation.id == ass.location_id).first()
-		# 			assignments[ass] =(location.location,location.lat,location.lng)
-			# assignments.keys() = sorted(assignments.keys(), key=lambda x: x.order)
-		flash("Change Next Location Successfully!!")
+			all_locations = db_session.query(TaskLocation).filter(TaskLocation.assignment_id == int(ass_id)).all()
+			task_loc = db_session.query(TaskLocation).filter(TaskLocation.id == task_id).first()
+			
+			all_unvisited=[]
+			for ele in all_locations:
+				if not ele.visited:
+					all_unvisited.append(ele)
+			all_unvisited.sort(key= lambda x: x.order)
+			## Get the original order of the next location
+			old_order = all_unvisited[0].order
+			## Get the order of the new next location
+			new_order = task_loc.order
+			print(old_order)
+			print(new_order)
+			if(old_order != new_order):
+				for ele in all_unvisited:
+					if ele.order < new_order:
+						ele.order += 1
+					elif ele.order == new_order:
+						ele.order = old_order
+				db_session.commit()
+				flash("Change Next Location Successfully!!")
+			else:
+				flash("You did not change the next location!!")
 
 	return redirect(url_for("canvasser.create_canvass"))
 
@@ -338,9 +346,9 @@ def submit_result(location):
 			spoke_to = True
 		#### Retrieve the data "rating"
 		rating = 0
-		rating = request.form['rating'] # value = 0.5/1/1.5/.../5
+		if 'rating' in request.form:
+			rating = request.form['rating'] # value = 0.5/1/1.5/.../5
 		rating = float(rating)
-		print("rating %f" %rating)
 		### Retrieve the Assignment Data from DB
 		temp_assign = db_session.query(Assignment).filter(Assignment.id == location.assignment_id).first()
 		### Retrieve the Campaingn Canavsser from DB
@@ -369,42 +377,7 @@ def submit_result(location):
 		location.visited = True
 
 		db_session.commit()
-
-		assignments = {}
-		#### Query Role Object from DB  #########
-		role_obj = db_session.query(Role).filter(Role.email == user_email, Role.role =='canvasser').first()
-		### One Canvasser Role object may have multiple corresponding campaingCanvasser Objects
-		camp_canvassers = db_session.query(CampaignCanvasser).filter(CampaignCanvasser.role_id == role_obj.id).all()
-		######### Load all assigmenets, past_assignments, upcoming_assignments ###
-		for ele in camp_canvassers:
-			## Get assignments of this canvasser for one specified Campign
-			ass_obj = db_session.query(Assignment).filter(Assignment.canvasser_id == ele.id).all()
-			for ass in ass_obj:
-				### ass ---> One Assignment object(id, canvasser_id, theDate, done, two relation)
-				###  Sort the TaskLocation list based on the value of the TaskLocation's order
-				task_locs = ass.assignment_relation_task_loc
-				task_locs.sort(key= lambda x: x.order)
-				###  Retrieve location values for getting the marker later in html page
-				assignments[ass] =ass.assignment_relation_task_loc
-				if ass.theDate < today:
-					past_assignments[ass] = assignments[ass]
-				else:
-					upcoming_assignments[ass] = assignments[ass]
 					
 		flash("Submit Result Successfully! Go to next location.")
 
 	return redirect(url_for("canvasser.create_canvass"))
-
-
-# Enter done_canvas html
-@bp.route('/done_canvas/<ass_id>')
-def done_canvasser(ass_id):
-	return render_template('canvasser_html/done_canvas.html')
-
-@bp.route('/view_result/<ass_id>')
-def view_result(ass_id):
-	print("enter view result : canvasser")
-	global upcoming_assignments
-	global past_assignments
-	global detail
-	return render_template('canvasser_html/view_assignment.html',upcoming_assignments= upcoming_assignments, past_assignments= past_assignments, detail=detail)
