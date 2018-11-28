@@ -25,8 +25,6 @@ detail={} ### work_for view_detail_assignment
 today = datetime.date.today()  ## get today's date yyyy-mm-dd
 
 
-
-
 #link google map
 gmaps = googlemaps.Client(key = key)
 
@@ -195,7 +193,6 @@ def viewCampaign():
 				location_obj.append(tup)
 		camp_ele.append(location_obj)
 
-
 		camp[obj.name] = camp_ele
 	return render_template('manager_html/view_campaign.html', camp=camp, name = None, camp_list = [], index =0 )
 
@@ -336,10 +333,11 @@ def createCampaign(u_email):
 	return render_template('manager_html/create_campaign.html', managers = all_managers, canvassers = all_canvassers, index = 5)
 
 
+####### Action == "Edit Campaign"
 @bp.route('/edit_campaign/<u_email>', methods=['GET','POST'])
 def editCampaign(u_email):
+	''' Retrieve all Campaigns fistlly'''
 	all_campaigns = db_session.query(Campaign).all()
-
 	''' Key is 'email', Value is 'name'''
 	all_managers={}
 	all_canvassers={}
@@ -355,7 +353,6 @@ def editCampaign(u_email):
 	for ele in canvasser_roles:
 		ele_user = db_session.query(User).filter(User.email == ele.email).first()
 		all_canvassers[ele.email] = ele_user.name
-
 
 	if request.method == 'POST':
 		if request.form['submit'] == 'select_campaign':
@@ -390,7 +387,7 @@ def editCampaign(u_email):
 			unselected_canvassers=all_canvassers
 			all(map(unselected_canvassers.pop, canvassers))
 
-			return render_template('manager_html/edit_campaign.html', campaign_name = campaign_name, all_campaigns = all_campaigns,unselected_managers = unselected_managers, unselected_canvassers = unselected_canvassers, managers = managers, canvassers=canvassers, start_date = campaign.startDate, end_date = campaign.endDate, talking=campaign.talking, question=campaign_question, location=campaign_location, duration=campaign.duration,index = 6)
+			return render_template('manager_html/edit_campaign.html', campaign_name = campaign_name, all_campaigns = all_campaigns, unselected_managers = unselected_managers, unselected_canvassers = unselected_canvassers, managers = managers, canvassers=canvassers, start_date = campaign.startDate, end_date = campaign.endDate, talking=campaign.talking, question=campaign_question, location=campaign_location, duration=campaign.duration,index = 6)
 
 		elif request.form['submit'] == 'submit_change':
 
@@ -410,8 +407,6 @@ def editCampaign(u_email):
 			current_campaign = db_session.query(Campaign).filter(Campaign.name == old_campaign_name).first()
 
 			
-
-
 			current_campaign.startDate = startDate
 			current_campaign.endDate = endDate
 			current_campaign.talking = talking
@@ -477,11 +472,13 @@ def editCampaign(u_email):
 				ele_obj =  CampaignLocation(ele[0], float(ele[1]), float(ele[2]))
 				current_campaign.campaigns_relation_2.append(ele_obj)
 
-
 			db_session.commit()
 
 			return redirect(url_for('manager.manPage'))
 	else:
+		if all_campaigns == []:
+			flash("You do not any campaigns need to be edited.")
+			return redirect(url_for('manager.manPage'))
 		return render_template('manager_html/edit_campaign.html', all_campaigns = all_campaigns,index = 6)
 
 
@@ -499,16 +496,9 @@ def delete(campName):
 
 
 
-# @bp.route('/view_result', methods=('GET','POST'))
-# def viewResult():
-# 	print("Enter Edit Assignment \n")
-# 	return render_template('manager_html/view_result.html', camp=camp, name = None, camp_list = [], index = 0)
-
-
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 @bp.route('/view_result', methods=('GET','POST'))
 def view_result():
-
 	assign_obj = db_session.query(Assignment).all()
 	assign_info = []
 	for a in assign_obj:
@@ -592,7 +582,9 @@ def view_result():
 
 		return render_template('manager_html/view_result.html', assign_info=assign_info, locations = locations, assignment = assignment, campaign = campaign,statistic = statistic,task_results = task_results)
 
-
+	if assign_info == []:
+		flash("You do not any results which are available to be viewed!")
+		return redirect(url_for('manager.manPage'))
 	return render_template('manager_html/view_result.html', assign_info=assign_info)
 
 @bp.route('/view_assignment_detail', methods=('GET', 'POST'))

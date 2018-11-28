@@ -3,7 +3,6 @@
     <link rel="stylesheet" type="text/css" href="/static/css/multi.css">
 
     <link rel="stylesheet" type="text/css" href="/static/css/create_campaign.css">
-
     <script>
       {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -19,7 +18,6 @@
 {%block main %}
 <!-----------------Create Compaign------------------>
 <br/>
-
   <div class="container ">
 
     <form  method="post" action ="{{url_for('manager.editCampaign', u_email = session['info']['email']) }}" role="form">
@@ -32,7 +30,7 @@
                 <option value='{{item.name}}' {% if item.name == campaign_name %}selected{% endif %}>{{item.name}}</option>
                 {% endfor %}
             </select>
-         <button class ="btn btn-primary" name="submit" value = "select_campaign" > Select Campaign </button>
+         <button class ="btn btn-primary" name="submit" value = "select_campaign">Select Campaign </button>
     </div>
 
     <div class="form-group form-inline">
