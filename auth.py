@@ -102,7 +102,6 @@ def login():
             if(not check_password_hash(user.password, password)):
                 flash("Incorrect password. Please enter the correct one !")
                 return redirect(url_for('auth.home',index = 2))
-            print("Find Correct User-->User= %s, Roles= %s" %(user.email, roles))
             #Add user info to the session
             info['email'] = email
             info['password'] = password
@@ -120,7 +119,7 @@ def login():
             params_table = GlobalVariables.query.first()
             session['params'] = [params_table.workDayLength, params_table.averageSpeed]  ## minutes ; miles/minutes
             if choice == 'admin':
-                return redirect(url_for('admin.adminPage',u_name=user.name))
+                return redirect(url_for('admin.adminPage',u_name = session['info']['name']))
             elif(choice == 'manager'):
                 return redirect(url_for('manager.manPage',u_name=user.name))
             elif(choice == 'canvasser'):
@@ -140,8 +139,8 @@ def profile(u_email):
     result = None
     file = None
     filename = session['info']['avatar']
+    print(session['info'])
     if request.method == "POST":
-        print("Enter Post for profile")
         name = request.form['name']
         email = request.form['email']
         password = request.form['password']
@@ -174,7 +173,6 @@ def profile(u_email):
             ps = generate_password_hash(password)
             user.password = ps
             session['info']['password'] = password
-
         if (filename is not None) and (filename != session['info']['avatar']):
             user.avatar = filename
             session['info']['avatar'] = filename
@@ -184,13 +182,15 @@ def profile(u_email):
             result = "Saved Successfully"
         else:
             result ="Nothing Changes !! "
+        session.modified = True
+        print(session['info'])
     return render_template('profile.html', u_email = u_email, result = result)
 
 @bp.route("/profile/homepage")
 def back():
     if session:
         if session['info']['account'] == 'admin':
-            return redirect(url_for('admin.adminPage',u_name=session['info']['name']))
+            return redirect(url_for('admin.adminPage',u_name = session['info']['name']))
         elif(session['info']['account'] == 'manager'):
             return redirect(url_for('manager.manPage',u_name=session['info']['name']))
         elif(session['info']['account'] == 'canvasser'):

@@ -31,10 +31,10 @@ $(document).ready(function(){    // Instantiate UI tabs vertical
      $("#globalButton").click(function()
         {
         var current_day = $("#day_value").text();
-        var choice_day = $("#avgworkday option:selected").val();
+        var choice_day = $("#avgworkday").val();
 
         var current_speed = $("#speed_value").text();
-        var choice_speed = $("#avgmovspeed option:selected").val();
+        var choice_speed = $("#avgmovspeed").val();
 
         if( ((choice_day).trim() == (current_day).trim())  && ((choice_speed).trim()==(current_speed).trim()) ){
             alert("You did not change anything !");
