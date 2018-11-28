@@ -32,6 +32,9 @@ def adminPage(u_name):
     # Dic to store other users info: Key = email ; Value = all info of this email(name, avatar, roles)
     users={}
     session['info']['account'] = 'admin'
+    ## if not set, Flask  will not send the updated session cookis to the client
+    session.modified = True
+
     ############### Retrieve all data for each user ######################
     for ele in user_table:
         instance={}

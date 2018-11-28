@@ -137,8 +137,9 @@ def createAssignment(newCamp):
 @bp.route('/manpage', methods=('GET', 'POST'))
 def manPage():
 	########### View Campaign Is the First Page #########################
+	session['info']['account'] = 'manager'
+	session.modified = True
 	return redirect(url_for('manager.viewCampaign'))
-	
 
 @bp.route('/view_campaign')
 def viewCampaign():

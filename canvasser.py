@@ -89,6 +89,8 @@ def canPage(u_name):
 	upcoming_assignments={}
 	'''The first time to load canvasser's email'''
 	user_email = session['info']['email']
+	session['info']['account'] = 'canvasser'
+	session.modified = True
  
 	#### Query Role Object from DB  #########
 	role_obj = db_session.query(Role).filter(Role.email == user_email, Role.role =='canvasser').first()

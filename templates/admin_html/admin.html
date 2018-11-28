@@ -104,7 +104,6 @@
           <td class="list-buttons-column" style="text-align:center"> {{ (session['users'][instance].roles)|join(', '|safe) }}</td>
           <td class="list-buttons-column" style="text-align:center"> {{ session['users'][instance].avatar }} </td>
           <td align="center">
-           <!--  onclick ="editTable(this);"  -->
             <button  type="button" class="btn btn-default btn-xs .edit" onclick="editTable(this)"> <i class="fa fa-pencil"></i>edit</button>
             <form method ="post" action="{{url_for('admin.delete',u_email=instance) }} ">
                 <button id = "table-delete" type ="submit" class="btn btn-danger btn-xs"> <i class="fa fa-trash"></i> del </button>

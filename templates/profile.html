@@ -30,7 +30,7 @@
           <ul class="navbar-nav ml-auto">
       <!----------Handle for HomePage-------->
           <li class="nav-item">
-              <a {% if session['info']['account'] == 'admin' %} href = "{{ url_for('admin.adminPage',u_name=session['info']['name']) }}"{% elif session['info']['account'] == 'manager' %} href = "{{ url_for('manager.manPage', u_name=session['info']['name']) }}"{% elif session['info']['account'] == 'canvasser' %} href = "{{ url_for('canvasser.canPage', u_email=session['info']['email']) }}" {% endif %} > <button class="btn btn-outline-dark" type="button" align="middle"  style="margin-left: 20px; font-size:18px;"> Home </button> </a>
+              <a {% if session['info']['account'] == 'admin' %} href = "{{ url_for('admin.adminPage',u_name=session['info']['name']) }}"{% elif session['info']['account'] == 'manager' %} href = "{{ url_for('manager.manPage', u_name=session['info']['name']) }}"{% elif session['info']['account'] == 'canvasser' %} href = "{{ url_for('canvasser.canPage', u_name=session['info']['name']) }}" {% endif %} > <button class="btn btn-outline-dark" type="button" align="middle"  style="margin-left: 20px; font-size:18px;"> Home </button> </a>
           </li>
         </ul>
     </div>
