@@ -36,6 +36,7 @@ camp = {}
 
 ''' Create Assignment for one Campaing'''
 def createAssignment(newCamp):
+	global assignments
 	'''
 	newCamp---> campaign Object
 	'''
@@ -60,6 +61,7 @@ def createAssignment(newCamp):
 
 	# make assignments with the routing alorithm
 	assignments = makeAssign(locations, newCamp.duration)
+	print(assignments)
 	#print("assignments %s" %assignments)
 
 	dates = [] ###### Store the Valid CanAva Objects
@@ -218,6 +220,7 @@ def viewCampaignDetail():
 
 @bp.route('/create_campaign/<u_email>', methods=['GET','POST'])
 def createCampaign(u_email):
+	global assignments
 	''' Key is 'email', Value is 'name'''
 	all_managers={}
 	all_canvassers={}
@@ -336,6 +339,8 @@ def createCampaign(u_email):
 ####### Action == "Edit Campaign"
 @bp.route('/edit_campaign/<u_email>', methods=['GET','POST'])
 def editCampaign(u_email):
+	global assignments
+	print(assignments)
 	''' Retrieve all Campaigns fistlly'''
 	all_campaigns = db_session.query(Campaign).all()
 	''' Key is 'email', Value is 'name'''
@@ -576,9 +581,6 @@ def view_result():
 			statistic['avg_rating'] = avg_rating
 			statistic['answers'] = answers #answer are in list format of [yes #, no #, dontcare #]
 			statistic['questions'] = questions
-
-
-
 
 		return render_template('manager_html/view_result.html', assign_info=assign_info, locations = locations, assignment = assignment, campaign = campaign,statistic = statistic,task_results = task_results)
 

@@ -30,7 +30,7 @@
                 <option value='{{item.name}}' {% if item.name == campaign_name %}selected{% endif %}>{{item.name}}</option>
                 {% endfor %}
             </select>
-         <button class ="btn btn-primary" name="submit" value = "select_campaign">Select Campaign </button>
+         <button class ="btn btn-primary" name="submit" value="select_campaign"> Select Campaign </button>
     </div>
 
     <div class="form-group form-inline">
@@ -120,12 +120,22 @@
     <hr/><br/>
 
     <div class="form-group form-inline" style="margin-left: 30%">
-         <button class="btn btn-success btn-lg" id="submit" name="submit" type="submit" value ="submit_change" onclick="check_submit()"> <i class="fa fa-plus-circle"></i> Edit Campaign </button>
+         <button class="btn btn-success btn-lg" id="submit" name="submit" type="submit" value ="submit_change" onclick="check_submit()"> <i class="fa fa-check"></i> Edit Campaign </button>
     </div>
     </form>
   </div>
 
 {% block script %} 
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var campaign = document.getElementById('campaign_list').value;
+             if (campaign && campaign != "null"){
+                document.getElementById('submit').disabled = false;
+             }else{
+                document.getElementById('submit').disabled = true;
+    }
+    });
+    </script>
     <script src="/static/javascript/manager_js/multi.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCGuEpRycbTYDCcS6uxiot0x0eSLkpTbiY&libraries=places&callback=initAutocomplete"></script>
     <script  src="/static/javascript/manager_js/create_campaign.js"></script> {% endblock%}
