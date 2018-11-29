@@ -166,7 +166,7 @@
                 <optgroup label="All Assignments: ">
                     {% for assign in assign_info %}
                  <!-------instance = Assignment object----------->
-                    <option value="{{assign[0]}}">Assignment #{{assign[0]}} on {{assign[3]}}</option>
+                    <option value="{{assign[0]}}">Assignment #{{assign[0]}} on {{assign[3]}} for Campaign {{assign[6]}} by Canvasser {{assign[5]}}</option>
                     {% endfor %}
                 </optgroup>
               </select>
@@ -212,6 +212,12 @@
 <hr/>
 
 <!----- Statistic of this assignment---->
+{% if assignment %}
+  <div class="container">
+    <h3>The average for the ratings are {{statistic['avg_rating']}}</h3>
+  </div>
+{% endif %}
+
 {% if assignment %}
 <div class="container">
   {% for q in statistic['questions']%}

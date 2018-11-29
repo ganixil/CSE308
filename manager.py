@@ -569,7 +569,7 @@ def view_result():
 
 		camp = db_session.query(Campaign).filter(canvas.campaign_name == Campaign.name).first()
 		duration = camp.duration
-		tup = (a.id, locationCount, duration, a.theDate,locations,canvasser_name)
+		tup = (a.id, locationCount, duration, a.theDate,locations,canvasser_name,camp.name)
 		assign_info.append(tup)
 
 	if request.method == 'POST':

@@ -357,7 +357,7 @@ def submit_result(location):
 			campaign_name = campaign_canavsser.campaign_name
 
 		if campaign_name:
-			camp_obj = db_session.query(Campaingn).filter(Campaingn.name == campaign_name).first()
+			camp_obj = db_session.query(Campaign).filter(Campaign.name == campaign_name).first()
 			if(not camp_obj.start):
 				camp_obj.start = True
 				db_session.commit()
