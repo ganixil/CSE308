@@ -257,11 +257,9 @@ def createCampaign(u_email):
 		canvassers = request.form.getlist('canvassers') ## list of emails
 		questions_text = request.form['questions_text']  #string (multi-lines)
 		locations = request.form['locations_text'] #string (multi-lines)s
-
 		#print("%s %s %s %s %s %s %s %s %s" %(campaign_name, startDate, endDate, talking, duration, managers, canvassers, questions_text, locations))
 		
 		
-
 
 		if not (campaign_name and startDate and endDate and duration and locations):
 			flash("Failed to create campaign, there're empty values!!")
@@ -297,9 +295,7 @@ def createCampaign(u_email):
 			 	else:
 			 		valid_locations.append((address,lat, lng))
 
-
 		#print("valid location list---> %s" %valid_locations)
-
 
 		''' Create New Campaign Object'''
 		check_camp = db_session.query(Campaign).filter(Campaign.name == campaign_name).first()
@@ -310,7 +306,6 @@ def createCampaign(u_email):
 		''' New Campaign Object'''
 		newCamp = Campaign(campaign_name,startDate,endDate,talking,int(duration))
 		db_session.add(newCamp)
-		db_session.commit()
 
 		''' Add all managers to the newCamp relationship,'''
 		for ele in managers:
