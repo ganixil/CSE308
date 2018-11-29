@@ -18,6 +18,7 @@
           var locations=[]
           {% for instance in loc %}
             var one_location=[];
+            one_location.push('{{instance[0]}}', '{{instance[1]}}','{{instance[2]}}');
             locations.push(one_location);
          {% endfor %}
 
