@@ -180,7 +180,7 @@ def viewCampaign():
 			for a in assignedCanvasser:
 				assignment_list.append(a)
 
-		'''Gets all location from Assignment'''
+		'''w'''
 		location_obj = []
 		for a in assignment_list:
 			loc = db_session.query(TaskLocation).filter(TaskLocation.assignment_id == a.id).all()
@@ -207,8 +207,6 @@ def viewCampaignDetail():
 		return render_template('manager_html/view_campaign.html', camp=camp, name = campaign_name, camp_list = camp[campaign_name][3], index =3)
 	elif (name == "Questions"):
 		return render_template('manager_html/view_campaign.html', camp=camp, name = campaign_name, camp_list = camp[campaign_name][4], index =4)
-	elif (name == "Assignments"):
-		return render_template('manager_html/view_campaign.html', camp=camp, name = campaign_name, camp_list = camp[campaign_name][5], index =5)
 	else:
 		return render_template('manager_html/view_campaign.html', camp=camp, name = None, camp_list =[], index = 0)
 
@@ -608,8 +606,6 @@ def view_result():
 					elif a == "2":
 						dontcare+=1
 				answers.append([yes,no,dontcare])
-			
-
 
 			avg_rating = sum_rating/len(result)
 
@@ -624,45 +620,39 @@ def view_result():
 		return redirect(url_for('manager.manPage'))
 	return render_template('manager_html/view_result.html', assign_info=assign_info)
 
-@bp.route('/view_assignment_detail', methods=('GET', 'POST'))
-def view_assignment_detail():
-	global assignments
-	global user_email
-	global detail
-	global upcoming_assignments
-	global past_assignments
+@bp.route('/view_assignment/<u_email>', methods=('GET', 'POST'))
+def view_assignment(u_email):
+	print("View Assignment")
+	# if request.method == 'POST':
+	# 	print("view assignment detail")
+	# 	ass_id = request.form.get('assignment')
+	# 	if not ass_id:
+	# 		flash("Failed to view assignemnt detail because of the empty value")
+	# 		return redirect(url_for('manager.manPage'))
+	# 	if ass_id == "None":
+	# 		return  redirect(url_for('manager.manPage'))
+	# 	'''Get non-empty Assignment ID'''
+	# 	ass_id = int(ass_id)
+	# 	detail={}
+	# 	''' Retrieve Canvasser Name'''
+	# 	canvasser = db_session.query(User).filter(User.email == user_email).first()
+	# 	detail['canvasser_name'] = canvasser.name
+	# 	''' Retrieve Assignment Object'''
+	# 	ass_obj = db_session.query(Assignment).filter(Assignment.id == ass_id).first()
+	# 	''' 
+	# 		When the key is assignment, the value is assignment object's relation
+	# 	'''
+	# 	detail['assignment'] = ass_obj
+	# 	''' Retrieve Compaign Canvasser object'''
+	# 	campaign_canavsser = db_session.query(CampaignCanvasser).filter(CampaignCanvasser.id == ass_obj.canvasser_id).first()
+	# 	detail['compaign_name'] = campaign_canavsser.campaign_name
+	# 	''' Retrieve multiple TaskLocation Objects'''
+	# 	detail['location'] = ass_obj.assignment_relation_task_loc #### For getting date and order values
 
-	if request.method == 'POST':
-		print("view assignment detail")
-		ass_id = request.form.get('assignment')
-		if not ass_id:
-			flash("Failed to view assignemnt detail because of the empty value")
-			return redirect(url_for('manager.manPage'))
-		if ass_id == "None":
-			return  redirect(url_for('manager.manPage'))
-		'''Get non-empty Assignment ID'''
-		ass_id = int(ass_id)
-		detail={}
-		''' Retrieve Canvasser Name'''
-		canvasser = db_session.query(User).filter(User.email == user_email).first()
-		detail['canvasser_name'] = canvasser.name
-		''' Retrieve Assignment Object'''
-		ass_obj = db_session.query(Assignment).filter(Assignment.id == ass_id).first()
-		''' 
-			When the key is assignment, the value is assignment object's relation
-		'''
-		detail['assignment'] = ass_obj
-		''' Retrieve Compaign Canvasser object'''
-		campaign_canavsser = db_session.query(CampaignCanvasser).filter(CampaignCanvasser.id == ass_obj.canvasser_id).first()
-		detail['compaign_name'] = campaign_canavsser.campaign_name
-		''' Retrieve multiple TaskLocation Objects'''
-		detail['location'] = ass_obj.assignment_relation_task_loc #### For getting date and order values
-
-		'''Get Specified Campaign Object'''
-		camp = db_session.query(Campaign).filter(Campaign.name == campaign_canavsser.campaign_name).first()
-		'''Get Questionaire'''
-		detail['questions'] = camp.campaigns_relation_3
-		'''Get Talking Point'''
-		detail['talking'] = camp.talking
-		return render_template('manager_html/view_result.html',upcoming_assignments= upcoming_assignments, past_assignments= past_assignments, detail=detail)
-	return redirect(url_for('manager.manPage'))
+	# 	'''Get Specified Campaign Object'''
+	# 	camp = db_session.query(Campaign).filter(Campaign.name == campaign_canavsser.campaign_name).first()
+	# 	'''Get Questionaire'''
+	# 	detail['questions'] = camp.campaigns_relation_3
+	# 	'''Get Talking Point'''
+	# 	detail['talking'] = camp.talking
+	return render_template('manager_html/view_assignment.html', index = 7)

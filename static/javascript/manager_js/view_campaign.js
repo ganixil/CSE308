@@ -19,10 +19,6 @@ $(document).ready(function () {
     		$("#show_que").removeClass("active_nav");
     	}
 
-        if( $("#show_assign").hasClass("active_nav")){
-            $("#show_assign").removeClass("active_nav");
-        }
-
     	$("#detail-container").show();
     	$("#user-table").hide();
     	$("#other1-table").hide();
