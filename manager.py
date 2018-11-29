@@ -690,7 +690,7 @@ def view_assignment(u_email):
 		view_ass_detail=ass_detail
 		view_camp_obj=c_obj
 
-	return render_template('manager_html/view_assignment.html', all_camp_ass=all_camp_ass, ass_detail=ass_detail, camp_obj=c_obj, index = 7, loc=None)
+	return render_template('manager_html/view_assignment.html', all_camp_ass=all_camp_ass, ass_detail=ass_detail, camp_obj=c_obj, index = 7, loc=[])
 
 
 @bp.route('/view_assignment_id/<assigmentId>', methods=('GET', 'POST'))
