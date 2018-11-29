@@ -540,11 +540,18 @@ def view_result():
 	assign_obj = db_session.query(Assignment).all()
 	assign_info = []
 	for a in assign_obj:
-		locationCount = len(db_session.query(TaskLocation).filter(TaskLocation.assignment_id == a.id ).all())
+		locations = db_session.query(TaskLocation).filter(TaskLocation.assignment_id == a.id ).all()
+		locationCount = len(locations)
+
 		canvas = db_session.query(CampaignCanvasser).filter(CampaignCanvasser.id  == a.canvasser_id ).first()
+
+		canvasser = db_session.query(Role).filter(Role.id == canvas.role_id).first()
+
+		canvasser_name = db_session.query(User).filter(User.email == canvasser.email).first().name
+
 		camp = db_session.query(Campaign).filter(canvas.campaign_name == Campaign.name).first()
 		duration = camp.duration
-		tup = (a.id, locationCount, duration, a.theDate)
+		tup = (a.id, locationCount, duration, a.theDate,locations,canvasser_name)
 		assign_info.append(tup)
 
 	if request.method == 'POST':
