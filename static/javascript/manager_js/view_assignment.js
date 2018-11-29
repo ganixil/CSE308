@@ -1,4 +1,19 @@
 $(document).ready(function () {
+    var table = $('#ass-table').DataTable();
+     $(".detail").click(function{
+     	var index = this.closest('tr').rowIndex;
+     	var campaign = $('#ass-table tr:eq('+index+') td:eq(0)').text();
+
+     	
+
+     	
+
+     });
+
+});
+
+
+$(document).ready(function () {
     var table = $('#camp-table').DataTable();
     $(".detail").click(function(){
     	var index = this.closest('tr').rowIndex;
@@ -28,3 +43,4 @@ $(document).ready(function () {
 
 
 });
+

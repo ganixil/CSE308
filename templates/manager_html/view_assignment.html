@@ -1,50 +1,81 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<link rel="stylesheet" type="text/css" href="../../static/css/manager.css">
-		
-		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBu-916DdpKAjTmJNIgngS6HL_kDIKU0aU&callback=myMap"></script>
-		<script type="text/javascript" src="../../static/javascript/manager_js/create_campaign.js"></script>
-		
-	</head>
-    
-	<body>
-		<div class="container"> 
-			<div style="width: 1500px;background-color:white;opacity: .7"><span class="title" > View Canvas Assignment </span> </div>
-			<div class="nav"></div>
-            <div class="float" >
-            	<div class="stay" style="position:fixed">
-	                <div class="n" onclick="location.href='{{ url_for('manager.createCampaign') }}'"><span class="link">Create Campaign<span></div>
-	                <div class="n" onclick="location.href='{{ url_for('manager.editCampaign') }}'"><span class="link">Edit Campaign</span></div>
-	                <div class="n" onclick="location.href='{{ url_for('manager.viewCampaign') }}'"><span class="link">View Campaign</span></div>
-	                <div class="n" onclick="location.href='{{ url_for('manager.viewCampaignResult') }}'"><span class="link">View Campaign Result</span></div>
-	                <div class="onPage" onclick="location.href='{{ url_for('manager.viewCanvasAssignment') }}'"><span class="link">View Canvas Assignment</span></div>
-	                <div class="n" onclick="location.href='{{ url_for('manager.createCanvasAssignment') }}'"><span class="link">Create Canvas Assignment</span></div>
-	            </div>
-            </div>
-			<div class="signOut" onclick="location.href='{{ url_for('auth.login') }}'"><span class="outText">Sign Out</span> </div>
-		</div>
+{% extends "layout.html" %}
+    {% block newHeader %} 
+<script>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+       {% for msg in messages%}
+             alert('{{ msg}}');
+             {% endfor %}
+     {% endif %}
+  {% endwith %}
+</script>
+    {% endblock %}
+    {% block title %} <h3 id = "title"> View Assignments </h3> {% endblock %}
+  {%block main %}
+<!-----------------View Compaign------------------>
 
-
-		<div class="container"> 
-			<form id="createCampaign" style="overflow:auto">
-				<div class="box" style="top:160px;overflow: auto;"><span class="label" style="font-size: 24px;">View Canvas Assignment</span>
-					<div class="content" style="margin-left:10px;" >
-						<table  cellpadding="3" >
-							<tr>
-								<th style="width:200px;">Canvasser</th>
-								<th style="width:200px;">Campaign</th>
-								<th style="width:200px;">Location</th>
-								<th style="width:200px;">Time</th>
-							</tr>
-							<tr></tr>
-							
-						</table>
-					</div>
-				</div>
-
-			</form>
-		</div>
-		
-	</body>
-</html>
+       <div class="container"> 
+    	<br/>
+    	<form  method="post" action="{{ url_for('manager.view_assignment', u_email =session['info']['email'])}}" role="form">
+		    <div class="form-group form-inline">
+		         <label class="col-lg-3" style="font-weight: bold; font-size: 18px;" > Choose Campaign : </label>
+		            <select class="form-control col-lg-5" name="campaign_list" id="campaign_list">
+		                <option value="null">Choose ..</option>
+		                 {% for ele in all_camp_ass %}
+		                	<option value="{{ele.name}}">{{ele.name}}</option>
+		                 {% endfor %}
+		            </select>
+		         <button class ="btn btn-primary" name="submit" value="select_campaign" style="margin-left: 1%;"> Select </button>
+		    </div>
+		</form>
+		   <hr/>
+            <div class="table-responsive">
+                <table id = "ass-table" cellspacing="0" width="100%" class="table table-bordered table-hover" data-cache = "false">
+  <!------------Table Headers------------------->
+              <thead class="thead-dark">
+                  <tr>
+                    <th  data-field ="index" class="column-header col-name"  style="text-align:center"> Assignment #
+                      <i class = "fa fa-sort-up float-right"> </i>
+                    </th>
+                     <th  data-field = "location_num" class="column-header col-duration"  style="text-align:center"># of Locations
+                      <i class = "fa fa-sort-up float-right"> </i>
+                    </th >
+                    <th  data-field = "date" class="column-header col-start" style="text-align:center">The Date
+                       <i class = "fa fa-sort-up float-right "> </i>
+                    </th>
+                    <th  data-field = "can_name" class="column-header col-end"  style="text-align:center"> Canvasser Name
+                      <i class = "fa fa-sort-up float-right "> </i>
+                    </th >
+                    <th  data-field = "can_email" class="column-header col-end"  style="text-align:center"> Canvasser Email
+                      <i class = "fa fa-sort-up float-right "> </i>
+                    </th >
+                    <th  data-field = "duration" class="column-header col-duration"  style="text-align:center">Duration
+                      <i class = "fa fa-sort-up float-right"> </i>
+                    </th >
+                     <th style="text-align:center"> See Details </th>
+                 </tr>
+              </thead>
+            {% if ass_detail|length > 0  %}
+              {% for ele in ass_detail %}
+            <tr>  
+              <td class="list-buttons-column"  style="font-size: 18px; text-align:center">{{ele.id}} </td>
+              <td class="list-buttons-column" style="font-size: 18px; text-align:center">{{(ass_detail[ele][1])|length}}</td>
+              <td class="list-buttons-column" style="font-size: 18px; text-align:center">{{ ele.theDate }} </td>
+              <td class="list-buttons-column" style="font-size: 18px; text-align:center">{{(ass_detail[ele][0]).name}}</td>
+             <td class="list-buttons-column" style="font-size: 18px; text-align:center">{{(ass_detail[ele][0]).email}}</td>
+             <td class="list-buttons-column" style="font-size: 18px; text-align:center">{{camp_obj.duration}}</td>
+              <td class="list-buttons-column" style="text-align:center">
+                <form method ="post" action="{{url_for('manager.view_assignment_id',assigmentId=ele.id) }} ">
+                        <button  type ="submit" class="btn btn-outline-info detail" > <i class="fa fa-info-circle"></i></button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+            {% endif %}
+          </table>
+       </div>
+       <hr>
+       </div>
+{% block script %}
+   <script  src="/static/javascript/manager_js/view_assignment.js"></script> {% endblock%}
+{%  endblock %}

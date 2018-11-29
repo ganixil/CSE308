@@ -355,6 +355,13 @@ def submit_result(location):
 		campaign_canavsser = db_session.query(CampaignCanvasser).filter(CampaignCanvasser.id == temp_assign.canvasser_id).first()
 		if campaign_canavsser:
 			campaign_name = campaign_canavsser.campaign_name
+
+		if campaign_name:
+			camp_obj = db_session.query(Campaingn).filter(Campaingn.name == campaign_name).first()
+			if(not camp_obj.start):
+				camp_obj.start = True
+				db_session.commit()
+
 		### Retrieve Question String list from DB
 		questions = db_session.query(Questionnaire).filter(Questionnaire.campaign_name == campaign_name).all()
 

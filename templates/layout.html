@@ -31,7 +31,7 @@
         <ul class="list-unstyled components">
             <p>Campaign Managment</p>
             <hr/>
-            <li {% if index <5 %} class="active" {% endif %}>
+            <li {% if index < 5 %} class="active" {% endif %}>
                 <a href="{{ url_for('manager.viewCampaign') }}" >View Campaigns</a>
             </li>
             <li  {% if index == 5 %} class="active" {% endif %}>
@@ -40,8 +40,11 @@
             <li id ="edit_cam" {% if index == 6  %} class="active" {% endif %}>
                 <a href="{{ url_for('manager.editCampaign', u_email = session['info']['email'] ) }}">Edit Campaigns</a>
             </li>
+            <li  {% if index == 7 %} class="active" {% endif %}>
+                <a href="{{ url_for('manager.view_assignment', u_email = session['info']['email'] ) }}">View Assignment</a>
+            </li>
             
-            <li id ="view_result">
+            <li {% if index == 8 %} class="active" {% endif %} id ="view_result">
                 <a href="{{ url_for('manager.view_result') }}">View Results</a>
             </li>
         </ul>
