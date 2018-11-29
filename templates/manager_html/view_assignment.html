@@ -15,11 +15,10 @@
  <script type="text/javascript">
       $(document).ready(function () {
           // Get all locations
-          document.getElementById('submit').disabled=false;
           var locations=[]
-          {% for instance in detail['location'] %}
+          {% for instance in loc %}
             var one_location=[];
-            one_location.push('{{instance.location}}', '{{instance.lat}}','{{instance.lng}}','{{ instance.order}}');
+            one_location.push('{{instance[0]}}', '{{instance[1]}}','{{instance[2]}}');
             locations.push(one_location);
          {% endfor %}
 
@@ -131,8 +130,7 @@
           </table>
        </div>
        <hr>
-
-
+  {% if loc and (loc|length > 1) %}
       <div class="panel panel-primary col">
           <div class="card" style ="margin-left: 5%;">
             <h5 class="card-header">View Details</h5>
@@ -159,7 +157,7 @@
               </div>
         </div>
         <!----------------Locations on Map------->
-         <div class="panel panel-primary col" id="location_map1" style="margin-right: 1%;">
+         <div class="panel panel-primary col" id="location_map1" style="margin-right: 1%; display: none;" >
               <div class="panel-heading" style="margin-left: 5%;"><h3 class="panel-title">Locations on Map</h3>
               </div>
               <div class="panel-body">
@@ -170,7 +168,9 @@
             </div>
           </div>
         </div>
-    </div>
+      {% endif %}
+  
+  </div>
 
 {% block script %}
    <script src="/static/javascript/manager_js/view_assignment.js"></script> 
