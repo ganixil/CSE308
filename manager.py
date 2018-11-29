@@ -39,7 +39,7 @@ def createAssignment(newCamp):
 
 	# get headquarters for starting location for routing algorithm
 	globalVars = db_session.query(GlobalVariables).first()
-	hq = (0, 0)
+	hq = (0, 0, 'address')
 	# get campaign location data
 	locations = []
 	# add the headquarters to the location set
@@ -47,16 +47,16 @@ def createAssignment(newCamp):
 	# add all campaign locations to the locations set
 	locations_relation = newCamp.campaigns_relation_2
 	for ele in locations_relation:
-		locations.append((ele.lat, ele.lng))
+		locations.append((ele.lat, ele.lng, ele.location))
 
 	# get the start and end dates of the campaign
 	startDate = newCamp.startDate
 	endDate = newCamp.endDate
-
+	#print(locations)
 	# make assignments with the routing alorithm
 	assignments = makeAssign(locations, newCamp.duration)
 	#print("assignments %s" %assignments)
-
+	#print(assignments)
 	dates = [] ###### Store the Valid CanAva Objects
 
 	''' Get all Campaign Canvassers'''
@@ -101,11 +101,13 @@ def createAssignment(newCamp):
 			for order in range(len(ele_ass[1])):
 				lat = ele_ass[1][order][0] 
 				lng = ele_ass[1][order][1]
+				locString = ele_ass[1][order][2]
+				#print(locString)
 				## Get location from the campaign location db
 				allCampLocation =db_session.query(CampaignLocation).filter(CampaignLocation.campaign_name == newCamp.name).all()
 				### Get campLocation Object, and retrieve location address string: loc
 				''' campLocation = [one campaignLocation object]'''
-				campLocation = [loc for loc in allCampLocation if (math.isclose(loc.lat, lat) and math.isclose(loc.lng, lng))]
+				campLocation = [loc for loc in allCampLocation if (math.isclose(loc.lat, lat) and math.isclose(loc.lng, lng) and (loc.location == locString))]
 				loc = campLocation[0].location
 				#### Create Task Location Object  #########
 				task_loc_obj = TaskLocation(loc,lat,lng,order)
@@ -113,8 +115,9 @@ def createAssignment(newCamp):
 				ass_obj.assignment_relation_task_loc.append(task_loc_obj)
 
 			''' Add the new created Assignment Object to CampaignCanvasser Obejct'''
+			#print(campCanvasser)
 			campCanvasser.canvasser_relation.append(ass_obj)
-
+			#print(ass_obj)
 			db_session.commit()
 
 			# remove taken dates out of available in the database
@@ -247,7 +250,7 @@ def createCampaign(u_email):
 		locations = request.form['locations_text'] #string (multi-lines)s
 		#print("%s %s %s %s %s %s %s %s %s" %(campaign_name, startDate, endDate, talking, duration, managers, canvassers, questions_text, locations))
 		
-		valid_locations =[]  #### Store valiad locations(address, lat, lng)
+		
 
 		if not (campaign_name and startDate and endDate and duration and locations):
 			flash("Failed to create campaign, there're empty values!!")
@@ -283,7 +286,7 @@ def createCampaign(u_email):
 			 	else:
 			 		valid_locations.append((address,lat, lng))
 
-		# print("valid location list---> %s" %valid_locations)
+		#print("valid location list---> %s" %valid_locations)
 
 		''' Create New Campaign Object'''
 		check_camp = db_session.query(Campaign).filter(Campaign.name == campaign_name).first()
