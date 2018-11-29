@@ -623,36 +623,39 @@ def view_result():
 @bp.route('/view_assignment/<u_email>', methods=('GET', 'POST'))
 def view_assignment(u_email):
 	print("View Assignment")
-	# if request.method == 'POST':
-	# 	print("view assignment detail")
-	# 	ass_id = request.form.get('assignment')
-	# 	if not ass_id:
-	# 		flash("Failed to view assignemnt detail because of the empty value")
-	# 		return redirect(url_for('manager.manPage'))
-	# 	if ass_id == "None":
-	# 		return  redirect(url_for('manager.manPage'))
-	# 	'''Get non-empty Assignment ID'''
-	# 	ass_id = int(ass_id)
-	# 	detail={}
-	# 	''' Retrieve Canvasser Name'''
-	# 	canvasser = db_session.query(User).filter(User.email == user_email).first()
-	# 	detail['canvasser_name'] = canvasser.name
-	# 	''' Retrieve Assignment Object'''
-	# 	ass_obj = db_session.query(Assignment).filter(Assignment.id == ass_id).first()
-	# 	''' 
-	# 		When the key is assignment, the value is assignment object's relation
-	# 	'''
-	# 	detail['assignment'] = ass_obj
-	# 	''' Retrieve Compaign Canvasser object'''
-	# 	campaign_canavsser = db_session.query(CampaignCanvasser).filter(CampaignCanvasser.id == ass_obj.canvasser_id).first()
-	# 	detail['compaign_name'] = campaign_canavsser.campaign_name
-	# 	''' Retrieve multiple TaskLocation Objects'''
-	# 	detail['location'] = ass_obj.assignment_relation_task_loc #### For getting date and order values
 
-	# 	'''Get Specified Campaign Object'''
-	# 	camp = db_session.query(Campaign).filter(Campaign.name == campaign_canavsser.campaign_name).first()
-	# 	'''Get Questionaire'''
-	# 	detail['questions'] = camp.campaigns_relation_3
-	# 	'''Get Talking Point'''
-	# 	detail['talking'] = camp.talking
-	return render_template('manager_html/view_assignment.html', index = 7)
+	all_camp_ass ={} ## key= campaingn object; value = all_ass,
+	all_ass = {} ## Key is One Assignment Object, Value = (user_obj, multiple taskLocation Objects)
+	c_obj=None
+	role_obj = db_session.query(Role).filter(Role.email == u_email, Role.role == "manager").first()
+
+	''' Retrieve ll Campaigns'''
+	all_camp = db_session.query(CampaignManager).filter(CampaignManager.role_id == role_obj.id).all()
+
+	for ele in all_camp:
+		camp = db_session.query(Campaign).filter(Campaign.name == ele.campaign_name).first()
+
+		'''Retrieve all Campaign Canvasser'''
+		all_camp_can =camp.campaigns_relation_1
+		for instance in all_camp_can:
+			## Get Assignments
+			instance_role = db_session.query(Role).filter(Role.id ==instance.role_id).first()
+			instance_user = db_session.query(User).filter(User.email == instance_role.email).first()
+			ass = instance.canvasser_relation
+			for e_ass in ass:
+				all_ass[e_ass] = (instance_user, e_ass.assignment_relation_task_loc)
+		all_camp_ass[camp] = all_ass
+
+	ass_detail = {}
+
+	if request.method == 'POST':
+		camp = request.form['campaign_list']
+		if (not camp) or (camp == 'null'):
+			flash("You need to select one campaign to view detail")
+			return render_template('manager_html/view_assignment.html', all_camp_ass=all_camp_ass, ass_detail=ass_detail,camp_obj=c_obj, index = 7)
+
+		c_obj = db_session.query(Campaign).filter(Campaign.name == camp).first()
+		if c_obj in all_camp_ass:
+			ass_detail = all_camp_ass[c_obj]
+
+	return render_template('manager_html/view_assignment.html', all_camp_ass=all_camp_ass, ass_detail=ass_detail, camp_obj=c_obj, index = 7)

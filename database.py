@@ -205,7 +205,7 @@ class Assignment(Base):
         self.done = done
 
     def __repr__(self):
-        return "<Assignment( canvasser_id='%s', theDate='%s')>" % (self.canvasser_id, self.theDate)
+        return "<Assignment( canvasser_id='%d', theDate='%s')>" % (self.canvasser_id, self.theDate)
 
 ####### One Task is a set of locations #############
 class TaskLocation(Base):

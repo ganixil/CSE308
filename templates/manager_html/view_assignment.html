@@ -16,14 +16,18 @@
 
        <div class="container"> 
     	<br/>
+    	<form  method="post" action="{{ url_for('manager.view_assignment', u_email =session['info']['email'])}}" role="form">
 		    <div class="form-group form-inline">
 		         <label class="col-lg-3" style="font-weight: bold; font-size: 18px;" > Choose Campaign : </label>
 		            <select class="form-control col-lg-5" name="campaign_list" id="campaign_list">
 		                <option value="null">Choose ..</option>
-		                <option value="null1">test</option>
+		                 {% for ele in all_camp_ass %}
+		                	<option value="{{ele.name}}">{{ele.name}}</option>
+		                 {% endfor %}
 		            </select>
-		         <button class ="btn btn-primary" name="submit" value="select_campaign"> Select </button>
+		         <button class ="btn btn-primary" name="submit" value="select_campaign" style="margin-left: 1%;"> Select </button>
 		    </div>
+		</form>
 		   <hr/>
             <div class="table-responsive">
                 <table id = "ass-table" cellspacing="0" width="100%" class="table table-bordered table-hover" data-cache = "false">
@@ -51,17 +55,21 @@
                      <th style="text-align:center"> See Details </th>
                  </tr>
               </thead>
+            {% if ass_detail|length > 0  %}
+              {% for ele in ass_detail %}
             <tr>  
-              <td class="list-buttons-column"  style="font-size: 18px; text-align:center">tt </td>
-              <td class="list-buttons-column" style="font-size: 18px; text-align:center">tt</td>
-              <td class="list-buttons-column" style="font-size: 18px; text-align:center">tt </td>
-              <td class="list-buttons-column" style="font-size: 18px; text-align:center">tt</td>
-             <td class="list-buttons-column" style="font-size: 18px; text-align:center">tt</td>
-             <td class="list-buttons-column" style="font-size: 18px; text-align:center">tt</td>
+              <td class="list-buttons-column"  style="font-size: 18px; text-align:center">## </td>
+              <td class="list-buttons-column" style="font-size: 18px; text-align:center">{{(ass_detail[ele][1])|length}}</td>
+              <td class="list-buttons-column" style="font-size: 18px; text-align:center">{{ ele.theDate }} </td>
+              <td class="list-buttons-column" style="font-size: 18px; text-align:center">{{(ass_detail[ele][0]).name}}</td>
+             <td class="list-buttons-column" style="font-size: 18px; text-align:center">{{(ass_detail[ele][0]).email}}</td>
+             <td class="list-buttons-column" style="font-size: 18px; text-align:center">{{camp_obj.duration}}</td>
               <td class="list-buttons-column" style="text-align:center">
                <button  type ="button" class="btn btn-outline-info detail"> <i class="fa fa-info-circle"></i></button>
               </td>
             </tr>
+            {% endfor %}
+            {% endif %}
           </table>
        </div>
        <hr>
