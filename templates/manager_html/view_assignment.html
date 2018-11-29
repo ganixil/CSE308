@@ -9,6 +9,8 @@
      {% endif %}
   {% endwith %}
 </script>
+    <link href="/static/css/create_canvass.css" rel="stylesheet"> 
+    <link href="/static/css/view_ass.css" rel="stylesheet"> 
     {% endblock %}
     {% block title %} <h3 id = "title"> View Assignments </h3> {% endblock %}
   {%block main %}
@@ -73,7 +75,40 @@
           </table>
        </div>
        <hr>
-       </div>
+      <div class="panel panel-primary col" id="show">
+          <div class="card" style ="margin-left: 5%;">
+            <h5 class="card-header">View Details</h5>
+            <div class="card-body" style ="margin-left: 5%;">
+              <h5 class="card-title btn btn-secondary btn-block">See Locations</h5>
+                  <div class="alert alert-success" role="alert">
+          <i class="fa fa-x fa-info-circle"></i><span style ='margin-left: 1%; font-size: 18px; color: black;'>You have two ways to see locations: <mark>On List</mark> Or <mark> On Map </mark> </span>
+                  </div>
+                  <div>
+                  <button class="btn btn-primary">See on List</button>
+                  <button class="btn btn-primary">See on  Map </button>
+                </div>
+                <br/><hr/>
+              <div id="location_list">
+                  <ul class="list-group">
+                    <h3> Locations List</h3>
+                    <li class="list-group-item" style="font-weight: bold;"><mark>Campaign Name:</mark>&nbsp&nbsp gfsfdgdf</li>
+
+                    <li class="list-group-item" style="font-weight: bold;"><mark>The Date :</mark>&nbsp&nbsp gsfdgf </li>
+                    <li class="list-group-item" style="font-weight: bold;"><mark>Do you finish:</mark>&nbsp&nbsp gfgfd </li>
+                                        <li class="list-group-item" style="font-weight: bold;"><mark>Campaign Name:</mark>&nbsp&nbsp gfsfdgdf</li>
+
+                    <li class="list-group-item" style="font-weight: bold;"><mark>The Date :</mark>&nbsp&nbsp gsfdgf </li>
+                    <li class="list-group-item" style="font-weight: bold;"><mark>Do you finish:</mark>&nbsp&nbsp gfgfd </li>
+                                        <li class="list-group-item" style="font-weight: bold;"><mark>Campaign Name:</mark>&nbsp&nbsp gfsfdgdf</li>
+                  </ul>
+              </div>
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+
 {% block script %}
    <script  src="/static/javascript/manager_js/view_assignment.js"></script> {% endblock%}
 {%  endblock %}
