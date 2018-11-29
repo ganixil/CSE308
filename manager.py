@@ -684,6 +684,11 @@ def view_assignment(u_email):
 @bp.route('/view_assignment_id/<assigmentId>', methods=('GET', 'POST'))
 def view_assignment_id(assigmentId):
 	print("here")
+	ass_id = int(assignment_id)
+	loc_obj = db_session.query(TaskLocation).filter(TaskLocation.assignment_id == ass_id).all()
 
-
-	return render_template('manager_html/view_assignment.html', index = 7)
+	loc = []
+	for l in loc_obj:
+		loc.append(l.location)
+	
+	return render_template('manager_html/view_assignment.html', index = 7, loc= loc)
