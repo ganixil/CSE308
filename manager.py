@@ -15,11 +15,6 @@ import logging
 
 user_email="" #### Keep the canvasser's email to be avaliable for getting User, Role Object #####
 
-''' Key = Assignment Object; Value = List of TaskLocation object'''
-assignments={}  ## store all assignments 
-past_assignments={}  ## store past assignments which date value less than today
-upcoming_assignments={} ## store upcoming assignments which date value not less than today
-'''Key = fdsf, Value ='''
 detail={} ### work_for view_detail_assignment
 
 today = datetime.date.today()  ## get today's date yyyy-mm-dd
@@ -36,7 +31,6 @@ camp = {}
 
 ''' Create Assignment for one Campaing'''
 def createAssignment(newCamp):
-	global assignments
 	'''
 	newCamp---> campaign Object
 	'''
@@ -82,7 +76,6 @@ def createAssignment(newCamp):
 	while(len(dates) > 0 and len(assignments) > 0):
 		dTemp = dates.pop(0)  #### CanAva
 		aTemp = assignments.pop(0)  #####  list of set(lat, lng)
-		#print("atemp---> %s" %aTemp)
 
 		if(dTemp.role_id in mappedAssignments):
 			mappedAssignments[dTemp.role_id].append((dTemp,aTemp))
@@ -132,81 +125,6 @@ def createAssignment(newCamp):
 	return assignmentPossible
 
 
-# ''' Create Assignment for one Campaing'''
-# def re_CreateAssignment(Camp):
-# 	global assignments
-# 	'''
-# 	Camp---> campaign Object
-# 	'''
-# 	# flag for marking the assignment the campaign as possible
-# 	assignmentPossible = False
-
-# 	dates = [] ###### Store the Valid CanAva Objects
-
-# 	''' Get all Campaign Canvassers'''
-# 	camp_canvassers = newCamp.campaigns_relation_1
-# 	for ele in camp_canvassers:
-# 		''' Get all this Campaign Canvasser's all avaliable dates'''
-# 		canDates = db_session.query(CanAva).filter(CanAva.role_id == ele.role_id).all()
-# 		for ele_ava in canDates:
-# 			if ele_ava.theDate >= startDate and ele_ava.theDate <= endDate:
-# 				dates.append(ele_ava)
-
-# 	'''sort dates by earliest available CanAva objects'''
-# 	dates.sort(key= lambda d: d.theDate)
-
-# 	# assign assignments to dates
-# 	mappedAssignments = {}  ### Key = Canvasser'role_id Value = CanAva and assignment
-# 	while(len(dates) > 0 and len(assignments) > 0):
-# 		dTemp = dates.pop(0)  #### CanAva
-# 		aTemp = assignments.pop(0)  #####  list of set(lat, lng)
-# 		#print("atemp---> %s" %aTemp)
-
-# 		if(dTemp.role_id in mappedAssignments):
-# 			mappedAssignments[dTemp.role_id].append((dTemp,aTemp))
-# 		else:
-# 			mappedAssignments[dTemp.role_id] = [(dTemp, aTemp)]
-	
-# 	#if no more assingments then this mapping is possible
-# 	if(len(assignments) == 0):
-# 		assignmentPossible = True
-
-# 	## add assignments to database
-# 	for ele in mappedAssignments:  ## Key---> Role Id ; Value= the serveral list of [(CanAva, assingment),(...)]
-# 		# ele is the key---> role_id
-# 		campCanvasser= db_session.query(CampaignCanvasser).filter(CampaignCanvasser.campaign_name == newCamp.name, CampaignCanvasser.role_id == ele).first()
-# 		## mappedAssignments[ele]--> sets of (CanAva, assignment)
-# 		for ele_ass  in mappedAssignments[ele]:
-# 			###### ele_ass =one set (CanAva, assignment)
-# 			### ele_ass[0] --- CanAva
-# 			### ele_ass[1] -- assignment
-# 			ass_obj = Assignment(ele_ass[0].theDate, False)
-
-# 			## ele_ass[1] -----[(lat, lng), (lat1, lng1)....]
-# 			for order in range(len(ele_ass[1])):
-# 				lat = ele_ass[1][order][0] 
-# 				lng = ele_ass[1][order][1]
-# 				## Get location from the campaign location db
-# 				allCampLocation =db_session.query(CampaignLocation).filter(CampaignLocation.campaign_name == newCamp.name).all()
-# 				### Get campLocation Object, and retrieve location address string: loc
-# 				''' campLocation = [one campaignLocation object]'''
-# 				campLocation = [loc for loc in allCampLocation if (math.isclose(loc.lat, lat) and math.isclose(loc.lng, lng))]
-# 				loc = campLocation[0].location
-# 				#### Create Task Location Object  #########
-# 				task_loc_obj = TaskLocation(loc,lat,lng,order)
-# 				''' Add TaskLocation Object to Assignment Obejct'''
-# 				ass_obj.assignment_relation_task_loc.append(task_loc_obj)
-
-# 			''' Add the new created Assignment Object to CampaignCanvasser Obejct'''
-# 			campCanvasser.canvasser_relation.append(ass_obj)
-# 			db_session.commit()
-
-# 			# remove taken dates out of available in the database
-# 			# Delet(CanAva)
-# 			db_session.delete(ele_ass[0])
-# 			db_session.commit()
-
-# 	return assignmentPossible
 
 #function to render the manager page and set the manager page url
 @bp.route('/manpage', methods=('GET', 'POST'))
@@ -215,6 +133,7 @@ def manPage():
 	session['info']['account'] = 'manager'
 	session.modified = True
 	return redirect(url_for('manager.viewCampaign'))
+
 
 @bp.route('/view_campaign')
 def viewCampaign():
@@ -273,6 +192,7 @@ def viewCampaign():
 		camp[obj.name] = camp_ele
 	return render_template('manager_html/view_campaign.html', camp=camp, name = None, camp_list = [], index =0 )
 
+
 ''' Selecct One Campaign, And View its Details'''
 @bp.route('/view_campaign_detail/', methods=('POST','GET'))
 def viewCampaignDetail():
@@ -291,6 +211,7 @@ def viewCampaignDetail():
 		return render_template('manager_html/view_campaign.html', camp=camp, name = campaign_name, camp_list = camp[campaign_name][5], index =5)
 	else:
 		return render_template('manager_html/view_campaign.html', camp=camp, name = None, camp_list =[], index = 0)
+
 
 
 @bp.route('/create_campaign/<u_email>', methods=['GET','POST'])
@@ -400,6 +321,7 @@ def createCampaign(u_email):
 			newCamp.campaigns_relation_2.append(ele_obj)
 
 		db_session.commit()
+
 		#if not enough dates/canvassers display warning
 		if(not createAssignment(newCamp)):
 			flash("Create Campagin successfully, but did not make compeletely assingments !")
@@ -411,16 +333,17 @@ def createCampaign(u_email):
 	return render_template('manager_html/create_campaign.html', managers = all_managers, canvassers = all_canvassers, index = 5)
 
 
+
 ####### Action == "Edit Campaign"
 @bp.route('/edit_campaign/<u_email>', methods=['GET','POST'])
 def editCampaign(u_email):
 	global assignments
+
 	''' Retrieve all Campaigns fistlly'''
 	all_campaigns = db_session.query(Campaign).all()
 	''' Key is 'email', Value is 'name'''
 	all_managers={}
 	all_canvassers={}
-
 
 	'''Get all managers '''
 	manager_roles = db_session.query(Role).filter(Role.role == 'manager').all()
@@ -468,8 +391,9 @@ def editCampaign(u_email):
 
 			return render_template('manager_html/edit_campaign.html', campaign_name = campaign_name, all_campaigns = all_campaigns, unselected_managers = unselected_managers, unselected_canvassers = unselected_canvassers, managers = managers, canvassers=canvassers, start_date = campaign.startDate, end_date = campaign.endDate, talking=campaign.talking, question=campaign_question, location=campaign_location, duration=campaign.duration,index = 6)
 
-		elif request.form['submit'] == 'submit_change':
 
+		elif request.form['submit'] == 'submit_change':
+			theLock.acquire()
 			old_campaign_name = request.form['campaign_list']
 			new_campaign_name = request.form['name']
 			startDate = request.form['start_date']
@@ -482,18 +406,18 @@ def editCampaign(u_email):
 			locations_text = request.form['locations_text'] #string (multi-lines)s  ## format = address|lat|lng
 
 			current_campaign = db_session.query(Campaign).filter(Campaign.name == old_campaign_name).first()
+			####### if campaign already started some assignment, you can not modify it
+			if current_campaign.start:
+				flash("Failed to change, Some assignments already started!!")
+				theLock.release()
+				return redirect(url_for('manager.manPage'))
 
-			current_campaign.startDate = startDate
-			current_campaign.endDate = endDate
-			current_campaign.talking = talking
-			current_campaign.duration = duration
-
-			current_campaign.campaigns_relation = []
-			current_campaign.campaigns_relation_1 = []
-			current_campaign.campaigns_relation_2 = []
-			current_campaign.campaigns_relation_3 = []
-
-			db_session.commit()
+			if old_campaign_name != new_campaign_name:
+				new_camp = db_session.query(Campaign).filter(Campaign.name == new_campaign_name).first()
+				if new_camp:
+					flash("Failed to change, Please change to new unique Campaign Name!!")
+					theLock.release()
+					return redirect(url_for('manager.manPage'))
 
 			if new_campaign_name is '':
 				current_campaign.name = old_campaign_name
@@ -512,6 +436,7 @@ def editCampaign(u_email):
 				 for ele in locations_arr:
 				 	if(gmaps.geocode(ele) == []):
 				 		flash("Failed to create campaign, the address("+ele+") is not valid!!")
+				 		theLock.release()
 				 		return render_template('manager_html/create_campaign.html', managers = all_managers, canvassers = all_canvassers, index = 5)
 				 	lat = gmaps.geocode(ele)[0]['geometry']['location']['lat']
 				 	lng = gmaps.geocode(ele)[0]['geometry']['location']['lng']
@@ -520,9 +445,27 @@ def editCampaign(u_email):
 				 	'''Check if there're some repeated locations'''
 				 	if test in locations:
 				 		flash("Failed to create campaign, the address: ("+address+") is repeated!!!")
+				 		theLock.release()
 				 		return render_template('manager_html/create_campaign.html', managers = all_managers, canvassers = all_canvassers, index = 5)
 				 	else:
 				 		locations.append((address,lat, lng))
+
+			current_campaign.startDate = startDate
+			current_campaign.endDate = endDate
+			current_campaign.talking = talking
+			current_campaign.duration = duration
+
+			## Keep the old canvassers list
+			all_camp_can =[]## (campaign_canvasser obj)
+			for ele in current_campaign.campaigns_relation_1:
+				all_camp_can.append(ele)
+
+			current_campaign.campaigns_relation = []
+			current_campaign.campaigns_relation_1 = []
+			current_campaign.campaigns_relation_2 = []
+			current_campaign.campaigns_relation_3 = []
+
+			db_session.commit()
 
 			for ele in managers:
 				ele_obj = CampaignManager()
@@ -550,13 +493,32 @@ def editCampaign(u_email):
 
 			db_session.commit()
 
-			# current_campaign=re_CreateAssignment(Camp):
+			'''Need to  re-assign taskes, So we need to give back to canvasser their available dates'''
+			## Get all Campaign canvasser
 
+			## all_camp_can= set of (role_id, campaign_canvaser_id)
+			for ele in all_camp_can:
+				can_ass = ele.canvasser_relation
+				if len(can_ass) > 0:
+					for instance in can_ass:
+						ass_date = instance.theDate
+						ava_obj = CanAva(ass_date)
+						role_obj = db_session.query(Role).filter(Role.id == ele.role_id).first()
+						role_obj.roles_relation_2.append(ava_obj)
+						db_session.commit()
+
+			#if not enough dates/canvassers display warning
+			if(not createAssignment(current_campaign)):
+				flash("Create Campagin successfully, but did not make compeletely assingments !")
+			else:
+				flash("Create Compaingn and make compeletely assignments successfully !")
+			theLock.release()
 			return redirect(url_for('manager.manPage'))
 	else:
 		if all_campaigns == []:
 			flash("You do not any campaigns need to be edited.")
 			return redirect(url_for('manager.manPage'))
+
 		return render_template('manager_html/edit_campaign.html', all_campaigns = all_campaigns,index = 6)
 
 
