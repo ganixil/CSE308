@@ -708,4 +708,4 @@ def view_assignment_id(assigmentId):
 		tup = (l.location, l.lat, l.lng)
 		loc.append(tup)
 
-	return render_template('manager_html/view_assignment.html', all_camp_ass=view_all_camp_ass, ass_detail=view_ass_detail, camp_obj=view_c_obj, index = 7, loc= loc)
+	return render_template('manager_html/view_assignment.html', all_camp_ass=view_all_camp_ass, ass_detail=view_ass_detail, camp_obj=vew_camp_obj, index = 7, loc= loc)
