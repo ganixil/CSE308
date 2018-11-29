@@ -29,6 +29,10 @@ bp = Blueprint('manager', __name__, url_prefix='/manager')
 ''' Store All Campaigns Info : Key = campaign Name ; Value = Detail Info the specified Campaign'''
 camp = {}
 
+view_all_camp_ass={}
+view_ass_detail={}
+vew_camp_obj=None
+
 ''' Create Assignment for one Campaing'''
 def createAssignment(newCamp):
 	'''
@@ -649,6 +653,9 @@ def view_result():
 @bp.route('/view_assignment/<u_email>', methods=('GET', 'POST'))
 def view_assignment(u_email):
 	print("View Assignment")
+	global view_all_camp_ass
+	global view_ass_detail
+	global vew_camp_obj
 
 	all_camp_ass ={} ## key= campaingn object; value = all_ass,
 	all_ass = {} ## Key is One Assignment Object, Value = (user_obj, multiple taskLocation Objects)
@@ -684,13 +691,19 @@ def view_assignment(u_email):
 		if c_obj in all_camp_ass:
 			ass_detail = all_camp_ass[c_obj]
 
-	return render_template('manager_html/view_assignment.html', all_camp_ass=all_camp_ass, ass_detail=ass_detail, camp_obj=c_obj, index = 7)
+		view_all_camp_ass=all_camp_ass
+		view_ass_detail=ass_detail
+		view_camp_obj=c_obj
 
-
+	return render_template('manager_html/view_assignment.html', all_camp_ass=all_camp_ass, ass_detail=ass_detail, camp_obj=c_obj, index = 7, loc=None)
 
 
 @bp.route('/view_assignment_id/<assigmentId>', methods=('GET', 'POST'))
 def view_assignment_id(assigmentId):
+	global view_all_camp_ass
+	global view_ass_detail
+	global vew_camp_obj
+
 	print("here")
 	ass_id = int(assigmentId)
 	loc_obj = db_session.query(TaskLocation).filter(TaskLocation.assignment_id == ass_id).all()
@@ -700,4 +713,4 @@ def view_assignment_id(assigmentId):
 		tup = (l.location, l.lat, l.lng)
 		loc.append(tup)
 
-	return render_template('manager_html/view_assignment.html', index = 7, loc= loc)
+	return render_template('manager_html/view_assignment.html', all_camp_ass=view_all_camp_ass, ass_detail=view_ass_detail, camp_obj=view_c_obj, index = 7, loc= loc)
