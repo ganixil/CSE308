@@ -234,16 +234,19 @@
                   </tr>
               </thead>
               <tbody>
-                 
                     {% for assign in assign_info %}
-                       <tr >
+                       <tr role="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" >
                          <td  class = "col">{{ assign[0] }}</td>
                          <td  class = "col">{{ assign[1] }}</td>
                          <td  class = "col">{{ assign[2] }}</td>
                          <td  class = "col">{{ assign[3] }}</td>
                       </tr>
+                      <div class="collapse" id="collapseExample">
+                      <div class="card card-body">
+                        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+                      </div>
+                      </div>
                      {% endfor %}
-                  
               </tbody>
             </table>
         </div>
