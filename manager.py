@@ -699,7 +699,6 @@ def view_assignment_id(assigmentId):
 	global view_ass_detail
 	global vew_camp_obj
 
-	print("here")
 	ass_id = int(assigmentId)
 	loc_obj = db_session.query(TaskLocation).filter(TaskLocation.assignment_id == ass_id).all()
 
