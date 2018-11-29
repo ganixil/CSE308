@@ -225,7 +225,7 @@
 <div class="container" id ="detail-container" >
         <div class="table-responsive">
               <table id = "other2-table col-6" cellspacing="0" width="100%" class="table table-striped table-bordered table-hove" data-cache = "false" >
-               <thead class="thead-dark">
+               <thead class="thead-dark" colspan="1">
                   <tr >
                       <th  class = "col-2">Assignment</th>
                       <th  class = "col-1">Number of Locations</th>
@@ -241,11 +241,15 @@
                          <td  class = "col">{{ assign[2] }}</td>
                          <td  class = "col">{{ assign[3] }}</td>
                       </tr>
-                      <div class="collapse" id="collapseExample">
-                      <div class="card card-body">
-                        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
-                      </div>
-                      </div>
+                      <tr>
+                        <td colspan="4">
+                          <div class="collapse" id="collapseExample">
+                          <div class="card card-body">
+                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+                          </div>
+                          </div>
+                        </td>
+                      </tr>
                      {% endfor %}
               </tbody>
             </table>
