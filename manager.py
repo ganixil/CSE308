@@ -634,6 +634,18 @@ def view_result():
 
 			avg_rating = sum_rating/len(result)
 
+			######standard deviation#####
+			one = 1/len(result)
+
+			total = 0
+			for r in result:
+				total+=math.pow(r.rating-avg_rating,2)
+
+			statistic['deviation'] = math.pow((one*total),0.5)
+			#######
+
+
+
 			statistic['avg_rating'] = avg_rating
 			statistic['answers'] = answers #answer are in list format of [yes #, no #, dontcare #]
 			statistic['questions'] = questions
