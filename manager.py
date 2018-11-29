@@ -666,3 +666,13 @@ def view_assignment(u_email):
 			ass_detail = all_camp_ass[c_obj]
 
 	return render_template('manager_html/view_assignment.html', all_camp_ass=all_camp_ass, ass_detail=ass_detail, camp_obj=c_obj, index = 7)
+
+
+
+
+@bp.route('/view_assignment_id/<assigmentId>', methods=('GET', 'POST'))
+def view_assignment_id(assigmentId):
+	print("here")
+
+
+	return render_template('manager_html/view_assignment.html', index = 7)
