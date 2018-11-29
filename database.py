@@ -11,6 +11,7 @@ import pymysql
 # 'mysql+pymysql://username:password@address:port/databaseName'
 # Connect to the database with the database connection string
 engine = create_engine('mysql+pymysql://xiangyiliu:111308288@mysql3.cs.stonybrook.edu:3306/xiangyiliu', convert_unicode=True)
+#engine = create_engine('mysql+pymysql://cmbeck:108518007@mysql3.cs.stonybrook.edu:3306/cmbeck', convert_unicode=True)
 db_session = scoped_session(sessionmaker(autocommit=False, autoflush=False,bind=engine))
 # Make the sqlalchemy object relation mapper base class
 Base = declarative_base()
@@ -220,7 +221,7 @@ class TaskLocation(Base):
     visited = Column(Boolean, nullable=False, default=False)
 
     UniqueConstraint(assignment_id, location)
-    UniqueConstraint(assignment_id, lat, lng)
+    #UniqueConstraint(assignment_id, lat, lng)
 
     ##### One specified location has one result  ##########
     taskLocation_relation = relationship("Result", uselist=False, backref="task_locations", cascade="all,save-update,delete-orphan")

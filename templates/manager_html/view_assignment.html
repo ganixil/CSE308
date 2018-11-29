@@ -36,7 +36,7 @@
   <!------------Table Headers------------------->
               <thead class="thead-dark">
                   <tr>
-                    <th  data-field ="index" class="column-header col-name"  style="text-align:center"> Task#
+                    <th  data-field ="index" class="column-header col-name"  style="text-align:center"> Assignment #
                       <i class = "fa fa-sort-up float-right"> </i>
                     </th>
                      <th  data-field = "location_num" class="column-header col-duration"  style="text-align:center"># of Locations
@@ -60,14 +60,16 @@
             {% if ass_detail|length > 0  %}
               {% for ele in ass_detail %}
             <tr>  
-              <td class="list-buttons-column"  style="font-size: 18px; text-align:center">## </td>
+              <td class="list-buttons-column"  style="font-size: 18px; text-align:center">{{ele.id}} </td>
               <td class="list-buttons-column" style="font-size: 18px; text-align:center">{{(ass_detail[ele][1])|length}}</td>
               <td class="list-buttons-column" style="font-size: 18px; text-align:center">{{ ele.theDate }} </td>
               <td class="list-buttons-column" style="font-size: 18px; text-align:center">{{(ass_detail[ele][0]).name}}</td>
              <td class="list-buttons-column" style="font-size: 18px; text-align:center">{{(ass_detail[ele][0]).email}}</td>
              <td class="list-buttons-column" style="font-size: 18px; text-align:center">{{camp_obj.duration}}</td>
               <td class="list-buttons-column" style="text-align:center">
-               <button  type ="button" class="btn btn-outline-info detail"> <i class="fa fa-info-circle"></i></button>
+                <form method ="post" action="{{url_for('manager.view_assignment_id',assigmentId=ele.id) }} ">
+                        <button  type ="submit" class="btn btn-outline-info detail" > <i class="fa fa-info-circle"></i></button>
+                </form>
               </td>
             </tr>
             {% endfor %}
