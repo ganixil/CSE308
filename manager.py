@@ -130,17 +130,28 @@ def createAssignment(newCamp):
 @bp.route('/manpage', methods=('GET', 'POST'))
 def manPage():
 	########### View Campaign Is the First Page #########################
+	global user_email
 	session['info']['account'] = 'manager'
+	user_email = session['info']['email']
 	session.modified = True
 	return redirect(url_for('manager.viewCampaign'))
 
 
 @bp.route('/view_campaign')
 def viewCampaign():
+	global user_email
 	if len(camp) !=0:   ############### Reload Campaings Info from  datebase
 		camp.clear()
-	############# Get All Campaigns Obejct from DB
-	campaigns= db_session.query(Campaign).all()
+	role_obj = db_session.query(Role).filter(Role.email == user_email, Role.role == "manager").first()
+	''' Retrieve all Campaigns'''
+	all_camp = db_session.query(CampaignManager).filter(CampaignManager.role_id == role_obj.id).all()
+
+	campaigns=[]
+
+	for ele in all_camp:
+		ele_camp = db_session.query(Campaign).filter(Campaign.name == ele.campaign_name).first()
+		campaigns.append(ele_camp)
+
 	###### Loop for retrieving each campaign info
 	for  obj in campaigns:
 		camp_ele =[]
