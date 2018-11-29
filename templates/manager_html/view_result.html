@@ -219,6 +219,12 @@
 {% endif %}
 
 {% if assignment %}
+  <div class="container">
+    <h3>The standard deviation for the ratings are {{statistic['deviation']}}</h3>
+  </div>
+{% endif %}
+
+{% if assignment %}
 <div class="container">
   {% for q in statistic['questions']%}
     <div class="d-flex" id="{{q}}"></div>
