@@ -31,7 +31,7 @@ camp = {}
 
 view_all_camp_ass={}
 view_ass_detail={}
-vew_camp_obj=None
+view_camp_obj=None
 
 ''' Create Assignment for one Campaing'''
 def createAssignment(newCamp):
@@ -650,7 +650,7 @@ def view_assignment(u_email):
 	print("View Assignment")
 	global view_all_camp_ass
 	global view_ass_detail
-	global vew_camp_obj
+	global view_camp_obj
 
 	all_camp_ass ={} ## key= campaingn object; value = all_ass,
 	all_ass = {} ## Key is One Assignment Object, Value = (user_obj, multiple taskLocation Objects)
@@ -697,7 +697,7 @@ def view_assignment(u_email):
 def view_assignment_id(assigmentId):
 	global view_all_camp_ass
 	global view_ass_detail
-	global vew_camp_obj
+	global view_camp_obj
 
 	ass_id = int(assigmentId)
 	loc_obj = db_session.query(TaskLocation).filter(TaskLocation.assignment_id == ass_id).all()
@@ -707,4 +707,4 @@ def view_assignment_id(assigmentId):
 		tup = (l.location, l.lat, l.lng)
 		loc.append(tup)
 
-	return render_template('manager_html/view_assignment.html', all_camp_ass=view_all_camp_ass, ass_detail=view_ass_detail, camp_obj=vew_camp_obj, index = 7, loc= loc)
+	return render_template('manager_html/view_assignment.html', all_camp_ass=view_all_camp_ass, ass_detail=view_ass_detail, camp_obj=view_camp_obj, index = 7, loc= loc)
