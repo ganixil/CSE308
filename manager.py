@@ -525,14 +525,14 @@ def editCampaign(u_email):
 
 			#if not enough dates/canvassers display warning
 			if(not createAssignment(current_campaign)):
-				flash("Create Campagin successfully, but did not make compeletely assingments !")
+				flash("Create Campaign successfully, but did not make compeletely assingments !")
 			else:
-				flash("Create Compaingn and make compeletely assignments successfully !")
+				flash("Create Campaign and make compeletely assignments successfully !")
 			theLock.release()
 			return redirect(url_for('manager.manPage'))
 	else:
 		if all_campaigns == []:
-			flash("You do not any campaigns need to be edited.")
+			flash("You do not have any campaigns need to be edited.")
 			return redirect(url_for('manager.manPage'))
 
 		return render_template('manager_html/edit_campaign.html', all_campaigns = all_campaigns,index = 6)
