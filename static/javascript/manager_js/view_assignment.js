@@ -4,10 +4,6 @@ $(document).ready(function () {
      	var index = this.closest('tr').rowIndex;
      	var campaign = $('#ass-table tr:eq('+index+') td:eq(0)').text();
 
-     	
-
-     	
-
      });
 
 });
