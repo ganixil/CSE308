@@ -77,6 +77,8 @@
           </table>
        </div>
        <hr>
+
+
       <div class="panel panel-primary col" id="show">
           <div class="card" style ="margin-left: 5%;">
             <h5 class="card-header">View Details</h5>
@@ -91,17 +93,13 @@
                 </div>
                 <br/><hr/>
               <div id="location_list">
+
                   <ul class="list-group">
                     <h3> Locations List</h3>
-                    <li class="list-group-item" style="font-weight: bold;"><mark>Campaign Name:</mark>&nbsp&nbsp gfsfdgdf</li>
-
-                    <li class="list-group-item" style="font-weight: bold;"><mark>The Date :</mark>&nbsp&nbsp gsfdgf </li>
-                    <li class="list-group-item" style="font-weight: bold;"><mark>Do you finish:</mark>&nbsp&nbsp gfgfd </li>
-                                        <li class="list-group-item" style="font-weight: bold;"><mark>Campaign Name:</mark>&nbsp&nbsp gfsfdgdf</li>
-
-                    <li class="list-group-item" style="font-weight: bold;"><mark>The Date :</mark>&nbsp&nbsp gsfdgf </li>
-                    <li class="list-group-item" style="font-weight: bold;"><mark>Do you finish:</mark>&nbsp&nbsp gfgfd </li>
-                                        <li class="list-group-item" style="font-weight: bold;"><mark>Campaign Name:</mark>&nbsp&nbsp gfsfdgdf</li>
+                    {% for l in loc %}
+                    <li class="list-group-item" style="font-weight: bold;"><mark>Location:</mark>&nbsp&nbsp {{l[0]}}</li>
+                    
+                    {% endfor %}
                   </ul>
               </div>
 
